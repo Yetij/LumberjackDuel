@@ -45,6 +45,11 @@ public class v2Player : MonoBehaviour
 	void OnGUI () {
 		GUILayout.Label("Press C to chop, K to kick");
 	}
+
+	IEnumerator _KickCoolDown () {
+		yield return new WaitForSeconds(kick_cooldown);
+		_kickOnCoolDown = false;
+	}
 	#endregion
 	
 	public bool isControllable;
@@ -116,11 +121,6 @@ public class v2Player : MonoBehaviour
 				}
 			}
 		}
-	}
-
-	IEnumerator _KickCoolDown () {
-		yield return new WaitForSeconds(kick_cooldown);
-		_kickOnCoolDown = false;
 	}
 }
 

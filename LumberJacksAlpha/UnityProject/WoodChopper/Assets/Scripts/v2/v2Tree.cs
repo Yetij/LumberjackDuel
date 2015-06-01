@@ -10,23 +10,15 @@ public class v2Tree : MonoBehaviour
 	[SerializeField] float life_time;
 	[SerializeField] float die_delay=0.7f;
 	[SerializeField] float hp;
-	Vector3 next_scale;
-	Vector3 last_scale;
-	float _timer;
-	bool _trigger;
-	int x=-1,z=-1;
 
-	int[] rand = new int[] { -1,  1, 0 };	
+	#region readonly 
 	readonly int being_cut_hash = Animator.StringToHash("being_cut");
 	readonly int fall_dir_hash = Animator.StringToHash("fall_dir");
+	#endregion
 
+	#region caches , initializations
 	Animator animator;
 	Transform trans;
-
-	public void SetIndex(int x, int z ) {
-		this.x = x;
-		this.z = z;
-	}
 
 	void Awake() {
 		x = -1;
@@ -34,13 +26,21 @@ public class v2Tree : MonoBehaviour
 		trans = transform;
 		animator = GetComponent<Animator>();
 	}
+	#endregion
 
-	void OnEnable () {
-		life_time = max_life_time;
-		hp = 100;
-		state = State.GROWING;
+	#region help/tmp variables, functions	
+	Vector3 next_scale;
+	Vector3 last_scale;
+	float _timer;
+	bool _trigger;
+	int x=-1,z=-1;
+	int[] rand = new int[] { -1,  1, 0 };	
+
+	public void SetIndex(int x, int z ) {
+		this.x = x;
+		this.z = z;
 	}
-	
+
 	IEnumerator _Grow () {
 		_timer = 0;
 		yield return null;
@@ -53,9 +53,12 @@ public class v2Tree : MonoBehaviour
 		}
 		_trigger = false;
 	}
-
-	public bool isAlive () {
-		return gameObject.activeInHierarchy;
+	#endregion
+	
+	void OnEnable () {
+		life_time = max_life_time;
+		hp = 100;
+		state = State.GROWING;
 	}
 
 	public void Grow () {
@@ -124,7 +127,6 @@ public class v2Tree : MonoBehaviour
 	}
 	
 	IEnumerator _DieWithDelay () {
-		yield return null;
 		yield return new WaitForSeconds(die_delay);
 		FinishDie();
 	}

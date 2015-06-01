@@ -15,6 +15,7 @@ public class v2MapManager : MonoBehaviour
 		}
 	}
 	#endregion
+
 	public GameObject tree_pref;
 	public Vector3 grid_root;
 	public float x_grid_offset;
@@ -22,30 +23,23 @@ public class v2MapManager : MonoBehaviour
 	public int total_tree_x;
 	public int total_tree_z;
 
+	[SerializeField] float gen_rate = 2;
+	[SerializeField] int gen_min=2;
+	[SerializeField] int gen_max=6;
+	[SerializeField] float domino_fall_delay=0.3f;
+
 	v2Tree[,] tree_list;
 
-#if UNITY_EDITOR
-	void OnDrawGizmos () {
-		for(int i=0; i < total_tree_z; i++ ) {
-			for(int j=0; j < total_tree_x; j ++ ) {
-				Gizmos.DrawSphere(new Vector3(j*x_grid_offset+grid_root.x, 0, i*z_grid_offset+grid_root.z ),0.05f);
-			}
-		}
-	}
-#endif
-
-	[SerializeField]
-	float gen_rate = 2;
-	[SerializeField]
-	int gen_min=2;
-	[SerializeField]
-	int gen_max=6;
-	
+	#region tmp/help variables , functions
 	int[] no_trees = new int[] { -1, -1, -1 , -1 };
-
 	int[] _rand = new int[]{ 1, -1 };
-
 	int max_try_per_tree = 6;
+	Vector3 _tmp = Vector3.zero;
+	int last_chopped_x=-1,last_chopped_z;
+
+	bool IsIndexValid (int x, int z ) {
+		return x >=0 & z >=0 & x < total_tree_x & z < total_tree_z;
+	}
 
 	bool canPlaceTree ( int x, int z ) {
 		if ( no_trees[0] != -1 ) {
@@ -88,6 +82,7 @@ public class v2MapManager : MonoBehaviour
 			yield return new WaitForSeconds(gen_rate);
 		}
 	}
+	#endregion
 
 	void Awake () {
 		tree_list = new v2Tree[total_tree_x,total_tree_z];
@@ -103,17 +98,14 @@ public class v2MapManager : MonoBehaviour
 				tree_list[j,i].SetIndex(j,i);
 			}
 		}
-		
 		StartCoroutine(_GenTree());
 	}
 
-	Vector3 _tmp = Vector3.zero;
 	public Vector3 MoveTo (int x, int z ) {
 		_tmp.Set(grid_root.x+x*x_grid_offset + x_grid_offset/2, 0, grid_root.z + z*z_grid_offset + z_grid_offset/2 );
 		return _tmp;
 	}
 
-	int last_chopped_x=-1,last_chopped_z;
 
 	public void OnPlayerChop (float strength, int x, int facing_x, int z, int facing_z ) {
 		last_chopped_x = x+facing_x;
@@ -134,6 +126,7 @@ public class v2MapManager : MonoBehaviour
 		}
 		last_chopped_x = -1;
 	}
+
 	public void OnPlayerKick ( int x, int facing_x, int z, int facing_z ) {
 		int x2 = x + facing_x;
 		int z2 = z + facing_z;
@@ -154,7 +147,7 @@ public class v2MapManager : MonoBehaviour
 			no_trees[3] = -1;
 			return false;
 		}
-		bool k = !tree_list[x2,z2].isAlive();
+		bool k = !tree_list[x2,z2].isActiveAndEnabled;
 		if ( k ) {
 			no_trees[2] = x2;
 			no_trees[3] = z2;
@@ -162,14 +155,12 @@ public class v2MapManager : MonoBehaviour
 		return k;
 	}
 
-	[SerializeField] float domino_fall_delay=0.3f;
 	public void OnTreeFall( int x, int z, int facing_x, int facing_z ) {
 		int x2 = x + facing_x;
 		int z2 = z + facing_z;
 		if ( !IsIndexValid(x2,z2) ) return;
 		StartCoroutine(_OnTreeFallDomino(x2,z2,facing_x,facing_z));
 	}
-
 	IEnumerator _OnTreeFallDomino (int x, int z, int f_x, int f_z ) {
 		yield return new WaitForSeconds(domino_fall_delay);
 		if ( tree_list[x,z].isActiveAndEnabled) {
@@ -184,10 +175,14 @@ public class v2MapManager : MonoBehaviour
 		}
 	}
 
-	
-	bool IsIndexValid (int x, int z ) {
-		return x >=0 & z >=0 & x < total_tree_x & z < total_tree_z;
+	#if UNITY_EDITOR
+	void OnDrawGizmos () {
+		for(int i=0; i < total_tree_z; i++ ) {
+			for(int j=0; j < total_tree_x; j ++ ) {
+				Gizmos.DrawSphere(new Vector3(j*x_grid_offset+grid_root.x, 0, i*z_grid_offset+grid_root.z ),0.05f);
+			}
+		}
 	}
-
+	#endif
 }	
 
