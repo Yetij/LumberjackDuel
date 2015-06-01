@@ -15,6 +15,7 @@ public class v2Refs : MonoBehaviour
 		}
 	}
 	#endregion
+	public GameObject player_pref;
 
 }
 

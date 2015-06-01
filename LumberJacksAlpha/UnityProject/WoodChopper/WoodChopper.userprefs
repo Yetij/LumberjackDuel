@@ -1,11 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\v2\v2TMapManager.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\v2\v2MapManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\PlayerController.cs" Line="217" Column="3" />
-      <File FileName="Assets\Scripts\v2\v2TestMovingUnit.cs" Line="16" Column="16" />
-      <File FileName="Assets\Scripts\v2\v2Player.cs" Line="15" Column="2" />
-      <File FileName="Assets\Scripts\v2\v2TMapManager.cs" Line="43" Column="44" />
+      <File FileName="Assets\Scripts\v2\v2MapManager.cs" Line="15" Column="4" />
+      <File FileName="Assets\Scripts\v2\v2Tree.cs" Line="87" Column="14" />
+      <File FileName="Assets\Scripts\v2\v2Player.cs" Line="77" Column="12" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

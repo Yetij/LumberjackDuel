@@ -58,9 +58,9 @@
      <Compile Include="Assets\Scripts\PlayerController2.cs" />
      <Compile Include="Assets\Scripts\Tree.cs" />
      <Compile Include="Assets\Scripts\TreeAnimation.cs" />
+     <Compile Include="Assets\Scripts\v2\v2MapManager.cs" />
      <Compile Include="Assets\Scripts\v2\v2Player.cs" />
      <Compile Include="Assets\Scripts\v2\v2Refs.cs" />
-     <Compile Include="Assets\Scripts\v2\v2TMapManager.cs" />
      <Compile Include="Assets\Scripts\v2\v2TestMovingUnit.cs" />
      <Compile Include="Assets\Scripts\v2\v2Tree.cs" />
      <Compile Include="Assets\ToonMaidCool\Resources\Scripts\EditCamera.cs" />
