@@ -161,6 +161,7 @@ public class v2MapManager : MonoBehaviour
 		if ( !IsIndexValid(x2,z2) ) return;
 		StartCoroutine(_OnTreeFallDomino(x2,z2,facing_x,facing_z));
 	}
+
 	IEnumerator _OnTreeFallDomino (int x, int z, int f_x, int f_z ) {
 		yield return new WaitForSeconds(domino_fall_delay);
 		if ( tree_list[x,z].isActiveAndEnabled) {

@@ -1,8 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\v2\v2MapManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\v3\v3NetControlNode.cs">
     <Files>
-      <File FileName="Assets\Scripts\v2\v2MapManager.cs" Line="12" Column="20" />
+      <File FileName="Assets\Scripts\v3\v3NetManager.cs" Line="36" Column="77" />
+      <File FileName="Assets\Scripts\v3\v3Player.cs" Line="11" Column="3" />
+      <File FileName="Assets\Scripts\v3\v3NetControlNode.cs" Line="31" Column="6" />
+      <File FileName="Assets\Scripts\v3\v3MapManager.cs" Line="198" Column="2" />
+      <File FileName="Assets\Scripts\v3\v3Tree.cs" Line="37" Column="40" />
+      <File FileName="Assets\Scripts\v3\v3Refs.cs" Line="31" Column="32" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
