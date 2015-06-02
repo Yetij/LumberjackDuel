@@ -33,7 +33,7 @@ public class v3NetManager : MonoBehaviour
 		}
 
 		if ( Network.isServer ) {
-			GUILayout.Label ("my ip="+Network.player.ipAddress, GUILayout.Width(300));
+			GUILayout.Label ("my ip="+Network.player.externalIP, GUILayout.Width(300));
 			GUILayout.Label ("players in room="+(Network.connections.Length + 1));
 			if ( GUILayout.Button("Start Game" ,GUILayout.Width(150)) ) {
 				net_node.GetComponent<NetworkView>().RPC("StartGame",RPCMode.AllBuffered);

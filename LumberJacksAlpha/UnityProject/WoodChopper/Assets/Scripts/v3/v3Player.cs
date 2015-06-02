@@ -3,7 +3,7 @@ using System.Collections;
 
 public struct Vec2Int {		
 	public int x, z;
-	public Vec2Int(int _x = 0, int _z = 0) {	x = _x;	z = _z;	} 
+	public Vec2Int(int _x, int _z) {	x = _x;	z = _z;	} 
 }
 
 [RequireComponent(typeof(NetworkView))]
