@@ -7,7 +7,7 @@ public class v3NetControlNode : MonoBehaviour
 	NetworkView netview;
 	void Awake() {
 		Debug.Log("v3NetControlNode " + Application.loadedLevelName + " Awake ");
-		( (v3NetManager) GameObject.FindObjectOfType(typeof(v3NetManager))).net_node = this;
+		( (v3NetHelp) GameObject.FindObjectOfType(typeof(v3NetHelp))).net_node = this;
 		netview = GetComponent<NetworkView>();
 		netview.group = 1;
 	}

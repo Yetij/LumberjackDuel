@@ -65,7 +65,7 @@
      <Compile Include="Assets\Scripts\v3\v3DontDestroyOnLoad.cs" />
      <Compile Include="Assets\Scripts\v3\v3MapManager.cs" />
      <Compile Include="Assets\Scripts\v3\v3NetControlNode.cs" />
-     <Compile Include="Assets\Scripts\v3\v3NetManager.cs" />
+     <Compile Include="Assets\Scripts\v3\v3NetHelp.cs" />
      <Compile Include="Assets\Scripts\v3\v3Player.cs" />
      <Compile Include="Assets\Scripts\v3\v3Refs.cs" />
      <Compile Include="Assets\Scripts\v3\v3Tree.cs" />
