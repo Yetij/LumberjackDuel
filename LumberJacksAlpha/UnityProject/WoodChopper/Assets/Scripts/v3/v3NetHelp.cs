@@ -5,6 +5,7 @@ using System.Collections;
 public class v3NetHelp : MonoBehaviour
 {
 	public int port = 54444;
+	public bool disable_clear_hostlist = false;
 	[HideInInspector] public v3NetControlNode net_node;
 
 	public string master_ip="192.227.166.97";
@@ -75,7 +76,7 @@ public class v3NetHelp : MonoBehaviour
 					Network.Connect(h);
 				}
 			}
-			MasterServer.ClearHostList();
+			if ( !disable_clear_hostlist) MasterServer.ClearHostList();
 		}
 
 		if ( Network.isServer ) {
