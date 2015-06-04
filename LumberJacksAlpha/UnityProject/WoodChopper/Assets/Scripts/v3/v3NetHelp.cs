@@ -4,6 +4,8 @@ using System.Collections;
 
 public class v3NetHelp : MonoBehaviour
 {
+	public string gameType;
+	public string gameName="my_custom_game";
 	public int port = 54444;
 	public bool disable_clear_hostlist = false;
 	[HideInInspector] public v3NetControlNode net_node;
@@ -31,7 +33,7 @@ public class v3NetHelp : MonoBehaviour
 		Network.natFacilitatorIP = facilitator_ip;
 		Network.natFacilitatorPort = facilitator_port;
 
-		MasterServer.RequestHostList("woodchopper");
+
 	}
 
 	void OnMasterServerEvent(MasterServerEvent msEvent) {
@@ -61,22 +63,30 @@ public class v3NetHelp : MonoBehaviour
 	HostData[] list_games;
 	void OnGUI () {
 		if ( guioff ) return;
+		
 		GUILayout.Label ( m, GUILayout.Width(Screen.width));
 		if ( !Network.isClient & !Network.isServer ) {
-			
-			list_games  = MasterServer.PollHostList();
 			if ( GUILayout.Button("Create Game ",GUILayout.Width(200) ) ) {
-				MasterServer.RegisterHost("woodchopper","Game "+ Time.realtimeSinceStartup,"comment023123");
+				MasterServer.RegisterHost(gameType,gameName);
 				Network.InitializeServer(8,port,!Network.HavePublicAddress());
 			}
-
-			GUILayout.Label ("Slelect game >>", GUILayout.Width(100));
-			foreach ( HostData h in list_games ) {
-				if ( GUILayout.Button(h.gameName ,GUILayout.Width(150)) ) {
-					Network.Connect(h);
+			
+			list_games  = MasterServer.PollHostList();
+			if ( GUILayout.Button("Update hostlist ",GUILayout.Width(200) ) ) {
+				MasterServer.RequestHostList(gameType);
+				list_games  = MasterServer.PollHostList();
+			}
+			if ( list_games != null ) {
+				if ( list_games.Length > 0 ) { 
+					GUILayout.Label ("Slelect game >>", GUILayout.Width(100));
+					foreach ( HostData h in list_games ) {
+						if ( GUILayout.Button(h.gameName ,GUILayout.Width(150)) ) {
+							Network.Connect(h);
+						}
+					}
 				}
 			}
-			if ( !disable_clear_hostlist) MasterServer.ClearHostList();
+			//if ( !disable_clear_hostlist) MasterServer.ClearHostList();
 		}
 
 		if ( Network.isServer ) {

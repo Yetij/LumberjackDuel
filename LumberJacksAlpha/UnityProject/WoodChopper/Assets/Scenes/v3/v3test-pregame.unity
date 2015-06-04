@@ -157,12 +157,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   port: 54444
-  disable_clear_hostlist: 0
+  disable_clear_hostlist: 1
   net_node: {fileID: 0}
   master_ip: 192.227.166.97
-  master_port: 31235
+  master_port: 33333
   facilitator_ip: 192.227.166.97
-  facilitator_port: 31234
+  facilitator_port: 22222
 --- !u!4 &1157029172
 Transform:
   m_ObjectHideFlags: 0
