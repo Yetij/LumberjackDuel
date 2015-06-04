@@ -67,7 +67,6 @@ public class v3NetHelp : MonoBehaviour
 		GUILayout.Label ( m, GUILayout.Width(Screen.width));
 		if ( !Network.isClient & !Network.isServer ) {
 			if ( GUILayout.Button("Create Game ",GUILayout.Width(200) ) ) {
-				MasterServer.RegisterHost(gameType,gameName);
 				Network.InitializeServer(8,port,!Network.HavePublicAddress());
 			}
 			
@@ -114,6 +113,7 @@ public class v3NetHelp : MonoBehaviour
 	}
 	void OnServerInitialized() {
 		Debug.Log("Server initialized");
+		MasterServer.RegisterHost(gameType,gameName);
 		Network.Instantiate(refs.net_control_node,Vector3.zero,Quaternion.identity,1)  ;
 	}
 	void OnConnectedToServer() {
