@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(NetworkView))]
 public class v3MapManager : MonoBehaviour
 {
 	#region tmp/help variables , functions
@@ -18,7 +17,7 @@ public class v3MapManager : MonoBehaviour
 	bool canPlaceTree ( int x, int z ) {
 		var l = v3Refs.Instance.players;
 		foreach ( v3Player p in l ) {
-			foreach ( Vec2Int v in p.GetReservatedCells() ) {
+			foreach ( Vec2Int2 v in p.GetReservatedCells() ) {
 				if ( x == v.x & z == v.z ) return false;
 			}
 		}
@@ -86,14 +85,7 @@ public class v3MapManager : MonoBehaviour
 	[SerializeField] float domino_fall_delay=0.3f;
 	
 	v3Tree[,] tree_list;
-	NetworkView netview;
 	List<v3Player> players;
-
-	void Awake () {
-		netview = GetComponent<NetworkView>();
-		netview.observed = this;
-		netview.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
-	}
 
 	void Start () {
 		tree_list = new v3Tree[total_tree_x,total_tree_z];
@@ -113,27 +105,6 @@ public class v3MapManager : MonoBehaviour
 		StartCoroutine(_GenTree());
 		players = v3Refs.Instance.players; 
 		foreach ( var p in players ) p.Initialize();
-	}
-
-	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
-		if ( tree_list == null ) return;
-		if ( stream.isWriting ) {
-			for (int i=0; i < total_tree_z; i ++ ) {
-				for (int j=0; j < total_tree_x; j ++ ) {
-					bool v = tree_list[j,i].isActiveAndEnabled;
-					stream.Serialize( ref  v);
-				}
-			}
-		} else {
-			for (int i=0; i < total_tree_z; i ++ ) {
-				for (int j=0; j < total_tree_x; j ++ ) {
-					bool v=false;
-					stream.Serialize( ref v );
-					if( v != tree_list[j,i].isActiveAndEnabled) 
-						tree_list[j,i].gameObject.SetActive(v);
-				}
-			}
-		}
 	}
 
 	public Vector3 MoveTo (int x, int z ) {

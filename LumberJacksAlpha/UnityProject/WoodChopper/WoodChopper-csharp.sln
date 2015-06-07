@@ -7,6 +7,8 @@ Project("{7F77A42F-E80E-5D93-2996-CDF8993D5EAD}") = "WoodChopper", "Assembly-CSh
 EndProject
 Project("{7F77A42F-E80E-5D93-2996-CDF8993D5EAD}") = "WoodChopper", "Assembly-CSharp-Editor-firstpass-vs.csproj", "{0363F882-5B93-80BA-84E2-64E8149F01EC}"
 EndProject
+Project("{7F77A42F-E80E-5D93-2996-CDF8993D5EAD}") = "WoodChopper", "Assembly-CSharp-Editor-vs.csproj", "{2E8F3BC4-A47B-875C-0172-602530D47F55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,11 +27,15 @@ Global
 		{0363F882-5B93-80BA-84E2-64E8149F01EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0363F882-5B93-80BA-84E2-64E8149F01EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0363F882-5B93-80BA-84E2-64E8149F01EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E8F3BC4-A47B-875C-0172-602530D47F55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E8F3BC4-A47B-875C-0172-602530D47F55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E8F3BC4-A47B-875C-0172-602530D47F55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E8F3BC4-A47B-875C-0172-602530D47F55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																																																																																																											GlobalSection(MonoDevelopProperties) = preSolution
+																																																																																																																														GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1

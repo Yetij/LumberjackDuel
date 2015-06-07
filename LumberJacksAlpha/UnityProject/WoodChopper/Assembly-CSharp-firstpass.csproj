@@ -46,6 +46,17 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Plugins\ChatApi\ChatChannel.cs" />
+     <Compile Include="Assets\Plugins\ChatApi\ChatClient.cs" />
+     <Compile Include="Assets\Plugins\ChatApi\ChatDisconnectCause.cs" />
+     <Compile Include="Assets\Plugins\ChatApi\ChatEventCode.cs" />
+     <Compile Include="Assets\Plugins\ChatApi\ChatOperationCode.cs" />
+     <Compile Include="Assets\Plugins\ChatApi\ChatParameterCode.cs" />
+     <Compile Include="Assets\Plugins\ChatApi\ChatPeer.cs" />
+     <Compile Include="Assets\Plugins\ChatApi\ChatState.cs" />
+     <Compile Include="Assets\Plugins\ChatApi\ChatUserStatus.cs" />
+     <Compile Include="Assets\Plugins\ChatApi\IChatClientListener.cs" />
+     <Compile Include="Assets\Plugins\WebSocket\WebSocket.cs" />
      <Compile Include="Assets\Standard Assets\UnityAds\Scripts\Advertisement.cs" />
      <Compile Include="Assets\Standard Assets\UnityAds\Scripts\Advertisements\Misc\AsyncExec.cs" />
      <Compile Include="Assets\Standard Assets\UnityAds\Scripts\Advertisements\Misc\MiniJSON.cs" />
@@ -66,30 +77,43 @@
      <None Include="Assets\ToonMaidCool\Resources\Shaders\MaidSurfaceShader.shader" />
      <None Include="Assets\Plugins\Android\unityads\build.xml" />
      <None Include="Assets\ToonMaidCool\Resources\Texts\ToonMaidCool_MotionList.txt" />
+     <None Include="Assets\Photon Unity Networking\Demos\MarcoPolo-Tutorial\marcopolo-readme.txt" />
+     <None Include="Assets\Plugins\Photon3Unity3D.xml" />
      <None Include="Assets\Fonts\Documentation\JazzCreateBubble_VersionHistory_1.1.txt" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_TextureMult_Bumped.shader" />
      <None Include="Assets\ToonMaidCool\Documents\Readme_EN.txt" />
+     <None Include="Assets\Plugins\release_history.txt" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_Lit.shader" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_Plain_Bumped.shader" />
      <None Include="Assets\ToonMaidCool\Documents\Readme_JP.txt" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_Plain_AdditiveZ.shader" />
      <None Include="Assets\JMO Assets\!JMO Assets Readme.txt" />
      <None Include="Assets\Plugins\Android\unityads\res\values\strings.xml" />
+     <None Include="Assets\Photon Unity Networking\Demos\DemoBoxes\Resources\eurof_tt.txt" />
      <None Include="Assets\Fantasy Skybox FREE\Readme\Readme.txt" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_Plain.shader" />
      <None Include="Assets\ToonMaidCool\Resources\Shaders\MaidSurfaceShader_Hair.shader" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_Plain_Additive.shader" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_TextureMult.shader" />
+     <None Include="Assets\Photon Unity Networking\Demos\DemoPickup\Assets\3dFont\3dText.shader" />
+     <None Include="Assets\Photon Unity Networking\readme.txt" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_TextureAdd.shader" />
      <None Include="Assets\Fonts\Documentation\JazzCreateAltKeys_BubbleFont.txt" />
      <None Include="Assets\ToonMaidCool\Resources\Shaders\MaidSurfaceShader_Brow.shader" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Textures\MaCrea\MaCrea.txt" />
      <None Include="Assets\ToonMaidCool\Resources\Shaders\MaidSurfaceShader_Petticoat.shader" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Textures\BenSimonds\_Textures Readme.txt" />
+     <None Include="Assets\Photon Unity Networking\changelog.txt" />
      <None Include="Assets\Plugins\Android\unityads\AndroidManifest.xml" />
      <None Include="Assets\JMO Assets\MatCap Shaders\_MatCap Shaders Readme.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Unity5.0.2f1/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="Photon3Unity3D">
+ <HintPath>D:/Projects/Git-Repo/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/Photon3Unity3D.dll</HintPath>
+ </Reference>
+ <Reference Include="websocket-sharp">
+ <HintPath>D:/Projects/Git-Repo/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Unity5.0.2f1/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
