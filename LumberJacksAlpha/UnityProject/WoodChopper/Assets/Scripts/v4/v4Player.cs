@@ -33,8 +33,10 @@ public class v4Player : UnityEngine.MonoBehaviour
 		Cell client = game_control.Get(game_control.grid.total_x-1,game_control.grid.total_z-1);
 		if ( PhotonNetwork.isMasterClient ) {
 			currentCell = netview.isMine ? host : client;
+			GetComponent<Renderer>().material.color = netview.isMine? Color.red : Color.blue;
 		} else {
 			currentCell = netview.isMine ? client : host;
+			GetComponent<Renderer>().material.color = netview.isMine? Color.blue : Color.red;
 		}
 		transform.position = currentCell.position;
 		nextCell = null;
