@@ -1,20 +1,32 @@
-# Ignore everything
-/*
-/*/
+# =============== #
+# Unity generated #
+# =============== #
+[Tt]emp/
+[Oo]bj/
+[Bb]uild
+[Ll]ibrary/
+sysinfo.txt
  
-# Inverse ignore some stuff
-!/Assets/
-!/ProjectSettings/
-!.gitignore
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+[Ee]xported[Oo]bj/
+/*.userprefs
+/*.csproj
+/*.pidb
+/*.suo
+/*.sln*
+/*.user
+/*.unityproj
+/*.booproj
  
-# OS Stuff
-.DS_Store
-.DS_Store?
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store*
 ._*
 .Spotlight-V100
 .Trashes
 Icon?
 ehthumbs.db
-Thumbs.db
-$RECYCLE.BIN/
-Desktop.ini
+[Tt]humbs.db
