@@ -135,9 +135,9 @@ public class v5GameController : MonoBehaviour
 		var c = cells[x,z];
 		if ( c.tree != null ) {
 			c.tree.Fall(dx,dz);
+			yield return new WaitForSeconds(domonoDelay);
+			if( PhotonNetwork.isMasterClient ) OnTreeFall(x+dx,x +dz,dx,dz);
 		} 
-		yield return new WaitForSeconds(domonoDelay);
-		if( PhotonNetwork.isMasterClient ) OnTreeFall(x+dx,x +dz,dx,dz);
 	}
 	public v5Player GetPlayer(int id ) {
 		foreach ( v5Player p in players ) {
