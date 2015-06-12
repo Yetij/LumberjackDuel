@@ -80,7 +80,11 @@ public class v5Player : MonoBehaviour
 			transform.rotation = netview.isMine ? q0_1 : q01;
 			fz = netview.isMine ? -1 : 1;
 		}
+		_lastFz = fz;
+		lastRotation = transform.rotation;
+
 		transform.position = currentCell.position;
+
 		netview.RPC("__RegMove", PhotonTargets.AllBuffered,
 		            new object[] { currentCell.x, currentCell.z } );
 
@@ -193,6 +197,10 @@ public class v5Player : MonoBehaviour
 				if ( isChopping) game_control.SetTreeBeingCut(currentCell.x + fx, currentCell.z + fz,true,netID);
 				_lastFx = fx;
 				_lastFz = fz;
+			}
+
+			if( Input.GetKey(KeyCode.A ) )  {
+				Debug.Log("mine = " + netID + " cell locked to " + currentCell.locked);
 			}
 		}else {
 			currentTime += Time.deltaTime;
