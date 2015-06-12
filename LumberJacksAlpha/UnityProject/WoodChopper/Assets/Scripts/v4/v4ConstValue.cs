@@ -1,20 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-[System.Serializable]
-public class Prefabs {
-	public string _GameController;
-	public string _Player;
-	public string _Tree;
-}
-[System.Serializable]
-public class ConnectionSettings {
-	public string _GameVersion;
-	public string _LobbyName;
-	public int _MaxPlayerPerRoom;
-	public LobbyType _LobbyType;
-}
-
 public class v4ConstValue : MonoBehaviour
 {
 	public Prefabs prefabNames;

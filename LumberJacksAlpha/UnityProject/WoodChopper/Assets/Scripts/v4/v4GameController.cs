@@ -2,77 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class Grid {
-	public int total_x, total_z;
-	public float offset_x, offset_z;
-	public Vector3 root;
-
-	Vector3 Locate ( int x, int z ) {
-		return new Vector3(x*offset_x + offset_x/2 + root.x, root.y, z * offset_z + offset_z/2 + root.z);
-	}
-	public Cell[,] GenCells () {
-		Debug.Log("GenCell total_x="+total_x+" total_z"+ total_z);
-		Cell[,] r = new Cell[total_x,total_z];
-		for(int _z = 0; _z < total_z; _z ++ ) {
-			for ( int _x = 0; _x < total_x ; _x ++ ) {
-				Cell c = new Cell();
-				c.x = _x;
-				c.z = _z;
-				c.position = Locate(_x,_z);
-				c.canStepOn = true;
-				c.canGrowTree = true;
-				c.locked = -1;
-				if ( _x == 0 & _z == 0 ) Debug.Log("0-0 = " + c.position);
-				r[_x,_z] = c;
-			}
-		}
-		for(int _z = 0; _z < total_z; _z ++ ) {
-			for ( int _x = 0; _x < total_x ; _x ++ ) {
-				var c = r[_x,_z];
-				c.up = _z + 1 < total_z? r[_x,_z+1] : null;
-				c.down = _z - 1 >= 0 ? r[_x,_z-1] : null;
-				c.right = _x + 1 < total_x ? r[_x+1,_z] : null;
-				c.left = _x - 1 >= 0 ? r[_x-1, _z] : null;
-			}
-		}
-		return r;
-	}
-}
-
-[System.Serializable]
-public class Cell {
-	public int locked;
-	public bool canStepOn,canGrowTree;
-	public int x,z;
-	public Vector3 position;
-	public Cell left,right,up,down;
-	public Cell Get(int x,int z ) {
-		if ( x > 0 ) return right;
-		if ( x < 0 ) return left;
-		if ( z > 0 ) return up;
-		if ( z < 0 ) return down;
-		return this;
-	}
-}
-
-public class RefSystem {
-	Dictionary<string, MonoBehaviour > refs;
-	public RefSystem (int cap ) { 
-		refs = new Dictionary<string, MonoBehaviour >(cap);
-	}
-	public RefSystem () : this(4) {}
-
-	public void Add (string s, MonoBehaviour mono ){
-		refs.Add(s,mono);
-	}
-	public T GetRef<T> (string s ) where T: MonoBehaviour {
-		MonoBehaviour m = null;
-		refs.TryGetValue(s,out m);
-		return (T)m;
-	}
-}
-
 [RequireComponent(typeof(PhotonView))]
 public class v4GameController : MonoBehaviour
 {
@@ -87,14 +16,30 @@ public class v4GameController : MonoBehaviour
 		}
 	}
 
-	public RefSystem refs;
 	public Grid grid;
-
+	public event OnReadyHandle OnReady;
 	Cell[,] cells;
-	PhotonView netview;
+	v4Pool pool;
+	public PhotonView netview;
+	
+	List<v4Player> players;
 
 	public Cell Get(int x,int z ) {
 		return cells[x,z];
+	}
+
+	public bool ValidIndex(int x,int z ) {
+		return x >= 0 & x < grid.total_x & z >=0 & z < grid.total_z;
+	}
+
+	[RPC] public void SetTreeBeingChopped (int x,int z, bool isBeingChopped ) {
+		if( ValidIndex(x,z) ) {
+			v4Tree t = Get(x,z).tree;
+			if ( t != null ) {
+				if ( isBeingChopped ) t.OnBeingCutStart();
+				else t.OnBeingCutEnd();
+			}
+		}
 	}
 
 	void Awake () {
@@ -103,18 +48,45 @@ public class v4GameController : MonoBehaviour
 			Destroy(l[l.Length -1]);
 			return;
 		}
-		refs = new RefSystem();
 		netview = GetComponent<PhotonView>();
 	}
 
 	void Start () {
 		cells = grid.GenCells();
+		pool = v4Pool.Instance;
+		pool.Initialize();
+		players = new List<v4Player>(2);
 		if ( PhotonNetwork.isMasterClient) netview.RPC("OnGameControllerInstantiated",PhotonTargets.AllBufferedViaServer);
 	}
 
+	void Update () {
+		if ( !gameStarted ) return;
+	}
+
 	[RPC] void OnGameControllerInstantiated () {
-		Debug.Log((PhotonNetwork.isMasterClient? "Master here !! : " : "Slave here !! : ")+" OnGameControllerInstantiated"); 
 		PhotonNetwork.Instantiate(v4ConstValue.Instance.prefabNames._Player,new Vector3(0,0,0),Quaternion.identity,0);
+	}
+
+
+	[RPC] void OnPlayerReady () {
+		if (PhotonNetwork.isMasterClient ) {
+			if ( PhotonNetwork.room.playerCount == PhotonNetwork.room.maxPlayers  ) {
+				var l = GameObject.FindObjectsOfType(typeof(v4Player) );
+				foreach ( Object g in l ) {
+					players.Add(((GameObject) g).GetComponent<v4Player>());
+				}
+				/* >> gen starting map */
+				StartDaGame();
+			}
+		}
+	}
+
+	bool gameStarted=false;
+	void StartDaGame () {
+		gameStarted = true;
+		if( OnReady != null ) {
+			OnReady();
+		}
 	}
 
 	public void UpdateCellProp ( int x,int z, bool canGrowTree, bool canStepOn) {

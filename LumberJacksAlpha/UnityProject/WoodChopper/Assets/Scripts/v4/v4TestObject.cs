@@ -1,27 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class v4TestObject : MonoBehaviour {
+public delegate void OnHandle ();
 
-	PhotonView netview;
-	float speed = 5;
-	
-	void Start () {
-		netview = GetComponent<PhotonView>();
-		Debug.Log("local player id = " + PhotonNetwork.player.ID);
-		Debug.Log("netview owner id = " + netview.ownerId);
-		Debug.Log("netview netview id = " + netview.viewID);
+public class v4TestObject : MonoBehaviour {
+	event OnHandle onHandle;
+
+	void OnGUI () {
+		if ( GUILayout.Button("add event ") ) {
+			onHandle += f;
+		}
+		if ( GUILayout.Button("remove event ") ) {
+			onHandle -= f;
+		}
 	}
-	// Update is called once per frame
+
+	void f () {
+		Debug.Log("OnHandle not null");
+	}
 	void Update () {
-		//if ( netview.isMine ) {
-			int current_x = (int)Input.GetAxisRaw("Horizontal");
-			int current_z = current_x != 0 ? 0 : (int)Input.GetAxisRaw("Vertical");
-			transform.position += new Vector3(current_x,0,current_z).normalized*speed*Time.deltaTime;
-		//}
+		if ( onHandle == null ) return;
+		onHandle();
 	}
-	void OnPhotonInstantiate  () {
-		Debug.Log("v4TestObject OnPhotonInstantiate" );
-	}
-	
 }

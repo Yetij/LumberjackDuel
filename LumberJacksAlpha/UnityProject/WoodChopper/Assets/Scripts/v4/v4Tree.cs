@@ -3,15 +3,18 @@ using System.Collections;
 
 public class v4Tree : MonoBehaviour
 {
-	float STOP_CUT_WAIT_TIME = 0.15f;
-	IEnumerator StopCut;
+	[HideInInspector] public Cell cell;
+	
+	public bool isBeingCut;
 
-	public bool needCutAnimation;
-	public bool trigger2;
+	public bool isFalling;
 
-	void OnBeingCut () {}
+	public void OnBeingCutStart() {
+	}
+	public void OnBeingCutEnd() {
+	}
 
-	void OnStopBeingCut () {}
-
+	public void Reset() {
+	}
 }
 

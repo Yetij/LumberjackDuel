@@ -47,4 +47,17 @@ MonoBehaviour:
   - CellProp1
   - CellProp2
   - CellProp3
+  - OnPlayerReady
+  - SetTreeBeingChopped
+  - __RegMove
+  - __UnRegMove
+  - __OnPlReady
+  - __CellTree
+  - __MesToAll
+  - __OnGameStart
+  - __SyncTr
+  - __TreeCut
+  - __CellReTree
+  - __TreeF
+  - __TreeToCell
   DisableAutoOpenWizard: 1
