@@ -74,9 +74,11 @@ public class v5Player : MonoBehaviour
 		if ( PhotonNetwork.isMasterClient ) {
 			currentCell = netview.isMine ? host : client;
 			transform.rotation = netview.isMine ? q01 : q0_1;
+			fz = netview.isMine ? 1 : -1;
 		} else {
 			currentCell = netview.isMine ? client : host;
 			transform.rotation = netview.isMine ? q0_1 : q01;
+			fz = netview.isMine ? -1 : 1;
 		}
 		transform.position = currentCell.position;
 		netview.RPC("__RegMove", PhotonTargets.AllBuffered,

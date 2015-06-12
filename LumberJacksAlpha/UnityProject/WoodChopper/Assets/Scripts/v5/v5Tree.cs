@@ -9,22 +9,30 @@ public class v5Tree : MonoBehaviour
 	[SerializeField] float max_life_time;
 	float life_time;
 	float hp;
+
+	int _updateTrigger = 0;
+	int _playGrowAnimationTrigger = 0;
+	bool isFalling;
+	int _growProcess;
 	
+	Animator animator;
+
 	readonly int isBeingChoppedHash = Animator.StringToHash("isBeingChopped");
 	readonly int falling = Animator.StringToHash("falling");
 
 	public void Reset() {
 		isFalling = false;
+		_growProcess = 0;
+
 		life_time = max_life_time;
 		hp = 100;
-		_growProcess = 0;
 		if ( playerChopping == null ) playerChopping = new List<v5Player>();
 		playerChopping.Clear();
+
 		_updateTrigger = 0;
 		_playGrowAnimationTrigger = 0;
 	}
 
-	Animator animator;
 	
 	void Awake() {
 		animator = GetComponent<Animator>();
@@ -44,9 +52,7 @@ public class v5Tree : MonoBehaviour
 		_growProcess = p;
 	}
 
-	int _updateTrigger = 0;
-	int _playGrowAnimationTrigger = 0;
-	int _growProcess;
+
 
 	int GrowProcess ( float procent ) {
 		if ( procent > 0.8f ) return 0;
@@ -59,7 +65,7 @@ public class v5Tree : MonoBehaviour
 		if ( isFalling ) return;
 		if ( playerChopping.Count > 0 ) {
 			foreach ( var p in playerChopping ) {
-				hp -= p.parameters.dmgPerSec;
+				hp -= p.parameters.dmgPerSec*Time.deltaTime;
 				if ( hp <= 0 ) {
 					v5GameController.Instance.OnTreeFall(cell.x,cell.z,p.fx,p.fz);
 					break;
@@ -170,7 +176,6 @@ public class v5Tree : MonoBehaviour
 	}
 	#endregion
 
-	bool isFalling;
 	public void Fall (int dx, int dz ) {
 		if ( isFalling ) return;
 		isFalling = true;

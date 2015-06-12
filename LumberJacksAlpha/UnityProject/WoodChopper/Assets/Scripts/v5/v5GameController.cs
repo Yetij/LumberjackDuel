@@ -136,7 +136,7 @@ public class v5GameController : MonoBehaviour
 		if ( c.tree != null ) {
 			c.tree.Fall(dx,dz);
 			yield return new WaitForSeconds(domonoDelay);
-			if( PhotonNetwork.isMasterClient ) OnTreeFall(x+dx,x +dz,dx,dz);
+			if( PhotonNetwork.isMasterClient ) OnTreeFall(x+dx,z +dz,dx,dz);
 		} 
 	}
 	public v5Player GetPlayer(int id ) {
@@ -150,7 +150,7 @@ public class v5GameController : MonoBehaviour
 		netview.RPC("__SyncTr", PhotonTargets.Others,new object[]{x,z,p });
 	}
 	[RPC] void __SyncTr(int x, int z, int p) {
-		if ( cells[x,z].tree == null ) throw new UnityException("Out sync ??");
+		if ( cells[x,z].tree == null ) Debug.Log("Out sync ?? x="+x+ " z="+z);
 		else cells[x,z].tree.SyncGrowProcess(p);
 	}
 
