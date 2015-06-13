@@ -2080,10 +2080,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d24894ebba9c37a45a9106ff5b75fd7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentCell:
+    locked: 0
+    x: 0
+    z: 0
+    position: {x: 0, y: 0, z: 0}
+    tree: {fileID: 0}
   predictStrength: .200000003
   parameters:
     moveSpeed: 5
     rotateAngleSpeed: 720
+    dmgPerSec: 150
+  fx: 0
+  fz: 0
   netID: 0
 --- !u!114 &11447204
 MonoBehaviour:

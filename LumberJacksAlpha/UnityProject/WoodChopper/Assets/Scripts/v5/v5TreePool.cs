@@ -30,8 +30,7 @@ public class v5TreePool : MonoBehaviour
 		}
 	}
 
-	void Start () {
-		Debug.Log("tree pool start");
+	void Awake () {
 		Initialize();
 	}
 

@@ -11,7 +11,7 @@ public class Parameters {
 [RequireComponent(typeof(PhotonView))]
 public class v5Player : MonoBehaviour
 {
-	[HideInInspector] public v5Cell currentCell;
+	v5Cell currentCell;
 	v5Cell nextCell;
 	
 	public float predictStrength=0.2f;
@@ -41,7 +41,7 @@ public class v5Player : MonoBehaviour
 
 	bool isChopping=false,isKicking=false, isMoving= false;
 
-	public int fx, fz;
+	[HideInInspector] public int fx, fz;
 	public int netID;
 
 	readonly Quaternion q01 = Quaternion.Euler(0,0,0);
@@ -81,7 +81,6 @@ public class v5Player : MonoBehaviour
 			fz = netview.isMine ? -1 : 1;
 		}
 		_lastFz = fz;
-		lastRotation = transform.rotation;
 
 		transform.position = currentCell.position;
 
@@ -111,21 +110,23 @@ public class v5Player : MonoBehaviour
 		var next = currentCell.Get(dx,dz);
 		if ( next == null ) return;
 
-		var betweCell = false;
+		var betweenCell = false;
 		if ( nextCell != null ) {
 			var p = transform.position;
-			betweCell = (p != currentCell.position & p != nextCell.position);
+			betweenCell = (p != currentCell.position & p != nextCell.position);
 		}
 
-		if ( !betweCell & next.locked != -1 & next.locked != netID ) {
-			nextCell = null;
-			transform.position = currentCell.position;
+		if (  next.locked != -1 & next.locked != netID ) {
+			if( (next != nextCell & !betweenCell) | (next == nextCell) ) {
+				nextCell = null;
+				transform.position = currentCell.position;
+			}
 			return;
 		} 
 
 		if ( next == nextCell ) return;
 		
-		if ( nextCell != null & betweCell) {
+		if ( nextCell != null & betweenCell) {
 			if ( currentCell.Get(-dx,-dz) == nextCell ) {
 				next = currentCell;
 				currentCell = nextCell;

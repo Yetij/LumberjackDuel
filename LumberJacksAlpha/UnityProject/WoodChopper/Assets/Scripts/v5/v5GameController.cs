@@ -20,6 +20,8 @@ public class v5GameController : MonoBehaviour
 	
 	public v5Grid grid;
 	public int startTreeNb=5;
+	public int treeGenMin=1;
+	public int treeGenMax=4;
 	public float genTreeInterval=1f;
 	v5Cell[,] cells;
 	PhotonView netview;
@@ -63,7 +65,7 @@ public class v5GameController : MonoBehaviour
 		while ( !gameStarted ) yield return null;
 		while ( true ) {
 			yield return new WaitForSeconds(genTreeInterval);
-			_GenTree(4);
+			_GenTree(Random.Range(treeGenMin,treeGenMax+1));
 		}
 
 	}
@@ -99,12 +101,13 @@ public class v5GameController : MonoBehaviour
 	}
 
 	public void OnTreeAttachToCell ( int x,int z ) {
-		netview.RPC("__TreeToCell",PhotonTargets.Others, new object[]{x,z});
+		netview.RPC("__TreeToCell",PhotonTargets.OthersBuffered, new object[]{x,z});
 	}	
 
 	[RPC] void __TreeToCell(int x,int z ) {
 		var c = cells[x,z];
-		pool.Get().AttachToCell(c);
+		if ( c.tree != null ) Debug.Log("cant place tree, there is already one, c.locked="+ c.locked);
+		else pool.Get().AttachToCell(c);
 	}
 
 	void _GenTree(int tree_nb) {
@@ -112,7 +115,8 @@ public class v5GameController : MonoBehaviour
 		for(int i=0; i < tree_nb ; i++ ) {
 			v5Cell c = free[Random.Range(0,free.Count)];
 			if ( c.locked == -1 ) {
-				pool.Get().AttachToCell(c);
+				if ( c.tree != null ) Debug.Log("cant place tree, there is already one, c.locked="+ c.locked);
+				else pool.Get().AttachToCell(c);
 			}
 		}
 	}
@@ -150,7 +154,7 @@ public class v5GameController : MonoBehaviour
 		netview.RPC("__SyncTr", PhotonTargets.Others,new object[]{x,z,p });
 	}
 	[RPC] void __SyncTr(int x, int z, int p) {
-		if ( cells[x,z].tree == null ) Debug.Log("Out sync ?? x="+x+ " z="+z);
+		if ( cells[x,z].tree == null ) throw new UnityException("Out sync ?? x="+x+ " z="+z);
 		else cells[x,z].tree.SyncGrowProcess(p);
 	}
 
@@ -163,6 +167,7 @@ public class v5GameController : MonoBehaviour
 				Gizmos.DrawSphere(new Vector3(j* grid.offset_x+grid.root.x, 0, i*grid.offset_z+grid.root.z ),0.05f);
 			}
 		}
+	
 	}
 	#endif
 }
