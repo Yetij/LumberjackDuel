@@ -86,6 +86,30 @@ public class v5GameController : MonoBehaviour
 		}
 	}
 
+	Dictionary<int, Vec2Int> log = new Dictionary<int,Vec2Int >();
+
+	public void RegMove (int id, int x, int z  ){
+		Vec2Int k;
+		if ( !log.TryGetValue(id,out k) ) {
+			Vec2Int v = new Vec2Int();
+			v.x = x;
+			v.z = z;
+			log.Add(id,v);
+		} else {
+			k.x = x;
+			k.z = z;
+		}
+	}
+
+	public Vec2Int GetLastReg (int id ) {
+		Vec2Int k;
+		if ( !log.TryGetValue(id,out k) ) {
+			throw new UnityException("not found with id="+id);
+		} else {
+			return k;
+		}
+	}
+
 	[RPC] void __OnGameStart(){ 
 		var l = GameObject.FindObjectsOfType(typeof(v5Player)) as v5Player[];
 		players.AddRange(l);
