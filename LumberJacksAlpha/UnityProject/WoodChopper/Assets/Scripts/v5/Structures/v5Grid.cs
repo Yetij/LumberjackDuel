@@ -19,6 +19,7 @@ public class v5Grid {
 				c.position = Locate(_x,_z);
 				c.locked = -1;
 				c.tree = null;
+				c.lock_time = double.MaxValue;
 				r[_x,_z] = c;
 			}
 		}
@@ -42,6 +43,7 @@ public class v5Grid {
 [System.Serializable]
 public class v5Cell {
 	public int locked;
+	public double lock_time;
 	public int x,z;
 	public Vector3 position;
 	public v5Cell left,right,up,down;

@@ -159,6 +159,7 @@ public class v5Tree : MonoBehaviour
 
 		cell.tree = null;
 		cell.locked = -1;
+		cell.lock_time = double.MaxValue;
 
 		game_controller.free.Add(cell);
 		cell = null;

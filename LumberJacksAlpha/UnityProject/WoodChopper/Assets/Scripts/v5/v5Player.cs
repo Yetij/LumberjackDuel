@@ -85,7 +85,7 @@ public class v5Player : MonoBehaviour
 		transform.position = currentCell.position;
 
 		netview.RPC("__RegMove", PhotonTargets.AllBuffered,
-		            new object[] { currentCell.x, currentCell.z } );
+		            new object[] { currentCell.x, currentCell.z , PhotonNetwork.time } );
 
 		nextCell = null;
 		game_control.OnPlayerReady();
@@ -137,7 +137,7 @@ public class v5Player : MonoBehaviour
 		_distance = (nextCell.position - currentCell.position).magnitude;
 		_path = 0;
 		netview.RPC("__RegMove", PhotonTargets.AllBuffered,
-		            new object[] { nextCell.x, nextCell.z } );
+		            new object[] { nextCell.x, nextCell.z , PhotonNetwork.time } );
 	}
 
 	void _UpdateMove () {
@@ -168,11 +168,14 @@ public class v5Player : MonoBehaviour
 		if ( c.locked == netID ) c.locked = -1;
 	}
 
-	[RPC] void __RegMove(int x,int z ) {
+	[RPC] void __RegMove(int x,int z ,double time) {
 		var c = v5GameController.Instance.Get(x,z);
-		if ( c.locked == -1 ) {
-			c.locked = netID;
-			game_control.RegMove(netID, x, z);
+		if ( c.locked != -2 ) {
+			if ( time < c.lock_time ) {
+				c.lock_time = time;
+				c.locked = netID;
+			}
+			v5GameController.Instance.RegMove(netID, x, z);
 		}
 	}
 
@@ -205,7 +208,8 @@ public class v5Player : MonoBehaviour
 
 			if ( Input.GetKey(KeyCode.Z)) {
 				var  l = game_control.GetLastReg(netID);
-				Debug.Log("last move reg = " + l.x + ", " + l.z );
+				Debug.Log("last move reg = " + l.x + ", " + l.z );	
+				Debug.Log("cell locked = " + game_control.Get(l.x,l.z).locked );			
 			}
 		} else {
 			currentTime += Time.deltaTime;
