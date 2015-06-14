@@ -165,7 +165,7 @@ public class v5Player : MonoBehaviour
 
 	[RPC] void __UnRegMove (int x,int z ) {
 		var c = game_control.Get(x,z);
-		if ( c.locked == netID ) c.locked = -1;
+		if ( c.locked == netID ) c.Free();
 	}
 
 	[RPC] void __RegMove(int x,int z ,double time) {
@@ -174,8 +174,8 @@ public class v5Player : MonoBehaviour
 			if ( time < c.lock_time ) {
 				c.lock_time = time;
 				c.locked = netID;
+				v5GameController.Instance.RegMove(netID, x, z);
 			}
-			v5GameController.Instance.RegMove(netID, x, z);
 		}
 	}
 
@@ -209,7 +209,7 @@ public class v5Player : MonoBehaviour
 			if ( Input.GetKey(KeyCode.Z)) {
 				var  l = game_control.GetLastReg(netID);
 				Debug.Log("last move reg = " + l.x + ", " + l.z );	
-				Debug.Log("cell locked = " + game_control.Get(l.x,l.z).locked );			
+				Debug.Log("mine=" + netID + " cell locked=" + game_control.Get(l.x,l.z).locked + " time="+game_control.Get(l.x,l.z).lock_time );			
 			}
 		} else {
 			currentTime += Time.deltaTime;

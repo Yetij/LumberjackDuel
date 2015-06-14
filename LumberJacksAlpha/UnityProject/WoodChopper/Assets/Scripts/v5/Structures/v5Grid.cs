@@ -17,9 +17,7 @@ public class v5Grid {
 				c.x = _x;
 				c.z = _z;
 				c.position = Locate(_x,_z);
-				c.locked = -1;
-				c.tree = null;
-				c.lock_time = double.MaxValue;
+				c.Free();
 				r[_x,_z] = c;
 			}
 		}
@@ -48,7 +46,12 @@ public class v5Cell {
 	public Vector3 position;
 	public v5Cell left,right,up,down;
 	public v5Tree tree;
-	
+
+	public void Free() {
+		locked = -1;
+		tree = null;
+		lock_time = double.MaxValue;
+	}
 	public v5Cell Get(int x,int z ) {
 		if ( x > 0 ) return right;
 		if ( x < 0 ) return left;
