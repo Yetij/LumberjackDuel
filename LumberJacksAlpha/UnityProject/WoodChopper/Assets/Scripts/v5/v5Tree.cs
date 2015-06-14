@@ -67,7 +67,7 @@ public class v5Tree : MonoBehaviour
 			foreach ( var p in playerChopping ) {
 				hp -= p.parameters.dmgPerSec*Time.deltaTime;
 				if ( hp <= 0 ) {
-					Debug.Log("tree chopped down, falling with dir="+p.fx+","+p.fz);
+					//Debug.Log("tree chopped down, falling with dir="+p.fx+","+p.fz);
 					v5GameController.Instance.OnTreeFall(cell.x,cell.z,p.fx,p.fz);
 					break;
 				}

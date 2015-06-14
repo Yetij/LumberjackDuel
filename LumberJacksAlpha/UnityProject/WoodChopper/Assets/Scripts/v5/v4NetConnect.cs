@@ -16,12 +16,10 @@ public class v4NetConnect : MonoBehaviour
 	{
 		deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
 	}
+	string text="";
 
 	void OnGUI () {
 		GUILayout.Label(m,GUILayout.Width(Screen.width));
-		float msec = deltaTime * 1000.0f;
-		float fps = 1.0f / deltaTime;
-		string text = string.Format("{0:0.0} ms\n({1:0.} fps)", msec, fps);
 		GUILayout.Label(text,GUILayout.Width(Screen.width/2));
 	}
 
@@ -30,6 +28,16 @@ public class v4NetConnect : MonoBehaviour
 		_const = v5Const.Instance;
 		PhotonNetwork.autoJoinLobby = false;    
 		PhotonNetwork.ConnectUsingSettings(_const.settings._GameVersion );
+		StartCoroutine(_Calculate() );
+	}
+
+	IEnumerator _Calculate () {
+		while ( true ) {
+			float msec = deltaTime * 1000.0f;
+			float fps = 1.0f / deltaTime;
+		 	text = string.Format("{0:0.0} ms\n({1:0.} fps)", msec, fps);
+			yield return new WaitForSeconds(1);
+		}
 	}
 	
 	void OnJoinedLobby  () {

@@ -200,10 +200,10 @@ public class v5Player : MonoBehaviour
 				_lastFz = fz;
 			}
 
-			if( Input.GetKey(KeyCode.A ) )  {
-				Debug.Log("mine = " + netID + " cell locked to " + currentCell.locked);
+			if ( Input.GetKey(KeyCode.Z)) {
+				Debug.Log("current cell locked = " + currentCell.locked );
 			}
-		}else {
+		} else {
 			currentTime += Time.deltaTime;
 			transform.position = Vector3.Lerp(positionAtLastPacket, predictedPosition, (float)(currentTime / timeToReachGoal));
 
