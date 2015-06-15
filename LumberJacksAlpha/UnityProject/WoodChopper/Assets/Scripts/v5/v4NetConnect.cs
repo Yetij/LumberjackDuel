@@ -15,12 +15,18 @@ public class v4NetConnect : MonoBehaviour
 	void Update()
 	{
 		deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+		var t = PhotonNetwork.time;
+		dif = t-last == 0? dif : t -last;
+		last = t;
 	}
 	string text="";
-
+	double dif=0.0;
+	double last=0.0;
 	void OnGUI () {
 		GUILayout.Label(m,GUILayout.Width(Screen.width));
 		GUILayout.Label(text,GUILayout.Width(Screen.width/2));
+		GUILayout.Label(last.ToString(),GUILayout.Width(Screen.width/2));
+		GUILayout.Label("diff ="+ dif.ToString(),GUILayout.Width(Screen.width/2));
 	}
 
 	public void Start()

@@ -175,6 +175,27 @@ public class v5Player : MonoBehaviour
 				c.lock_time = time;
 				c.locked = netID;
 				v5GameController.Instance.RegMove(netID, x, z);
+				return;
+			}
+			if ( time == c.lock_time ) { 
+				/**/													
+				/* ONLY WORKS IF THERE IS ONE HOST - ONE CLIENT */
+				/**/
+				Debug.Log("time == c.locked_time, client has privilege");
+				int localPlayer_netid = PhotonNetwork.player.ID;
+				if ( PhotonNetwork.isMasterClient ) {
+					if  (netID == localPlayer_netid ) {
+						/* host machine - host player */
+					} else {
+						/* host machine - client player */
+					}
+				} else {
+					if  (netID == localPlayer_netid ) {
+						/* client machine - client player */
+					} else {
+						/* client machine - host player */
+					}
+				}
 			}
 		}
 	}
@@ -208,7 +229,6 @@ public class v5Player : MonoBehaviour
 
 			if ( Input.GetKey(KeyCode.Z)) {
 				var  l = game_control.GetLastReg(netID);
-				Debug.Log("last move reg = " + l.x + ", " + l.z );	
 				Debug.Log("mine=" + netID + " cell locked=" + game_control.Get(l.x,l.z).locked + " time="+game_control.Get(l.x,l.z).lock_time );			
 			}
 		} else {
