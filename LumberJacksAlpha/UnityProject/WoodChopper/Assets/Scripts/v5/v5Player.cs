@@ -177,23 +177,30 @@ public class v5Player : MonoBehaviour
 				v5GameController.Instance.RegMove(netID, x, z);
 				return;
 			}
-			if ( time == c.lock_time ) { 
+			else if ( time == c.lock_time ) { 
 				/**/													
 				/* ONLY WORKS IF THERE IS ONE HOST - ONE CLIENT */
 				/**/
-				Debug.Log("time == c.locked_time, client has privilege");
 				int localPlayer_netid = PhotonNetwork.player.ID;
 				if ( PhotonNetwork.isMasterClient ) {
 					if  (netID == localPlayer_netid ) {
 						/* host machine - host player */
+						return;
 					} else {
 						/* host machine - client player */
+						c.lock_time = time;
+						c.locked = netID;
+						v5GameController.Instance.RegMove(netID, x, z);
 					}
 				} else {
 					if  (netID == localPlayer_netid ) {
 						/* client machine - client player */
+						c.lock_time = time;
+						c.locked = netID;
+						v5GameController.Instance.RegMove(netID, x, z);
 					} else {
 						/* client machine - host player */
+						return;
 					}
 				}
 			}
