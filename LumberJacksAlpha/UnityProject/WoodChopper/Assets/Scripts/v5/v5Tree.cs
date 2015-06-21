@@ -52,8 +52,6 @@ public class v5Tree : MonoBehaviour
 		_growProcess = p;
 	}
 
-
-
 	int GrowProcess ( float procent ) {
 		if ( procent > 0.8f ) return 0;
 		if ( procent > 0.55f ) return 1;
