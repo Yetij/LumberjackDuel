@@ -137,7 +137,7 @@ public class v5GameController : MonoBehaviour
 			}
 			else pool.Get().AttachToCell(c,t);
 		} else {
-			if ( t <= c.lock_time ) {
+			if ( t < c.lock_time ) {
 				pool.Get().AttachToCell(c,t);
 			}
 		}
@@ -162,6 +162,11 @@ public class v5GameController : MonoBehaviour
 	}
 	public void OnTreeFall (int x, int z, int dx, int dz ) {
 		if ( !ValidIndex(x,z)) return;
+		foreach ( v5Player p  in players ) {
+			if ( p.isOnCell(x,z) ) {
+				p.OnTreeFallOn();
+			}
+		}
 		netview.RPC("__TreeF",PhotonTargets.All, new object[]{x,z,dx,dz, xTime.Instance.time});
 	}
 	public float domonoDelay=0.4f;

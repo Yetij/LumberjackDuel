@@ -15,7 +15,7 @@ public class v5Player : MonoBehaviour
 	v5Cell nextCell;
 	
 	public float predictStrength=0.2f;
-	
+	public int hp=2;
 	public Parameters parameters;
 
 	v5GameController game_control;
@@ -62,6 +62,13 @@ public class v5Player : MonoBehaviour
 		if ( fz == -1 ) return q0_1;
 		throw new UnityException("no shit, this cant be happening ..");
 	}
+
+	public void OnTreeFallOn () {
+		netview.RPC("__LostHP",PhotonTargets.All);
+	}
+	void __LostHp(){
+		hp --;
+	}
 	void Start () {
 		netview = GetComponent<PhotonView>();
 		netID = netview.owner.ID;
@@ -94,7 +101,9 @@ public class v5Player : MonoBehaviour
 	public void OnGameStart () {
 		gameStarted = true;
 	}
-
+	public bool isOnCell (int x, int z ) {
+		return currentCell.x == x & currentCell.z == z;
+	}
 	void _UpdateMoveState(int dx,int dz) {
 		if ( dx == 0 & dz == 0 ) return;
 		fx = dx;
