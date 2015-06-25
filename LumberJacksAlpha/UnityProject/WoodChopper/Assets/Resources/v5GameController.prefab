@@ -66,15 +66,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid:
-    total_x: 5
-    total_z: 5
+    total_x: 10
+    total_z: 10
     offset_x: 1
     offset_z: 1
     root: {x: -5, y: 0, z: -5}
   startTreeNb: 0
   treeGenMin: 1
-  treeGenMax: 4
-  genTreeInterval: 1
+  treeGenMax: 3
+  genTreeInterval: 1.5
   free: []
   players: []
   domonoDelay: .400000006
