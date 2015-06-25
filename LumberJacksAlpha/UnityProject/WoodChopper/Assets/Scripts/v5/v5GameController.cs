@@ -162,11 +162,6 @@ public class v5GameController : MonoBehaviour
 	}
 	public void OnTreeFall (int x, int z, int dx, int dz ) {
 		if ( !ValidIndex(x,z)) return;
-		foreach ( v5Player p  in players ) {
-			if ( p.isOnCell(x,z) ) {
-				p.OnTreeFallOn();
-			}
-		}
 		netview.RPC("__TreeF",PhotonTargets.All, new object[]{x,z,dx,dz, xTime.Instance.time});
 	}
 	public float domonoDelay=0.4f;
@@ -175,7 +170,14 @@ public class v5GameController : MonoBehaviour
 		if ( c.tree != null ) {
 			c.tree.Fall(dx,dz,t);
 			yield return new WaitForSeconds(domonoDelay);
-			if( PhotonNetwork.isMasterClient ) OnTreeFall(x+dx,z +dz,dx,dz);
+			if( PhotonNetwork.isMasterClient ) {
+				foreach ( v5Player p  in players ) {
+					if ( p.isOnCell(x,z) ) {
+						p.OnTreeFallOn();
+					}
+				}
+				OnTreeFall(x+dx,z +dz,dx,dz);
+			}
 		} 
 	}
 	public v5Player GetPlayer(int id ) {
