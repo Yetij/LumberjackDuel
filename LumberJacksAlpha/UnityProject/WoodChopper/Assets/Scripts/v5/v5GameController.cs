@@ -113,7 +113,7 @@ public class v5GameController : MonoBehaviour
 		netview.RPC("__EndGame",PhotonTargets.All);
 	}
 
-	IEnumerator __EndGame () {
+	[RPC] IEnumerator __EndGame () {
 		gameStarted = false;
 		foreach ( var p in players ) {
 			p.OnGameEnd();
