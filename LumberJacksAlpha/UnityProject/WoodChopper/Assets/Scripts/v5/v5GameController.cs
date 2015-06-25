@@ -12,7 +12,7 @@ public class v5GameController : MonoBehaviour
 		get {
 			if ( _instance == null ) {
 				_instance = GameObject.FindObjectOfType(typeof(v5GameController)) as v5GameController;
-				if ( _instance == null ) throw new UnityException("Object of type v5GameController not found");
+				//if ( _instance == null ) throw new UnityException("Object of type v5GameController not found");
 			}
 			return _instance;
 		}
