@@ -85,7 +85,7 @@ public class v5Player : MonoBehaviour
 		transform.position = currentCell.position;
 
 		netview.RPC("__RegMove", PhotonTargets.AllBuffered,
-		            new object[] { currentCell.x, currentCell.z , PhotonNetwork.time } );
+		            new object[] { currentCell.x, currentCell.z , xTime.Instance.time } );
 
 		nextCell = null;
 		game_control.OnPlayerReady();
@@ -137,7 +137,7 @@ public class v5Player : MonoBehaviour
 		_distance = (nextCell.position - currentCell.position).magnitude;
 		_path = 0;
 		netview.RPC("__RegMove", PhotonTargets.AllBuffered,
-		            new object[] { nextCell.x, nextCell.z , PhotonNetwork.time } );
+		            new object[] { nextCell.x, nextCell.z , xTime.Instance.time } );
 	}
 
 	void _UpdateMove () {

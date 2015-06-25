@@ -25,7 +25,7 @@ RenderSettings:
   m_AmbientGroundColor: {r: .0469999984, g: .0430000015, b: .0350000001, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: .5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -179,9 +179,28 @@ Prefab:
       propertyPath: prefabNames._Tree
       value: v5Tree
       objectReference: {fileID: 0}
+    - target: {fileID: 163840, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &942061037 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 163840, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
+  m_PrefabInternal: {fileID: 942061036}
+--- !u!114 &942061038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 942061037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 653e54775ac14c7478cae6e2022be977, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1465469497
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,6 +281,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114178, guid: 816db28a7d7ba7040b0f1d7ec935dd47, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 816db28a7d7ba7040b0f1d7ec935dd47, type: 2}
   m_IsPrefabParent: 0
@@ -302,6 +325,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 466660, guid: 6a48e70a1c8c1c5449f0baaabed14146, type: 2}
       propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 133942, guid: 6a48e70a1c8c1c5449f0baaabed14146, type: 2}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

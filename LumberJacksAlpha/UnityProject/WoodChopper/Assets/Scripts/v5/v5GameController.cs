@@ -81,7 +81,7 @@ public class v5GameController : MonoBehaviour
 				netview.RPC("__MesToAll",PhotonTargets.All,new object[] { "Loading...." } );
 				//_GenTree(startTreeNb);
 				netview.RPC("__MesToAll",PhotonTargets.All,new object[] { "Resources are loaded" } );
-				netview.RPC("__OnGameStart",PhotonTargets.AllBufferedViaServer);
+				netview.RPC("__OnGameStart",PhotonTargets.AllViaServer);
 			}
 		}
 	}
@@ -117,6 +117,7 @@ public class v5GameController : MonoBehaviour
 			p.OnGameStart();
 		}
 		gameStarted = true;
+		xTime.Instance.OnStart();
 		Debug.Log("Game starts !");
 	}
 
@@ -125,23 +126,28 @@ public class v5GameController : MonoBehaviour
 	}
 
 	public void OnTreeAttachToCell ( int x,int z ) {
-		netview.RPC("__TreeToCell",PhotonTargets.OthersBuffered, new object[]{x,z});
+		netview.RPC("__TreeToCell",PhotonTargets.OthersBuffered, new object[]{x,z, xTime.Instance.time});
 	}	
 
-	[RPC] void __TreeToCell(int x,int z ) {
+	[RPC] void __TreeToCell(int x,int z , double t) {
 		var c = cells[x,z];
-		if ( c.tree != null ) Debug.Log("cant place tree, there is already one, c.locked="+ c.locked);
-		else pool.Get().AttachToCell(c);
+		if ( c.locked == -1 ) {
+			if ( c.tree != null ) {
+				Debug.Log("Warrning: found a tree at "+x+","+z +" though it shouldnt be there");
+			}
+			else pool.Get().AttachToCell(c,t);
+		} else {
+			if ( t <= c.lock_time ) {
+				pool.Get().AttachToCell(c,t);
+			}
+		}
 	}
 
 	void _GenTree(int tree_nb) {
 		if ( free.Count == 0 ) return;
 		for(int i=0; i < tree_nb ; i++ ) {
 			v5Cell c = free[Random.Range(0,free.Count)];
-			if ( c.locked == -1 ) {
-				if ( c.tree != null ) Debug.Log("cant place tree, there is already one, c.locked="+ c.locked);
-				else pool.Get().AttachToCell(c);
-			}
+			netview.RPC("__TreeToCell",PhotonTargets.All, new object[]{c.x,c.z, xTime.Instance.time});
 		}
 	}
 	public void SetTreeBeingCut (int x, int z , bool isBeingCut,int id ) {
@@ -156,13 +162,13 @@ public class v5GameController : MonoBehaviour
 	}
 	public void OnTreeFall (int x, int z, int dx, int dz ) {
 		if ( !ValidIndex(x,z)) return;
-		netview.RPC("__TreeF",PhotonTargets.All, new object[]{x,z,dx,dz});
+		netview.RPC("__TreeF",PhotonTargets.All, new object[]{x,z,dx,dz, xTime.Instance.time});
 	}
 	public float domonoDelay=0.4f;
-	[RPC] IEnumerator __TreeF(int x, int z, int dx, int dz ) {
+	[RPC] IEnumerator __TreeF(int x, int z, int dx, int dz, double t ) {
 		var c = cells[x,z];
 		if ( c.tree != null ) {
-			c.tree.Fall(dx,dz);
+			c.tree.Fall(dx,dz,t);
 			yield return new WaitForSeconds(domonoDelay);
 			if( PhotonNetwork.isMasterClient ) OnTreeFall(x+dx,z +dz,dx,dz);
 		} 
@@ -178,8 +184,7 @@ public class v5GameController : MonoBehaviour
 		netview.RPC("__SyncTr", PhotonTargets.Others,new object[]{x,z,p });
 	}
 	[RPC] void __SyncTr(int x, int z, int p) {
-		if ( cells[x,z].tree == null ) throw new UnityException("Out sync ?? x="+x+ " z="+z);
-		else cells[x,z].tree.SyncGrowProcess(p);
+		if ( cells[x,z].tree != null ) cells[x,z].tree.SyncGrowProcess(p);
 	}
 
 	bool gameStarted=false;

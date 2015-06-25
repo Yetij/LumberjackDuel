@@ -18,10 +18,12 @@ public class v5Tree : MonoBehaviour
 	Animator animator;
 
 	readonly int isBeingChoppedHash = Animator.StringToHash("isBeingChopped");
-	readonly int falling = Animator.StringToHash("falling");
+	readonly int fallingHash = Animator.StringToHash("falling");
+	readonly int directionChangedHash = Animator.StringToHash("directionChanged");
 
 	public void Reset() {
 		isFalling = false;
+		fall_time = double.MaxValue;
 		_growProcess = 0;
 
 		life_time = max_life_time;
@@ -139,16 +141,15 @@ public class v5Tree : MonoBehaviour
 
 	v5Cell cell;
 
-	public void AttachToCell (v5Cell cell ) {
+	public void AttachToCell (v5Cell cell, double t ) {
 		var game_controller = v5GameController.Instance;
-		if ( PhotonNetwork.isMasterClient) game_controller.OnTreeAttachToCell(cell.x,cell.z);
 
 		this.cell = cell;
 		if ( cell != null ) transform.position = cell.position;
 
 		cell.tree = this;
 		cell.locked = -2;
-
+		cell.lock_time = t;
 		game_controller.free.Remove(cell);
 	}
 
@@ -176,14 +177,18 @@ public class v5Tree : MonoBehaviour
 	}
 	#endregion
 
-	public void Fall (int dx, int dz ) {
-		if ( isFalling ) return;
+	double fall_time = double.MaxValue;
+
+	public void Fall (int dx, int dz , double t ) {
+		if ( t  > fall_time ) return;
+		if ( isFalling ) animator.SetTrigger(directionChangedHash);
+		fall_time = t;
 		isFalling = true;
 
-		if ( dx == 1 ) animator.SetInteger(falling,1);
-		else if ( dx == -1 ) animator.SetInteger(falling,3);
-		if ( dz == 1 ) animator.SetInteger(falling,0);
-		else if ( dz == -1 ) animator.SetInteger(falling,2);
+		if ( dx == 1 ) animator.SetInteger(fallingHash,1);
+		else if ( dx == -1 ) animator.SetInteger(fallingHash,3);
+		if ( dz == 1 ) animator.SetInteger(fallingHash,0);
+		else if ( dz == -1 ) animator.SetInteger(fallingHash,2);
 
 		StartCoroutine(_DieWithDelay ());
 	}

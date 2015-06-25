@@ -5,13 +5,5 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Photon Unity Networking/Demos/Demo2DJumpAndRunWithPhysics/Demo2DJumpAndRunWithPhysics-Scene.unity
-  - enabled: 0
-    path: Assets/Photon Unity Networking/Demos/DemoChangeOwner/DemoChangeOwner-Scene.unity
-  - enabled: 0
-    path: Assets/Photon Unity Networking/Demos/DemoHub/DemoHub-Scene.unity
-  - enabled: 0
-    path: Assets/Scenes/v3test.unity
   - enabled: 1
     path: Assets/Scenes/v5.unity
