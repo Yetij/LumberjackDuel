@@ -68,6 +68,9 @@ public class v5Player : MonoBehaviour
 	}
 	void __LostHp(){
 		hp --;
+		if ( netview.isMine ) {
+			if ( hp <= 0 ) game_control.OnPlayerDie();
+		}
 	}
 	void Start () {
 		netview = GetComponent<PhotonView>();
@@ -104,6 +107,11 @@ public class v5Player : MonoBehaviour
 	public bool isOnCell (int x, int z ) {
 		return currentCell.x == x & currentCell.z == z;
 	}
+
+	public void OnGameEnd () {
+		gameStarted = false;
+	}
+
 	void _UpdateMoveState(int dx,int dz) {
 		if ( dx == 0 & dz == 0 ) return;
 		fx = dx;

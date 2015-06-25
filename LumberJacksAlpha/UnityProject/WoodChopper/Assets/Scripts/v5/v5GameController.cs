@@ -109,7 +109,29 @@ public class v5GameController : MonoBehaviour
 			return k;
 		}
 	}
+	public void OnPlayerDie() {
+		netview.RPC("__EndGame",PhotonTargets.All);
+	}
 
+	IEnumerator __EndGame () {
+		gameStarted = false;
+		foreach ( var p in players ) {
+			p.OnGameEnd();
+		}
+		Debug.Log("Game ends in 5s");
+		yield return new WaitForSeconds(1);
+		Debug.Log("Game ends in 4s");
+		yield return new WaitForSeconds(1);
+		Debug.Log("Game ends in 3s");
+		yield return new WaitForSeconds(1);
+		Debug.Log("Game ends in 2s");
+		yield return new WaitForSeconds(1);
+		Debug.Log("Game ends in 1s");
+		yield return new WaitForSeconds(1);
+		PhotonNetwork.Disconnect();
+		Debug.Log("The app will be closed in release build");
+		//Application.Quit();
+	}
 	[RPC] void __OnGameStart(){ 
 		var l = GameObject.FindObjectsOfType(typeof(v5Player)) as v5Player[];
 		players.AddRange(l);
