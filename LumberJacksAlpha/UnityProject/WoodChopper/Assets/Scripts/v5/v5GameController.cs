@@ -65,6 +65,7 @@ public class v5GameController : MonoBehaviour
 		while ( !gameStarted ) yield return null;
 		while ( true ) {
 			yield return new WaitForSeconds(genTreeInterval);
+			if ( !gameStarted ) yield return break;
 			_GenTree(Random.Range(treeGenMin,treeGenMax+1));
 		}
 
@@ -194,9 +195,7 @@ public class v5GameController : MonoBehaviour
 			yield return new WaitForSeconds(domonoDelay);
 			if( PhotonNetwork.isMasterClient ) {
 				foreach ( v5Player p  in players ) {
-					Debug.Log("Check player id="+ p.netID);
 					if ( p.isOnCell(x+dx,z +dz) ) {
-						Debug.Log("Found player in cell");
 						p.OnTreeFallOn();
 					}
 				}

@@ -64,12 +64,11 @@ public class v5Player : MonoBehaviour
 	}
 
 	public void OnTreeFallOn () {
-		Debug.Log("netid= " + netID + " Tree failed on me !");
-		netview.RPC("__LostHP",PhotonTargets.All);
+		netview.RPC("__LostHp",PhotonTargets.All);
 	}
 
 	[RPC] void __LostHp(){
-		Debug.Log("netid= " + netID + " hp decreased by 1 !");
+		Debug.Log("WAZNE >> netid= " + netID + " hp decreased by 1 !");
 		hp --;
 		if ( netview.isMine ) {
 			if ( hp <= 0 ) game_control.OnPlayerDie();
