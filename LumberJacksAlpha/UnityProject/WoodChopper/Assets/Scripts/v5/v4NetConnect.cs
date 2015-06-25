@@ -21,9 +21,11 @@ public class v4NetConnect : MonoBehaviour
 	void OnGUI () {
 		GUILayout.Label(m,GUILayout.Width(Screen.width));
 		if ( v5GameController.Instance != null ) {
-			foreach ( var p in v5GameController.Instance.players ) {
-				if ( p.netID == PhotonNetwork.player.ID ) {
-					GUILayout.Label("YOUR HP=" + p.hp,GUILayout.Width(Screen.width/4));
+			if ( v5GameController.Instance.players != null ) {
+				foreach ( var p in v5GameController.Instance.players ) {
+					if ( p.netID == PhotonNetwork.player.ID ) {
+						GUILayout.Label("YOUR HP=" + p.hp,GUILayout.Width(Screen.width/4));
+					}
 				}
 			}
 		}
