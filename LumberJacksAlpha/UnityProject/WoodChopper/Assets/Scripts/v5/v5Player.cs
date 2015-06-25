@@ -66,7 +66,7 @@ public class v5Player : MonoBehaviour
 	public void OnTreeFallOn () {
 		netview.RPC("__LostHP",PhotonTargets.All);
 	}
-	void __LostHp(){
+	[RPC] void __LostHp(){
 		hp --;
 		if ( netview.isMine ) {
 			if ( hp <= 0 ) game_control.OnPlayerDie();
