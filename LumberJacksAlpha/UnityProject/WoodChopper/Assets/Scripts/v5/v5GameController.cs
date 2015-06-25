@@ -194,7 +194,9 @@ public class v5GameController : MonoBehaviour
 			yield return new WaitForSeconds(domonoDelay);
 			if( PhotonNetwork.isMasterClient ) {
 				foreach ( v5Player p  in players ) {
-					if ( p.isOnCell(x,z) ) {
+					Debug.Log("Check player id="+ p.netID);
+					if ( p.isOnCell(x+dx,z +dz) ) {
+						Debug.Log("Found player in cell");
 						p.OnTreeFallOn();
 					}
 				}
