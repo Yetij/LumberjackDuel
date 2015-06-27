@@ -44,10 +44,15 @@ public class v5Tree : MonoBehaviour
 
 	public void SetBeingCut (bool s,int id) {
 		if ( s ) {
-			playerChopping.Add(v5GameController.Instance.GetPlayer(id));
+		//	playerChopping.Add(v5GameController.Instance.GetPlayer(id));
 			stopGrow = true;
+			hp -= v5GameController.Instance.GetPlayer(id).parameters.dmgPerSec;
+			if ( hp <= 0 ) {
+				//Debug.Log("tree chopped down, falling with dir="+p.fx+","+p.fz);
+				v5GameController.Instance.OnTreeFall(cell.x,cell.z,p.fx,p.fz);
+			}
 		} else {
-			playerChopping.Remove(v5GameController.Instance.GetPlayer(id));
+		//	playerChopping.Remove(v5GameController.Instance.GetPlayer(id));
 		}
 		bool k = (playerChopping.Count == 0 & !s ) ? false: true;
 		animator.SetBool(isBeingChoppedHash, k);
@@ -70,6 +75,7 @@ public class v5Tree : MonoBehaviour
 
 	void Update () {
 		if ( isFalling ) return;
+		/*
 		if ( playerChopping.Count > 0 ) {
 			foreach ( var p in playerChopping ) {
 				hp -= p.parameters.dmgPerSec*Time.deltaTime;
@@ -81,6 +87,7 @@ public class v5Tree : MonoBehaviour
 			}
 			return;
 		}
+		*/
 		if ( stopGrow ) return;
 		if( PhotonNetwork.isMasterClient ) {
 			life_time -=  Time.deltaTime;
