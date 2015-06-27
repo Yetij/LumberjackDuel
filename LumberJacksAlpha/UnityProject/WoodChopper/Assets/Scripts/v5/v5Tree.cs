@@ -23,11 +23,13 @@ public class v5Tree : MonoBehaviour
 
 	public void Reset() {
 		isFalling = false;
+		stopGrow= true;
+
 		fall_time = double.MaxValue;
 		_growProcess = 0;
 
 		life_time = max_life_time;
-		hp = 100;
+		hp = startHp;
 		if ( playerChopping == null ) playerChopping = new List<v5Player>();
 		playerChopping.Clear();
 
@@ -35,7 +37,7 @@ public class v5Tree : MonoBehaviour
 		_playGrowAnimationTrigger = 0;
 	}
 
-	
+	bool stopGrow = false;
 	void Awake() {
 		animator = GetComponent<Animator>();
 	}
@@ -43,6 +45,7 @@ public class v5Tree : MonoBehaviour
 	public void SetBeingCut (bool s,int id) {
 		if ( s ) {
 			playerChopping.Add(v5GameController.Instance.GetPlayer(id));
+			stopGrow = true;
 		} else {
 			playerChopping.Remove(v5GameController.Instance.GetPlayer(id));
 		}
@@ -50,8 +53,9 @@ public class v5Tree : MonoBehaviour
 		animator.SetBool(isBeingChoppedHash, k);
 	}
 
-	public void SyncGrowProcess (int p ) {
+	public void SyncGrowProcess (int p ,float _hp) {
 		_growProcess = p;
+		hp = _hp;
 	}
 
 	int GrowProcess ( float procent ) {
@@ -60,6 +64,9 @@ public class v5Tree : MonoBehaviour
 		if ( procent > 0f ) return 2;
 		return 3;
 	}
+	public float startHp = 100;
+
+	readonly static float[] hpCoofNextGrowthStage = { 1.25f, 1.5f, 1.75f };
 
 	void Update () {
 		if ( isFalling ) return;
@@ -74,6 +81,7 @@ public class v5Tree : MonoBehaviour
 			}
 			return;
 		}
+		if ( stopGrow ) return;
 		if( PhotonNetwork.isMasterClient ) {
 			life_time -=  Time.deltaTime;
 			_growProcess = GrowProcess( life_time/ max_life_time);
@@ -87,7 +95,7 @@ public class v5Tree : MonoBehaviour
 					StartCoroutine(_Grow());
 				}
 				if ( _updateTrigger == 0 & PhotonNetwork.isMasterClient ) {
-					v5GameController.Instance.SyncTree(cell.x,cell.z,_growProcess);
+					v5GameController.Instance.SyncTree(cell.x,cell.z,_growProcess,hp);
 					_updateTrigger ++;
 				}
 				break;
@@ -100,7 +108,8 @@ public class v5Tree : MonoBehaviour
 					StartCoroutine(_Grow());
 				}
 				if ( _updateTrigger == 1 & PhotonNetwork.isMasterClient ) {
-					v5GameController.Instance.SyncTree(cell.x,cell.z,_growProcess);
+					hp *= hpCoofNextGrowthStage[_updateTrigger];
+					v5GameController.Instance.SyncTree(cell.x,cell.z,_growProcess,hp);
 					_updateTrigger ++;
 				}
 				break;
@@ -113,19 +122,21 @@ public class v5Tree : MonoBehaviour
 					StartCoroutine(_Grow());
 				}
 				if ( _updateTrigger == 2 & PhotonNetwork.isMasterClient ) {
-					v5GameController.Instance.SyncTree(cell.x,cell.z,_growProcess);
+					hp *= hpCoofNextGrowthStage[_updateTrigger];
+					v5GameController.Instance.SyncTree(cell.x,cell.z,_growProcess,hp);
 					_updateTrigger ++;
 				}
 				break;
 			} 
 			case 3: {
 				if ( _updateTrigger == 3 & PhotonNetwork.isMasterClient ) {
-					v5GameController.Instance.SyncTree(cell.x,cell.z,_growProcess);
+					hp *= hpCoofNextGrowthStage[_updateTrigger];
+					v5GameController.Instance.SyncTree(cell.x,cell.z,_growProcess,hp);
 					_updateTrigger ++;
 					/* die natually */
 					int _x = rand[Random.Range(0,3)];
 					int _z = _x == 0? rand[Random.Range(0,2)]: 0;
-				
+					
 					v5GameController.Instance.OnTreeFall(cell.x,cell.z,_x,_z);
 				}
 				break;

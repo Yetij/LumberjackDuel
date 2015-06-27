@@ -60,4 +60,6 @@ MonoBehaviour:
   - __CellReTree
   - __TreeF
   - __TreeToCell
+  - __EndGame
+  - __LostHp
   DisableAutoOpenWizard: 1

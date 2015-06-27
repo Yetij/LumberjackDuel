@@ -36,7 +36,7 @@ public class v4NetConnect : MonoBehaviour
 	{
 		_const = v5Const.Instance;
 		PhotonNetwork.autoJoinLobby = false;    
-		PhotonNetwork.ConnectUsingSettings(_const.settings._GameVersion );
+		PhotonNetwork.ConnectUsingSettings(_const.netConnectionSettings._GameVersion );
 		StartCoroutine(_Calculate() );
 	}
 
@@ -87,7 +87,7 @@ public class v4NetConnect : MonoBehaviour
 		//Debug.Log("OnConnectedToMaster");
 		PhotonNetwork.JoinOrCreateRoom(	room_name,
 		                               	new RoomOptions() { maxPlayers = 2 },
-										new TypedLobby(_const.settings._LobbyName,_const.settings._LobbyType)
+										new TypedLobby(_const.netConnectionSettings._LobbyName,_const.netConnectionSettings._LobbyType)
 		);
 	}
 

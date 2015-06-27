@@ -36,10 +36,9 @@ public class v5Player : MonoBehaviour
 	
 	readonly int isChoppingHash = Animator.StringToHash("isChopping");
 	readonly int isMovingHash = Animator.StringToHash("isMoving");
-	readonly int isKickingHash = Animator.StringToHash("isKicking");
 	#endregion
 
-	bool isChopping=false,isKicking=false, isMoving= false;
+	bool isChopping=false,isMoving= false;
 
 	[HideInInspector] public int fx, fz;
 	public int netID;
@@ -74,6 +73,9 @@ public class v5Player : MonoBehaviour
 			if ( hp <= 0 ) game_control.OnPlayerDie();
 		}
 	}
+
+	KeyboardSettings keybind;
+
 	void Start () {
 		netview = GetComponent<PhotonView>();
 		netID = netview.owner.ID;
@@ -101,6 +103,8 @@ public class v5Player : MonoBehaviour
 
 		nextCell = null;
 		game_control.OnPlayerReady();
+
+		keybind = v5Const.Instance.keyboardSettings;
 	}
 
 	public void OnGameStart () {
@@ -238,8 +242,7 @@ public class v5Player : MonoBehaviour
 			_UpdateMoveState(dx,dz);
 			_UpdateMove();
 
-			isChopping = Input.GetKey(KeyCode.C);
-			isKicking = Input.GetKey(KeyCode.K);
+			isChopping = Input.GetKey(keybind.chop);
 			isMoving = nextCell == null? false : true;
 
 			if ( _lastIsChopping != isChopping ) {
@@ -265,7 +268,6 @@ public class v5Player : MonoBehaviour
 			transform.rotation= Quaternion.Lerp(last_sync_rot,sync_rot,currentY/angleDif);
 		}  
 		animator.SetBool(isChoppingHash,isChopping);
-		animator.SetBool(isKickingHash,isKicking);
 		animator.SetBool(isMovingHash,isMoving);
 	}
 	float currentY, angleDif;
@@ -279,7 +281,6 @@ public class v5Player : MonoBehaviour
 		{
 			stream.SendNext(transform.position);
 			stream.SendNext(isChopping);
-			stream.SendNext(isKicking);
 			stream.SendNext(isMoving);
 			stream.SendNext(transform.rotation.eulerAngles.y);
 		}
@@ -287,7 +288,6 @@ public class v5Player : MonoBehaviour
 		{
 			var _pos = (Vector3)stream.ReceiveNext();
 			isChopping = (bool )stream.ReceiveNext();
-			isKicking = (bool )stream.ReceiveNext();
 			isMoving = (bool )stream.ReceiveNext();
 			var _y = (float ) stream.ReceiveNext();
 			

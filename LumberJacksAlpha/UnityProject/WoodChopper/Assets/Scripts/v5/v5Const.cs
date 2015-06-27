@@ -14,11 +14,17 @@ public class ConnectionSettings {
 	public int _MaxPlayerPerRoom;
 	public LobbyType _LobbyType;
 }
+[System.Serializable]
+public class KeyboardSettings {
+	public KeyCode chop;
+	public KeyCode take;
+}
 
 public class v5Const : MonoBehaviour
 {
 	public Prefabs prefabNames;
-	public ConnectionSettings settings;
+	public ConnectionSettings netConnectionSettings;
+	public KeyboardSettings keyboardSettings;
 	
 	private static v5Const _instance;
 	public static v5Const Instance {

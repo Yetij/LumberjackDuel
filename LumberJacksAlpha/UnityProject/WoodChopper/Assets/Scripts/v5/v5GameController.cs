@@ -210,11 +210,11 @@ public class v5GameController : MonoBehaviour
 		throw new UnityException("id = " + id + " no player found !");
 	}
 
-	public void SyncTree ( int x, int z, int p) {
-		netview.RPC("__SyncTr", PhotonTargets.Others,new object[]{x,z,p });
+	public void SyncTree ( int x, int z, int p, float hp) {
+		netview.RPC("__SyncTr", PhotonTargets.Others,new object[]{x,z,p, hp });
 	}
-	[RPC] void __SyncTr(int x, int z, int p) {
-		if ( cells[x,z].tree != null ) cells[x,z].tree.SyncGrowProcess(p);
+	[RPC] void __SyncTr(int x, int z, int p, float h) {
+		if ( cells[x,z].tree != null ) cells[x,z].tree.SyncGrowProcess(p,h);
 	}
 
 	bool gameStarted=false;
