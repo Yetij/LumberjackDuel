@@ -23,7 +23,7 @@ public class v5Tree : MonoBehaviour
 
 	public void Reset() {
 		isFalling = false;
-		stopGrow= true;
+		stopGrow= false;
 
 		fall_time = double.MaxValue;
 		_growProcess = 0;

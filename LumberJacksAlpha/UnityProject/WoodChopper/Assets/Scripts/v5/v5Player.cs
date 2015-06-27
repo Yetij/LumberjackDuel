@@ -233,6 +233,9 @@ public class v5Player : MonoBehaviour
 	bool _lastIsChopping, _lastIsKicking;
 	int _lastFx, _lastFz;
 
+	bool canChop = true;
+	public float chopCooldown=1;
+	float _chopCooldownTimer=0;
 	void Update (){
 		if ( !gameStarted  ) return;
 		if ( netview.isMine ) {
@@ -243,6 +246,17 @@ public class v5Player : MonoBehaviour
 			_UpdateMove();
 
 			isChopping = Input.GetKey(keybind.chop);
+			if ( !canChop ) {
+				isChopping = false;
+				_chopCooldownTimer -= Time.deltaTime;
+				if ( _chopCooldownTimer <= 0 ) {
+					canChop = true;
+				}
+			}
+			if ( isChopping ) {
+				canChop = false;
+				_chopCooldownTimer = chopCooldown;
+			}
 			isMoving = nextCell == null? false : true;
 
 			if ( _lastIsChopping != isChopping ) {
