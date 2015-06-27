@@ -80,7 +80,7 @@ public class v5GameController : MonoBehaviour
 		if (PhotonNetwork.isMasterClient ) {
 			if ( PhotonNetwork.room.playerCount == PhotonNetwork.room.maxPlayers  ) {
 				netview.RPC("__MesToAll",PhotonTargets.All,new object[] { "Loading...." } );
-				//_GenTree(startTreeNb);
+				_GenTree(startTreeNb);
 				netview.RPC("__MesToAll",PhotonTargets.All,new object[] { "Resources are loaded" } );
 				netview.RPC("__OnGameStart",PhotonTargets.AllViaServer);
 			}

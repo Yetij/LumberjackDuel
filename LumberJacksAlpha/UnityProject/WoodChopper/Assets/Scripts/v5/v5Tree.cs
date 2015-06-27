@@ -46,7 +46,8 @@ public class v5Tree : MonoBehaviour
 		if ( s ) {
 		//	playerChopping.Add(v5GameController.Instance.GetPlayer(id));
 			stopGrow = true;
-			hp -= v5GameController.Instance.GetPlayer(id).parameters.dmgPerSec;
+			var p = v5GameController.Instance.GetPlayer(id);
+			hp -= p.parameters.dmgPerSec;
 			if ( hp <= 0 ) {
 				//Debug.Log("tree chopped down, falling with dir="+p.fx+","+p.fz);
 				v5GameController.Instance.OnTreeFall(cell.x,cell.z,p.fx,p.fz);
