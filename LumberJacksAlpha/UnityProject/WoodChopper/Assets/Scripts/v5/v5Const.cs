@@ -17,7 +17,7 @@ public class ConnectionSettings {
 [System.Serializable]
 public class KeyboardSettings {
 	public KeyCode chop;
-	public KeyCode take;
+	public KeyCode place;
 }
 
 public class v5Const : MonoBehaviour

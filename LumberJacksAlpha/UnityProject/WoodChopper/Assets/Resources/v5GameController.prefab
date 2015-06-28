@@ -71,13 +71,13 @@ MonoBehaviour:
     offset_x: 1
     offset_z: 1
     root: {x: -5, y: 0, z: -5}
-  startTreeNb: 0
+  startTreeNb: 20
   treeGenMin: 1
-  treeGenMax: 3
-  genTreeInterval: 1.5
+  treeGenMax: 1
+  genTreeInterval: 1
   free: []
   players: []
-  domonoDelay: .400000006
+  domonoDelay: .150000006
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

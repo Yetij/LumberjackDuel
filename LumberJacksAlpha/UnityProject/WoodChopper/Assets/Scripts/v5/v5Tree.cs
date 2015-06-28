@@ -70,6 +70,7 @@ public class v5Tree : MonoBehaviour
 		if ( procent > 0f ) return 2;
 		return 3;
 	}
+
 	public float startHp = 100;
 
 	readonly static float[] hpCoofNextGrowthStage = { 1.25f, 1.5f, 1.75f };
@@ -198,9 +199,22 @@ public class v5Tree : MonoBehaviour
 
 	double fall_time = double.MaxValue;
 
+	IEnumerator _die_with_delay;
 	public void Fall (int dx, int dz , double t ) {
 		if ( t  > fall_time ) return;
-		if ( isFalling ) animator.SetTrigger(directionChangedHash);
+		if ( isFalling ) {
+			animator.SetTrigger(directionChangedHash);
+			if ( cell.enume != null ) {
+				v5GameController.Instance.StopCoroutine(cell.enume);
+			}else {
+				Debug.LogError("!!! cell.enume= null !!");
+			}
+			if ( _die_with_delay != null ) {
+				StopCoroutine(_die_with_delay);
+			} else {
+				Debug.LogError("!!! _die_with_delay= null !!");
+			}
+		}
 		fall_time = t;
 		isFalling = true;
 
@@ -209,7 +223,7 @@ public class v5Tree : MonoBehaviour
 		if ( dz == 1 ) animator.SetInteger(fallingHash,0);
 		else if ( dz == -1 ) animator.SetInteger(fallingHash,2);
 
-		StartCoroutine(_DieWithDelay ());
+		StartCoroutine(_die_with_delay=_DieWithDelay ());
 	}
 	
 	IEnumerator _DieWithDelay () {

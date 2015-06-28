@@ -120,8 +120,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerChopping: []
-  die_delay: .699999988
-  max_life_time: 10
+  die_delay: .300000012
+  max_life_time: 100
+  startHp: 100
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

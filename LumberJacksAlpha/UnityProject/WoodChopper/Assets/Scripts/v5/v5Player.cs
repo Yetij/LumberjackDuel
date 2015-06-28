@@ -67,7 +67,6 @@ public class v5Player : MonoBehaviour
 	}
 
 	[RPC] void __LostHp(){
-		Debug.Log("LOG: netid= " + netID + " hp decreased by 1 !");
 		hp --;
 		if ( netview.isMine ) {
 			if ( hp <= 0 ) game_control.OnPlayerDie();
@@ -109,7 +108,11 @@ public class v5Player : MonoBehaviour
 
 	public void OnGameStart () {
 		gameStarted = true;
+		if ( netview.isMine ) { 
+			StartCoroutine(Chop ());
+		}
 	}
+
 	public bool isOnCell (int x, int z ) {
 		return currentCell.x == x & currentCell.z == z;
 	}
@@ -186,6 +189,17 @@ public class v5Player : MonoBehaviour
 		}
 	}
 
+	[RPC] void __PlaceTree(int x, int z, double time ) {
+		var c = v5GameController.Instance.Get(x,z);
+		if ( c.locked != -2 ) {
+			if ( time <= c.lock_time ) {
+				v5TreePool.Instance.Get().AttachToCell(c,time);
+				return;
+			}
+		} else {
+			canPlace = true;
+		}
+	}
 	[RPC] void __UnRegMove (int x,int z ) {
 		var c = game_control.Get(x,z);
 		if ( c.locked == netID ) c.Free();
@@ -197,34 +211,12 @@ public class v5Player : MonoBehaviour
 			if ( time < c.lock_time ) {
 				c.lock_time = time;
 				c.locked = netID;
-				v5GameController.Instance.RegMove(netID, x, z);
 				return;
 			}
 			else if ( time == c.lock_time ) { 
-				/**/													
-				/* ONLY WORKS IF THERE IS ONE HOST - ONE CLIENT */
-				/**/
-				int localPlayer_netid = PhotonNetwork.player.ID;
-				if ( PhotonNetwork.isMasterClient ) {
-					if  (netID == localPlayer_netid ) {
-						/* host machine - host player */
-						return;
-					} else {
-						/* host machine - client player */
-						c.lock_time = time;
-						c.locked = netID;
-						v5GameController.Instance.RegMove(netID, x, z);
-					}
-				} else {
-					if  (netID == localPlayer_netid ) {
-						/* client machine - client player */
-						c.lock_time = time;
-						c.locked = netID;
-						v5GameController.Instance.RegMove(netID, x, z);
-					} else {
-						/* client machine - host player */
-						return;
-					}
+				if ( (PhotonNetwork.isMasterClient & !netview.isMine) | (!PhotonNetwork.isMasterClient & netview.isMine) ) {
+					c.lock_time = time;
+					c.locked = netID;
 				}
 			}
 		}
@@ -233,9 +225,25 @@ public class v5Player : MonoBehaviour
 	bool _lastIsChopping, _lastIsKicking;
 	int _lastFx, _lastFz;
 
-	bool canChop = true;
 	public float chopCooldown=1;
-	float _chopCooldownTimer=0;
+
+	public float placeCooldown=1;
+
+	IEnumerator Chop () {
+		while ( true) {
+			if ( Input.GetKey(keybind.chop) ) {
+				isChopping= true;
+				game_control.SetTreeBeingCut(currentCell.x + fx, currentCell.z + fz,true,netID);
+				yield return new WaitForSeconds(chopCooldown);
+				isChopping = false;
+			} else yield return null;
+		}
+	}
+	bool isPlacing;
+	bool canPlace;
+	float placeTreeCooldown = 1;
+	float _placeTreeTimer;
+
 	void Update (){
 		if ( !gameStarted  ) return;
 		if ( netview.isMine ) {
@@ -245,20 +253,23 @@ public class v5Player : MonoBehaviour
 			_UpdateMoveState(dx,dz);
 			_UpdateMove();
 
-			isChopping = Input.GetKey(keybind.chop);
-			if ( !canChop ) {
-				isChopping = false;
-				_chopCooldownTimer -= Time.deltaTime;
-				if ( _chopCooldownTimer <= 0 ) {
-					canChop = true;
-				}
-			}
-			if ( isChopping ) {
-				canChop = false;
-				_chopCooldownTimer = chopCooldown;
-			}
 			isMoving = nextCell == null? false : true;
 
+			isPlacing = Input.GetKey(keybind.place);
+			if ( isPlacing & !canPlace ) {
+				isPlacing = false;
+			}
+			if ( canPlace ) {
+				canPlace = false;
+				netview.RPC("__PlaceTree", PhotonTargets.All,
+				            new object[] { currentCell.x + fx, currentCell.z + fz, xTime.Instance.time } );
+				_placeTreeTimer = placeTreeCooldown;
+			} else {
+				_placeTreeTimer -= Time.deltaTime;
+				if ( _placeTreeTimer <= 0 ) {
+					canPlace = true;
+				}
+			}
 			if ( _lastIsChopping != isChopping ) {
 				game_control.SetTreeBeingCut(currentCell.x +fx, currentCell.z + fz,isChopping,netID);
 				_lastIsChopping = isChopping;
@@ -268,11 +279,6 @@ public class v5Player : MonoBehaviour
 				if ( isChopping) game_control.SetTreeBeingCut(currentCell.x + fx, currentCell.z + fz,true,netID);
 				_lastFx = fx;
 				_lastFz = fz;
-			}
-
-			if ( Input.GetKey(KeyCode.Z)) {
-				var  l = game_control.GetLastReg(netID);
-				Debug.Log("mine=" + netID + " cell locked=" + game_control.Get(l.x,l.z).locked + " time="+game_control.Get(l.x,l.z).lock_time );			
 			}
 		} else {
 			currentTime += Time.deltaTime;

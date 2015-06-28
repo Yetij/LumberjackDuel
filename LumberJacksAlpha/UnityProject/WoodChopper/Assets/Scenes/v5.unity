@@ -169,15 +169,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11428186, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
       propertyPath: prefabNames._GameController
-      value: 
+      value: v5GameController
       objectReference: {fileID: 0}
     - target: {fileID: 11428186, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
       propertyPath: prefabNames._Player
-      value: 
+      value: v5Player
       objectReference: {fileID: 0}
     - target: {fileID: 11428186, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
       propertyPath: prefabNames._Tree
-      value: 
+      value: v5Tree
       objectReference: {fileID: 0}
     - target: {fileID: 163840, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
       propertyPath: m_IsActive
@@ -190,6 +190,18 @@ Prefab:
     - target: {fileID: 11428186, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
       propertyPath: keyboardSettings.take
       value: 115
+      objectReference: {fileID: 0}
+    - target: {fileID: 11428186, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
+      propertyPath: netConnectionSettings._GameVersion
+      value: 1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11428186, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
+      propertyPath: netConnectionSettings._LobbyName
+      value: noname
+      objectReference: {fileID: 0}
+    - target: {fileID: 11428186, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}
+      propertyPath: netConnectionSettings._MaxPlayerPerRoom
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1cf19fc854537314c866e7598a8dd932, type: 2}

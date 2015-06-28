@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 [System.Serializable]
 public class v5Grid {
@@ -46,6 +47,7 @@ public class v5Cell {
 	public Vector3 position;
 	public v5Cell left,right,up,down;
 	public v5Tree tree;
+	public IEnumerator enume;
 
 	public void Free() {
 		locked = -1;

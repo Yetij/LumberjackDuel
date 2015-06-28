@@ -99,9 +99,9 @@ public class v4NetConnect : MonoBehaviour
 	void OnJoinedRoom () {
 		//Debug.Log("OnJoinedRoom");
 		if( PhotonNetwork.isMasterClient ) {
-			Debug.Log("wow im master client???");
+			Debug.Log("im master client???");
 			PhotonNetwork.InstantiateSceneObject(_const.prefabNames._GameController,Vector3.zero,Quaternion.identity,0, null);
-		} else Debug.Log("im not master client :((");
+		} else Debug.Log("im not master client :'(");
 	}
 
 	void OnPhotonPlayerConnected  () {

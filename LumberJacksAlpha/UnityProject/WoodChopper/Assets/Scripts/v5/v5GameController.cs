@@ -42,7 +42,6 @@ public class v5GameController : MonoBehaviour
 	}
 
 	void Awake () {
-		Debug.Log("Game controler Awake");
 		netview = GetComponent<PhotonView>();
 		cells = grid.GenCells();
 		_const = v5Const.Instance;
@@ -87,29 +86,6 @@ public class v5GameController : MonoBehaviour
 		}
 	}
 
-	Dictionary<int, Vec2Int> log = new Dictionary<int,Vec2Int >();
-
-	public void RegMove (int id, int x, int z  ){
-		Vec2Int k;
-		if ( !log.TryGetValue(id,out k) ) {
-			Vec2Int v = new Vec2Int();
-			v.x = x;
-			v.z = z;
-			log.Add(id,v);
-		} else {
-			k.x = x;
-			k.z = z;
-		}
-	}
-
-	public Vec2Int GetLastReg (int id ) {
-		Vec2Int k;
-		if ( !log.TryGetValue(id,out k) ) {
-			throw new UnityException("not found with id="+id);
-		} else {
-			return k;
-		}
-	}
 	public void OnPlayerDie() {
 		netview.RPC("__EndGame",PhotonTargets.All);
 	}
@@ -133,6 +109,7 @@ public class v5GameController : MonoBehaviour
 		Debug.Log("The app will be closed in release build");
 		//Application.Quit();
 	}
+
 	[RPC] void __OnGameStart(){ 
 		var l = GameObject.FindObjectsOfType(typeof(v5Player)) as v5Player[];
 		players.AddRange(l);
@@ -151,6 +128,7 @@ public class v5GameController : MonoBehaviour
 	public void OnTreeAttachToCell ( int x,int z ) {
 		netview.RPC("__TreeToCell",PhotonTargets.OthersBuffered, new object[]{x,z, xTime.Instance.time});
 	}	
+
 
 	[RPC] void __TreeToCell(int x,int z , double t) {
 		var c = cells[x,z];
@@ -188,7 +166,11 @@ public class v5GameController : MonoBehaviour
 		netview.RPC("__TreeF",PhotonTargets.All, new object[]{x,z,dx,dz, xTime.Instance.time});
 	}
 	public float domonoDelay=0.4f;
-	[RPC] IEnumerator __TreeF(int x, int z, int dx, int dz, double t ) {
+	[RPC] void __TreeF(int x, int z, int dx, int dz, double t ) {
+		StartCoroutine(cells[x,z].enume  = ___TreeF(x,z,dx,dz,t));
+	}
+
+	IEnumerator ___TreeF (int x, int z, int dx, int dz, double t ){
 		var c = cells[x,z];
 		if ( c.tree != null ) {
 			c.tree.Fall(dx,dz,t);
