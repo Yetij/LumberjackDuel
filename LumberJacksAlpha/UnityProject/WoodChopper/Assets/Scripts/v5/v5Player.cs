@@ -67,6 +67,7 @@ public class v5Player : MonoBehaviour
 	}
 
 	[RPC] void __LostHp(){
+		Debug.Log("id="+netID+" lost 1 hp");
 		hp --;
 		if ( netview.isMine ) {
 			if ( hp <= 0 ) game_control.OnPlayerDie();
@@ -259,7 +260,7 @@ public class v5Player : MonoBehaviour
 			if ( isPlacing & !canPlace ) {
 				isPlacing = false;
 			}
-			if ( canPlace ) {
+			if ( canPlace & isPlacing ) {
 				canPlace = false;
 				netview.RPC("__PlaceTree", PhotonTargets.All,
 				            new object[] { currentCell.x + fx, currentCell.z + fz, xTime.Instance.time } );
@@ -290,6 +291,7 @@ public class v5Player : MonoBehaviour
 		animator.SetBool(isChoppingHash,isChopping);
 		animator.SetBool(isMovingHash,isMoving);
 	}
+
 	float currentY, angleDif;
 	Quaternion last_sync_rot;
 	Quaternion sync_rot;

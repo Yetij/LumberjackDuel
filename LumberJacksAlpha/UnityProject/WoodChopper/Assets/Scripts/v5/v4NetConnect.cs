@@ -24,6 +24,7 @@ public class v4NetConnect : MonoBehaviour
 			if ( v5GameController.Instance.players != null ) {
 				foreach ( var p in v5GameController.Instance.players ) {
 					if ( p.netID == PhotonNetwork.player.ID ) {
+						GUILayout.Label("MY ID=" + p.netID,GUILayout.Width(Screen.width/4));
 						GUILayout.Label("YOUR HP=" + p.hp,GUILayout.Width(Screen.width/4));
 					}
 				}
