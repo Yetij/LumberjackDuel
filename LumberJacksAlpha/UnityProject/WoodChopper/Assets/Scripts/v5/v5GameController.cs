@@ -167,19 +167,16 @@ public class v5GameController : MonoBehaviour
 	}
 	public float domonoDelay=0.4f;
 	[RPC] void __TreeF(int x, int z, int dx, int dz, double t ) {
-		Debug.Log("@@@__TreeF called");
 		StartCoroutine(cells[x,z].enume  = ___TreeF(x,z,dx,dz,t));
 	}
 
 	IEnumerator ___TreeF (int x, int z, int dx, int dz, double t ){
-		Debug.Log("@@@@Coroutine __TreeF called");
 		var c = cells[x,z];
 		if ( c.tree != null ) {
 			c.tree.Fall(dx,dz,t);
 			yield return new WaitForSeconds(domonoDelay);
 			foreach ( v5Player p  in players ) {
 				if ( p.isOnCell(x+dx,z +dz) ) {
-					Debug.Log("@@@Detect player on tree fall");
 					p.OnTreeFallOn();
 				}
 			}

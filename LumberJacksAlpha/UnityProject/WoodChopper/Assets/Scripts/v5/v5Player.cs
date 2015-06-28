@@ -67,7 +67,6 @@ public class v5Player : MonoBehaviour
 	}
 
 	[RPC] void __LostHp(){
-		Debug.Log("id="+netID+" lost 1 hp");
 		hp --;
 		if ( netview.isMine ) {
 			if ( hp == 0 ) game_control.OnPlayerDie();
