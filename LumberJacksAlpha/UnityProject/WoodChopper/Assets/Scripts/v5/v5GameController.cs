@@ -177,6 +177,7 @@ public class v5GameController : MonoBehaviour
 			yield return new WaitForSeconds(domonoDelay);
 			foreach ( v5Player p  in players ) {
 				if ( p.isOnCell(x+dx,z +dz) ) {
+					Debug.LogError("id="+p.netID+ " tree fall on\nx="+x+" z="+z+" dx="+dx+" dz="+dz);
 					p.OnTreeFallOn();
 				}
 			}
