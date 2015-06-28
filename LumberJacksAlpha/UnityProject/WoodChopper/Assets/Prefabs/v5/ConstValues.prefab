@@ -9,6 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 434402}
   - 114: {fileID: 11428186}
+  - 114: {fileID: 11474802}
   m_Layer: 0
   m_Name: ConstValues
   m_TagString: Untagged
@@ -40,14 +41,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabNames:
-    _GameController: v4GameController
-    _Player: v4Player
-    _Tree: v4Tree
-  settings:
-    _GameVersion: 1.0
-    _LobbyName: uijirfntgh
+    _GameController: v5GameController
+    _Player: v5Player
+    _Tree: v5Tree
+  netConnectionSettings:
+    _GameVersion: 1.1
+    _LobbyName: noname
     _MaxPlayerPerRoom: 2
     _LobbyType: 0
+  keyboardSettings:
+    chop: 101
+    place: 113
+--- !u!114 &11474802
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 163840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 653e54775ac14c7478cae6e2022be977, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
