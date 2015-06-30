@@ -76,7 +76,7 @@ public class Player : MonoBehaviour
 		_lastFz = fz;
 		
 		transform.position = currentCell.position;
-		
+		last_sync_rot = transform.rotation;
 		if ( netview.isMine ) netview.RPC("__RegMove", PhotonTargets.AllBuffered,
 		            new object[] { currentCell.x, currentCell.z , double.MinValue } );
 		
