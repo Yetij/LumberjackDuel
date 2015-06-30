@@ -262,7 +262,7 @@ public class Player : MonoBehaviour
 	#endregion
 
 	void Plant(int id, int x, int z, double time ,bool canFastPlant) {
-		CellManager.Instance.OnPlayerPlant(id,x,z,time,canFastPlant);
+		CellManager.Instance.OnPlayerPlant(id,x,z,fx,fz,time,canFastPlant);
 	}
 
 	void Chop(int x, int z, int fx, int fz, float dmg,double time ) {
