@@ -87,7 +87,7 @@ NavMeshSettings:
     cellSize: .166666672
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &786147294
+--- !u!1001 &721712369
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -125,26 +125,6 @@ Prefab:
     - target: {fileID: 437298, guid: b0fe3146bf483694a975991765ccbae1, type: 2}
       propertyPath: m_RootOrder
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11470378, guid: b0fe3146bf483694a975991765ccbae1, type: 2}
-      propertyPath: treeGeneralSettings.additiveLifeTimeStage.Array.data[0]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11470378, guid: b0fe3146bf483694a975991765ccbae1, type: 2}
-      propertyPath: treeGeneralSettings.additiveLifeTimeStage.Array.data[1]
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11470378, guid: b0fe3146bf483694a975991765ccbae1, type: 2}
-      propertyPath: treeGeneralSettings.additiveLifeTimeStage.Array.data[2]
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11460070, guid: b0fe3146bf483694a975991765ccbae1, type: 2}
-      propertyPath: genTreeInterval
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11460070, guid: b0fe3146bf483694a975991765ccbae1, type: 2}
-      propertyPath: genMax
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b0fe3146bf483694a975991765ccbae1, type: 2}

@@ -221,7 +221,7 @@ public class Player : MonoBehaviour
 		}
 		if ( canPlant & isPlanting ) {
 			canPlant = false;
-			Plant(netID,currentCell.x + fx,currentCell.z + fz, xTime.Instance.time);
+			Plant(netID,currentCell.x + fx,currentCell.z + fz, xTime.Instance.time, CanFastPlant());
 			_placeTreeTimer = plantTreeCooldown;
 		} else {
 			_placeTreeTimer -= Time.deltaTime;
@@ -261,8 +261,8 @@ public class Player : MonoBehaviour
 	}
 	#endregion
 
-	void Plant(int id, int x, int z, double time ) {
-		CellManager.Instance.OnPlayerPlant(id,x,z,time);
+	void Plant(int id, int x, int z, double time ,bool canFastPlant) {
+		CellManager.Instance.OnPlayerPlant(id,x,z,time,canFastPlant);
 	}
 
 	void Chop(int x, int z, int fx, int fz, float dmg,double time ) {
@@ -297,6 +297,10 @@ public class Player : MonoBehaviour
 		animator.SetBool(isMovingHash,isMoving);
 	}
 
+	public bool CanFastPlant() {
+		if ( nextCell == null ) return true;
+		return (nextCell.position-transform.position).magnitude/_distance > 0.5f ? true : false;
+	}
 
 	#region sync
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

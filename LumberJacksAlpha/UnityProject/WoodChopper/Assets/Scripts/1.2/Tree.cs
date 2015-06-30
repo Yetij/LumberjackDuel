@@ -100,6 +100,7 @@ public class Tree : MonoBehaviour
 	}
 	IEnumerator RealFall (int fall_dx, int fall_dy, bool fromMaster) {
 		if ( (PhotonNetwork.isMasterClient & fromMaster) | (!PhotonNetwork.isMasterClient & !fromMaster) ) {
+			Debug.Log("Tree Real Fall, i chop, i wait");
 			yield return new WaitForSeconds(estimatedNetDelay);
 		}
 		if ( fall_dx == 1 ) animator.SetInteger(fallingHash,1);

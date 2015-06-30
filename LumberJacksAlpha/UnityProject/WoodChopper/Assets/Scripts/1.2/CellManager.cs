@@ -163,9 +163,9 @@ public class CellManager : MonoBehaviour
 		c.tree.OnBeingDamaged(fx,fz,dmg,time,fromMaster);
 	}
 
-	public void OnPlayerPlant(int id, int x,int z, double time ) {
+	public void OnPlayerPlant(int id, int x,int z, double time, bool canFastPlant ) {
 		if (grid[x,z] == null ) return;
-		netview.RPC("_OnPlayerPlant",PhotonTargets.All,new object[]{id, x,z,time});
+		netview.RPC("_OnPlayerPlant",PhotonTargets.All,new object[]{id, x,z,time,canFastPlant});
 	}
 
 	public void OnGenTree(int tree_nb ) {
@@ -183,10 +183,14 @@ public class CellManager : MonoBehaviour
 			}
 		} 
 	}
-	[RPC] void _OnPlayerPlant(int id, int x,int z, double time ) {
+	[RPC] void _OnPlayerPlant(int id, int x,int z, double time, bool canFastPlant ) {
 		var c = grid[x,z];
 		if ( c != null ) {
 			if ( time < c.lock_time & c.locked != -2 ) {
+				TreePool.Instance.Get().AttachToCell(c,time);
+				return;
+			}
+			if ( c.locked == id & canFastPlant) {
 				TreePool.Instance.Get().AttachToCell(c,time);
 			}
 		} else {
