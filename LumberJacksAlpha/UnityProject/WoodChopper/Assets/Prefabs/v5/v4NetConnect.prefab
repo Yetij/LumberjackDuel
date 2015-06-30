@@ -36,9 +36,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 119392}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: a742caeefa4ec874182b4929202e13b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  room_name: 12345
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

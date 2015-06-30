@@ -63,4 +63,16 @@ MonoBehaviour:
   - __EndGame
   - __LostHp
   - __PlaceTree
+  - __CreatePlayer
+  - __DoChop
+  - __PlantTree
+  - __StartGame
+  - __Tr
+  - __TreeGrow
+  - _OnDamageTree
+  - _OnGenTree
+  - _OnPlayerPlant
+  - __ClientCellManagerReady
+  - _TreeGrow
+  - _TreeVasnish
   DisableAutoOpenWizard: 1

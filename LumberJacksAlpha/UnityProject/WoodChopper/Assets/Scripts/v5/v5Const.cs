@@ -17,14 +17,21 @@ public class ConnectionSettings {
 [System.Serializable]
 public class KeyboardSettings {
 	public KeyCode chop;
-	public KeyCode place;
+	public KeyCode plant;
 }
 
+[System.Serializable]
+public class TreeGeneralSettings {
+	public float[] maxHp = { 100, 150, 200 };
+	public float[] additiveLifeTimeStage = { 0.2f, 0.3f, 0.5f };  /* sum must be 1 */
+	public float[] sizeScale = { 0.45f, 0.7f, 1f };
+}
 public class v5Const : MonoBehaviour
 {
 	public Prefabs prefabNames;
 	public ConnectionSettings netConnectionSettings;
 	public KeyboardSettings keyboardSettings;
+	public TreeGeneralSettings treeGeneralSettings;
 	
 	private static v5Const _instance;
 	public static v5Const Instance {

@@ -41,17 +41,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabNames:
-    _GameController: v5GameController
-    _Player: v5Player
-    _Tree: v5Tree
+    _GameController: 
+    _Player: 
+    _Tree: 
   netConnectionSettings:
-    _GameVersion: 1.1
-    _LobbyName: noname
-    _MaxPlayerPerRoom: 2
+    _GameVersion: 
+    _LobbyName: 
+    _MaxPlayerPerRoom: 0
     _LobbyType: 0
   keyboardSettings:
-    chop: 101
-    place: 113
+    chop: 0
+    plant: 0
 --- !u!114 &11474802
 MonoBehaviour:
   m_ObjectHideFlags: 1

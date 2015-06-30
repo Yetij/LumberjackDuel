@@ -117,7 +117,7 @@ public class v5GameController : MonoBehaviour
 			p.OnGameStart();
 		}
 		gameStarted = true;
-		xTime.Instance.OnStart();
+		xTime.Instance.OnGameStart();
 		Debug.Log("Game starts !");
 	}
 

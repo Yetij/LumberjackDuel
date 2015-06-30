@@ -5,7 +5,7 @@ using System.Collections;
 public class Parameters {
 	public float moveSpeed;
 	public float rotateAngleSpeed;
-	public float dmgPerSec;
+	public float dmg;
 }
 
 [RequireComponent(typeof(PhotonView))]
@@ -255,7 +255,7 @@ public class v5Player : MonoBehaviour
 
 			isMoving = nextCell == null? false : true;
 
-			isPlacing = Input.GetKey(keybind.place);
+			isPlacing = Input.GetKey(keybind.plant);
 			if ( isPlacing & !canPlace ) {
 				isPlacing = false;
 			}

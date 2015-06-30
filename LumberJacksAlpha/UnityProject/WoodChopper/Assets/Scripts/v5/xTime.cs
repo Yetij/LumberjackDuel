@@ -28,7 +28,7 @@ public class xTime : MonoBehaviour
 			_time = value;
 		}
 	}
-	public void OnStart () {
+	public void OnGameStart () {
 		if ( currentUpdateFunction != null ) {
 			throw new UnityException("Error with xTime !! OnStart atm should be called only once !");
 		}
@@ -40,11 +40,11 @@ public class xTime : MonoBehaviour
 
 	System.DateTime last_pause;
 
-	public void OnPause () {
+	public void OnGamePause () {
 		last_pause = System.DateTime.UtcNow;
 		isPaused = true;
 	}
-	public void OnResume () {
+	public void OnGameResume () {
 		isPaused = false;
 		time += System.DateTime.UtcNow.Subtract(last_pause).TotalSeconds;
 	}
