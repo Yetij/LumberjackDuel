@@ -193,7 +193,7 @@ public class CellManager : MonoBehaviour
 			if ( !canFastPlant ) {
 				c = grid[x+fx,z+fz];
 				if ( c != null ) {
-					if ( time < c.lock_time & c.locked != -2)  ) {
+					if ( time < c.lock_time & c.locked != -2  ) {
 						TreePool.Instance.Get().AttachToCell(c,time);
 						return;
 					}

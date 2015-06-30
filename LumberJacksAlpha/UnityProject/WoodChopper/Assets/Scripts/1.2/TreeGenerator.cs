@@ -16,8 +16,10 @@ public class TreeGenerator : MonoBehaviour
 	#endregion
 
 	public void OnGameStart () {
-		if ( PhotonNetwork.isMasterClient )
+		if ( PhotonNetwork.isMasterClient ) {
+			CellManager.Instance.OnGenTree(startNb);
 			StartCoroutine(update = _Update());
+		}
 	}
 	public void OnGameEnd() {
 		if ( PhotonNetwork.isMasterClient )
@@ -26,6 +28,7 @@ public class TreeGenerator : MonoBehaviour
 
 	public float genTreeInterval;
 	public int genMin,genMax;
+	public int startNb;
 
 	IEnumerator update;
 	IEnumerator _Update () {

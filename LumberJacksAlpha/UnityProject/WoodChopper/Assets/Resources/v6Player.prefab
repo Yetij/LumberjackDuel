@@ -2108,7 +2108,7 @@ MonoBehaviour:
   predictStrength: .200000003
   hp: 2
   parameters:
-    moveSpeed: 6
+    moveSpeed: 2
     rotateAngleSpeed: 720
     dmg: 500
   netview: {fileID: 0}
