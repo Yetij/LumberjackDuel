@@ -153,14 +153,14 @@ public class CellManager : MonoBehaviour
 
 	public void OnPlayerChop (int x, int z, int fx, int fz, float dmg,double time ) {
 		if ( grid[x,z] == null ) return;
-		netview.RPC("_OnDamageTree", PhotonTargets.All, new object[]{ x, z, fx, fz, dmg, time, (byte)(PhotonNetwork.isMasterClient?0:1)});
+		netview.RPC("_OnDamageTree", PhotonTargets.All, new object[]{ x, z, fx, fz, dmg, time, PhotonNetwork.isMasterClient });
 	}
 
-	[RPC] void _OnDamageTree (int x, int z, int fx, int fz, float dmg,double time ,byte source ) {		
+	[RPC] void _OnDamageTree (int x, int z, int fx, int fz, float dmg,double time ,bool fromMaster ) {		
 		var c = grid[x,z];
 		if ( c == null ) return;
 		if ( c.tree == null ) return;
-		c.tree.OnBeingDamaged(fx,fz,dmg,time,source);
+		c.tree.OnBeingDamaged(fx,fz,dmg,time,fromMaster);
 	}
 
 	public void OnPlayerPlant(int id, int x,int z,int fx,int fz, double time, bool canFastPlant ) {
