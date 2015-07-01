@@ -2,13 +2,11 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\1.2\CellManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\1.2\Cell.cs" Line="15" Column="15" />
-      <File FileName="Assets\Scripts\1.2\Connector.cs" Line="36" Column="21" />
-      <File FileName="Assets\Scripts\1.2\CellManager.cs" Line="36" Column="8" />
-      <File FileName="Assets\Scripts\1.2\Player.cs" Line="285" Column="18" />
-      <File FileName="Assets\Scripts\1.2\Tree.cs" Line="110" Column="42" />
-      <File FileName="Assets\Scripts\1.2\TreeGenerator.cs" Line="36" Column="4" />
-      <File FileName="Assets\Scripts\1.2\Grid.cs" Line="21" Column="2" />
+      <File FileName="Assets\Scripts\1.2\Tree.cs" Line="114" Column="5" />
+      <File FileName="Assets\Scripts\1.2\Player.cs" Line="84" Column="65" />
+      <File FileName="Assets\Scripts\v5\v5Player.cs" Line="296" Column="22" />
+      <File FileName="Assets\Scripts\v5\v5Const.cs" Line="24" Column="35" />
+      <File FileName="Assets\Scripts\1.2\CellManager.cs" Line="75" Column="27" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

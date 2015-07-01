@@ -17,7 +17,6 @@ public class TreeGenerator : MonoBehaviour
 
 	public void OnGameStart () {
 		if ( PhotonNetwork.isMasterClient ) {
-			CellManager.Instance.OnGenTree(startNb);
 			StartCoroutine(update = _Update());
 		}
 	}
@@ -32,6 +31,7 @@ public class TreeGenerator : MonoBehaviour
 
 	IEnumerator update;
 	IEnumerator _Update () {
+		CellManager.Instance.OnGenTree(startNb);
 		yield return null;
 		while (true) {
 			yield return new WaitForSeconds(genTreeInterval);

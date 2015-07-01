@@ -66,8 +66,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid:
-    total_x: 2
-    total_z: 3
+    total_x: 10
+    total_z: 10
     offset_x: 1
     offset_z: 1
     root: {x: -5, y: 0, z: -5}
