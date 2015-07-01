@@ -20,15 +20,8 @@ public class Connector : MonoBehaviour
 	
 	void OnGUI () {
 		GUILayout.Label(m,GUILayout.Width(Screen.width));
-		if ( v5GameController.Instance != null ) {
-			if ( v5GameController.Instance.players != null ) {
-				foreach ( var p in v5GameController.Instance.players ) {
-					if ( p.netID == PhotonNetwork.player.ID ) {
-						GUILayout.Label("MY ID=" + p.netID,GUILayout.Width(Screen.width/4));
-						GUILayout.Label("YOUR HP=" + p.hp,GUILayout.Width(Screen.width/4));
-					}
-				}
-			}
+		if ( CellManager.Instance != null ) {
+			CellManager.Instance._GUI();
 		}
 		GUILayout.Label(_fps,GUILayout.Width(Screen.width/2));
 	}

@@ -224,6 +224,9 @@ public class CellManager : MonoBehaviour
 	}
 
 	public void _GUI () {
+		foreach ( var p in players ) {
+			if ( p.netID == PhotonNetwork.player.ID ) p._GUI();
+		}
 		var activeTreeNb =0;
 		foreach ( var k in grid.GetCells() ) {
 			if ( k.tree != null ) {
