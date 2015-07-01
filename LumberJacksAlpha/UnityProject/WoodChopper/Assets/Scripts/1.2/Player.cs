@@ -104,6 +104,13 @@ public class Player : MonoBehaviour
 		if ( hp == 0 ) cell_manager.OnPlayerDie();
 	}
 
+	public void _GUI () {
+		GUILayout.Label("MY ID=" + netID,GUILayout.Width(Screen.width/4));
+		GUILayout.Label("MY HP=" + hp,GUILayout.Width(Screen.width/4));
+		GUILayout.Label("Chop cd=" + _chopTimer,GUILayout.Width(Screen.width/4));
+		GUILayout.Label("Plant cd=" + _plantTreeTimer,GUILayout.Width(Screen.width/4));
+	}
+
 	#region updates
 	Vector3 predictedPosition = Vector3.zero;
 	Vector3 realPos = Vector3.zero;
@@ -212,7 +219,7 @@ public class Player : MonoBehaviour
 	bool canChop;
 	bool canPlant;
 	float plantTreeCooldown = 1;
-	float _placeTreeTimer,_chopTimer;
+	float _plantTreeTimer,_chopTimer;
 	
 	void _UpdatePlant(){
 		isPlanting = Input.GetKey(keybind.plant);
@@ -222,10 +229,10 @@ public class Player : MonoBehaviour
 		if ( canPlant & isPlanting ) {
 			canPlant = false;
 			Plant(netID,currentCell.x + fx,currentCell.z + fz, xTime.Instance.time, CanFastPlant());
-			_placeTreeTimer = plantTreeCooldown;
+			_plantTreeTimer = plantTreeCooldown;
 		} else {
-			_placeTreeTimer -= Time.deltaTime;
-			if ( _placeTreeTimer <= 0 ) {
+			_plantTreeTimer -= Time.deltaTime;
+			if ( _plantTreeTimer <= 0 ) {
 				canPlant = true;
 			}
 		}

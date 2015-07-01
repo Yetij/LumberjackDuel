@@ -222,6 +222,16 @@ public class CellManager : MonoBehaviour
 		}
 		return null;
 	}
+
+	public void _GUI () {
+		var activeTreeNb =0;
+		foreach ( var k in grid.GetCells() ) {
+			if ( k.tree != null ) {
+				activeTreeNb ++;
+			}
+		}
+		GUILayout.Label("Active tree=" + activeTreeNb,GUILayout.Width(Screen.width/4));
+	}
 	#region hide
 	#if UNITY_EDITOR
 	void OnDrawGizmos () {
