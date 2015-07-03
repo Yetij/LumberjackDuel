@@ -119,11 +119,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00e1e0999eb3e5a47a5b62fd30c3f229, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  die_delay: .300000012
-  max_life_time: 100
-  startHp: 100
-  fallDelay: .150000006
-  dominoDelay: .25
+  changeSyncDelay: .0199999996
+  estimatedNetDelay: .0299999993
+  additiveDominoDelay: .300000012
+  additiveCompletelyDisapearDelay: .349999994
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

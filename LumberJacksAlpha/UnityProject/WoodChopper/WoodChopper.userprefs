@@ -2,11 +2,9 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\1.2\CellManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\1.2\Tree.cs" Line="114" Column="5" />
-      <File FileName="Assets\Scripts\1.2\Player.cs" Line="84" Column="65" />
-      <File FileName="Assets\Scripts\v5\v5Player.cs" Line="296" Column="22" />
-      <File FileName="Assets\Scripts\v5\v5Const.cs" Line="24" Column="35" />
-      <File FileName="Assets\Scripts\1.2\CellManager.cs" Line="75" Column="27" />
+      <File FileName="Assets\Scripts\1.2\Tree.cs" Line="104" Column="6" />
+      <File FileName="Assets\Scripts\1.2\CellManager.cs" Line="66" Column="10" />
+      <File FileName="Assets\Scripts\1.2\Connector.cs" Line="14" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

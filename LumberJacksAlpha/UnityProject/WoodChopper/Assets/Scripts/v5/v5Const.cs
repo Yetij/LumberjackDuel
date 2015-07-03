@@ -26,12 +26,20 @@ public class TreeGeneralSettings {
 	public float[] additiveLifeTimeStage = { 0.2f, 0.3f, 0.5f };  /* sum must be 1 */
 	public float[] sizeScale = { 0.45f, 0.7f, 1f };
 }
+
+[System.Serializable]
+public class GridMapSettings {
+	public byte total_x, total_z;
+	public float offset_x, offset_z;
+	public Vector3 root;
+}
 public class v5Const : MonoBehaviour
 {
 	public Prefabs prefabNames;
 	public ConnectionSettings netConnectionSettings;
 	public KeyboardSettings keyboardSettings;
 	public TreeGeneralSettings treeGeneralSettings;
+	public GridMapSettings gridSettings;
 	
 	private static v5Const _instance;
 	public static v5Const Instance {

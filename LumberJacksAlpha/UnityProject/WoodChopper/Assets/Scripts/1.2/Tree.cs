@@ -85,33 +85,37 @@ public class Tree : MonoBehaviour
 
 	IEnumerator fallRoutine; /* need reset */
 
-	[SerializeField] float fallDelay = 0.1f; /* should be small enough so that player could not notice */
-	[SerializeField] float estimatedNetDelay = 0.06f; /* net delay */
-	[SerializeField] float additiveDominoDelay = 0.25f; /* after starting to fall */
-	[SerializeField] float additiveCompletelyDisapearDelay = 0.25f; /* after domino */
+	[SerializeField] float changeSyncDelay = 0.02f; /* should be small enough so that player could not notice */
+	[SerializeField] float estimatedNetDelay = 0.03f; /* net delay */
+	[SerializeField] float additiveDominoDelay = 0.3f; /* after starting to fall */
+	[SerializeField] float additiveCompletelyDisapearDelay = 0.35f; /* after domino */
 
 	IEnumerator FallWaitForSync () {
-		yield return new WaitForSeconds(fallDelay); /* after this time, no more changes will be made */
+		yield return new WaitForSeconds(changeSyncDelay); /* after this time, no more changes will be made */
 		isFalling = true;
-		CellManager.Instance.OnTreeStartFalling(cell.x,cell.z, fall_dx,fall_dz,PhotonNetwork.isMasterClient);
+		CellManager.Instance.OnTreeStartFalling(cell.x,cell.z, fall_dx,fall_dz,fromMaster);
 	}
-	public void OnRealFall(int fall_dx, int fall_dy, bool fromMaster) {
-		StartCoroutine(RealFall(fall_dx, fall_dy, fromMaster));
+
+	public void OnRealFall(int fx, int fz, bool fromMaster) {
+		StartCoroutine(RealFall(fx, fz, fromMaster));
 	}
-	IEnumerator RealFall (int fall_dx, int fall_dy, bool fromMaster) {
+	IEnumerator RealFall (int fx, int fz, bool fromMaster) {
 		if ( (PhotonNetwork.isMasterClient & fromMaster) | (!PhotonNetwork.isMasterClient & !fromMaster) ) {
-			yield return new WaitForSeconds(estimatedNetDelay);
+			//yield return new WaitForSeconds(estimatedNetDelay);
 		}
-		if ( fall_dx == 1 ) animator.SetInteger(fallingHash,1);
-		else if ( fall_dx == -1 ) animator.SetInteger(fallingHash,3);
-		if ( fall_dz == 1 ) animator.SetInteger(fallingHash,0);
-		else if ( fall_dz == -1 ) animator.SetInteger(fallingHash,2);
-		
-		yield return new WaitForSeconds(additiveDominoDelay);
-		if ( PhotonNetwork.isMasterClient ) CellManager.Instance.OnTreeCollide(cell.x, cell.z,fall_dx,fall_dz, xTime.Instance.time);
-		
-		yield return new WaitForSeconds(additiveCompletelyDisapearDelay);
-		if ( PhotonNetwork.isMasterClient ) CellManager.Instance.OnTreeVanish(cell.x, cell.z);
+		if ( fx == 1 ) animator.SetInteger(fallingHash,1);
+		else if ( fx == -1 ) animator.SetInteger(fallingHash,3);
+		if ( fz == 1 ) animator.SetInteger(fallingHash,0);
+		else if ( fz == -1 ) animator.SetInteger(fallingHash,2);
+		if ( (fx == 0 & fz == 0) | (fx*fz != 0))  {
+			Debug.LogError("animation error");
+		}
+		if ( PhotonNetwork.isMasterClient ) {
+			yield return new WaitForSeconds(additiveDominoDelay);
+			CellManager.Instance.OnTreeCollide(cell.x, cell.z,fx,fz, xTime.Instance.time);
+			yield return new WaitForSeconds(additiveCompletelyDisapearDelay);
+			CellManager.Instance.OnTreeVanish(cell.x, cell.z);
+		}
 	}
 
 	public void Vanish () {
@@ -140,7 +144,7 @@ public class Tree : MonoBehaviour
 		if ( PhotonNetwork.isMasterClient ) {
 			int fx = rand[Random.Range(0,3)];
 			int fz = fx == 0? rand[Random.Range(0,2)]: 0;
-			OnBeingDamaged(fx,fz,10000f,xTime.Instance.time,PhotonNetwork.isMasterClient);
+			OnBeingDamaged(fx,fz,10000f,xTime.Instance.time,true);
 		}
 	}
 

@@ -12,7 +12,7 @@ public class Connector : MonoBehaviour
 	void Awake () {
 		Application.logMessageReceived += (message,stackTrace,type)=> { m=message; };
 	}
-	
+
 	void Update()
 	{
 		deltaTime += (Time.deltaTime - deltaTime) * 0.1f;

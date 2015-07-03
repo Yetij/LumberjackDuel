@@ -75,4 +75,17 @@ MonoBehaviour:
   - __ClientCellManagerReady
   - _TreeGrow
   - _TreeVasnish
+  - _TreeStartFalling
+  - __ClientGridMapReady
+  - __CreateGridMap
+  - __LostHP
+  - _ClientCellManagerReady
+  - _ClientGridMapReady
+  - _CreateGridMap
+  - _CreatePlayer
+  - _EndGame
+  - _PlantTree
+  - _StartGame
+  - _Ready
+  - _TreeVanish
   DisableAutoOpenWizard: 1

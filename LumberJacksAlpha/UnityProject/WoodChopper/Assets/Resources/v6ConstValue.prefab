@@ -68,6 +68,7 @@ MonoBehaviour:
   genTreeInterval: 2
   genMin: 1
   genMax: 1
+  startNb: 3
 --- !u!114 &11470378
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -104,6 +105,12 @@ MonoBehaviour:
     - .449999988
     - .699999988
     - 1
+  gridSettings:
+    total_x: 3
+    total_z: 3
+    offset_x: 1
+    offset_z: 1
+    root: {x: -5, y: 0, z: -5}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

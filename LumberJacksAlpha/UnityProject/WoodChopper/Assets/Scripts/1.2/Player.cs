@@ -76,14 +76,25 @@ public class Player : MonoBehaviour
 		_lastFz = fz;
 		
 		transform.position = currentCell.position;
+
 		last_sync_rot = transform.rotation;
+		sync_rot = transform.rotation;
+
+		positionAtLastPacket= transform.position;
+		predictedPosition = transform.position;
+
 		if ( netview.isMine ) netview.RPC("__RegMove", PhotonTargets.AllBuffered,
 		            new object[] { currentCell.x, currentCell.z , double.MinValue } );
 		
 		nextCell = null;
-		if ( PhotonNetwork.isMasterClient ) cell_manager.OnPlayerReady();
 		
 		keybind = v5Const.Instance.keyboardSettings;
+
+		netview.RPC("_Ready",PhotonTargets.MasterClient);
+	}
+
+	[RPC] void _Ready(){
+		cell_manager.OnPlayerReady();
 	}
 	#endregion
 	
@@ -99,18 +110,21 @@ public class Player : MonoBehaviour
 		animator.SetTrigger(chopHash);
 	}
 	public void OnLostHp(){
+		netview.RPC("__LostHP", PhotonTargets.All);
+	}
+
+	[RPC] void __LostHP() {
 		if ( !netview.isMine ) return;
 		hp --;
 		if ( hp == 0 ) cell_manager.OnPlayerDie();
 	}
-
 	public void _GUI () {
 		GUILayout.Label("MY ID=" + netID,GUILayout.Width(Screen.width/4));
 		GUILayout.Label("MY HP=" + hp,GUILayout.Width(Screen.width/4));
 		GUILayout.Label("Chop cd=" + _chopTimer,GUILayout.Width(Screen.width/4));
 		GUILayout.Label("Plant cd=" + _plantTreeTimer,GUILayout.Width(Screen.width/4));
 	}
-
+	
 	#region updates
 	Vector3 predictedPosition = Vector3.zero;
 	Vector3 realPos = Vector3.zero;
@@ -162,7 +176,7 @@ public class Player : MonoBehaviour
 		nextCell = next;
 		_distance = (nextCell.position - currentCell.position).magnitude;
 		_path = 0;
-		netview.RPC("__RegMove", PhotonTargets.AllBuffered,
+		netview.RPC("__RegMove", PhotonTargets.All,
 		            new object[] { nextCell.x, nextCell.z , xTime.Instance.time } );
 	}
 	
@@ -191,19 +205,28 @@ public class Player : MonoBehaviour
 
 	[RPC] void __UnRegMove (int x,int z ) {
 		var c = cell_manager.CellAt(x,z);
-		if ( c.locked == netID ) c.Free();
+		if ( c.locked == netID ) {
+			CellManager.Instance.freeCells.Add(c);
+			c.Free();
+		}
 	}
 	
 	[RPC] void __RegMove(int x,int z ,double time) {
 		var c = CellManager.Instance.CellAt(x,z);
 		if ( c.locked != -2 ) {
 			if ( time < c.lock_time ) {
+				if ( c.locked == -1 ) CellManager.Instance.freeCells.Remove(c);
 				c.lock_time = time;
 				c.locked = netID;
+
 				return;
 			}
 			else if ( time == c.lock_time ) { 
 				if ( (PhotonNetwork.isMasterClient & netview.isMine) | (!PhotonNetwork.isMasterClient & !netview.isMine) ) {
+					if ( c.locked == -2 ) {
+						c.tree.Vanish();
+					}
+					if ( c.locked == -1 ) CellManager.Instance.freeCells.Remove(c);
 					c.lock_time = time;
 					c.locked = netID;
 				}

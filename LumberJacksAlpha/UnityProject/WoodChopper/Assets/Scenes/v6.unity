@@ -126,9 +126,21 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11470378, guid: b0fe3146bf483694a975991765ccbae1, type: 2}
+      propertyPath: gridSettings.total_x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 11470378, guid: b0fe3146bf483694a975991765ccbae1, type: 2}
+      propertyPath: gridSettings.total_z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 11460070, guid: b0fe3146bf483694a975991765ccbae1, type: 2}
       propertyPath: startNb
-      value: 20
+      value: 99
+      objectReference: {fileID: 0}
+    - target: {fileID: 11401382, guid: b0fe3146bf483694a975991765ccbae1, type: 2}
+      propertyPath: init_cap
+      value: 32
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b0fe3146bf483694a975991765ccbae1, type: 2}

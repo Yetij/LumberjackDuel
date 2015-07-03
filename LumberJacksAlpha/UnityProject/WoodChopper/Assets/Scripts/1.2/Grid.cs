@@ -1,12 +1,19 @@
 using UnityEngine;
 using System.Collections.Generic;
-
-[System.Serializable]
-public class Grid {
-	public byte total_x, total_z;
-	public float offset_x, offset_z;
-	public Vector3 root;
 	
+public class Grid {
+	public readonly byte total_x,total_z;
+	public readonly float offset_x,offset_z;
+	public readonly Vector3 root;
+
+	public Grid(byte x,byte z, float offx, float offz, float rootx, float rooty, float rootz) {
+		total_x = x;
+		total_z = z;
+		offset_x  = offx;
+		offset_z = offz;
+		root = new Vector3(rootx,rooty,rootz);
+	}
+
 	Vector3 Locate ( int x, int z ) {
 		return new Vector3(x*offset_x + offset_x/2 + root.x, root.y, z * offset_z + offset_z/2 + root.z);
 	}
