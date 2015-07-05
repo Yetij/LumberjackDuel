@@ -16,9 +16,6 @@ public class xTime : MonoBehaviour
 
 	IEnumerator currentUpdateFunction;
 	double _time;
-	void Awake () {
-		var r = xTime.Instance;
-	}
 
 	public double time {
 		get {

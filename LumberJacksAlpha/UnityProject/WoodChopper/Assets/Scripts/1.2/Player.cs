@@ -1,6 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
+public class Parameters {
+	public float moveSpeed;
+	public float rotateAngleSpeed;
+	public float dmg;
+}
+
 [RequireComponent(typeof(PhotonView))]
 public class Player : MonoBehaviour
 {

@@ -112,7 +112,6 @@ public class CellManager : MonoBehaviour
 		}
 	}
 	public void OnTreeStartFalling (int x, int z, int fx, int fz,bool isFromMaster ) {
-		if ( PhotonNetwork.isMasterClient) Debug.Log("OnTreeStartFalling");
 		netview.RPC("_TreeStartFalling", PhotonTargets.All, new object[]{ x,z,fx,fz,isFromMaster });
 	}
 
@@ -128,7 +127,7 @@ public class CellManager : MonoBehaviour
 		}
 	}
 	public void OnTreeVanish(int x,int z ) {
-		netview.RPC("_TreeVanish", PhotonTargets.All, new object[]{ x,z });
+		netview.RPC("_TreeVanish", PhotonTargets.AllViaServer, new object[]{ x,z });
 	}
 	[RPC] void _TreeVanish(int x, int z ) {
 		var c = grid[x,z];
