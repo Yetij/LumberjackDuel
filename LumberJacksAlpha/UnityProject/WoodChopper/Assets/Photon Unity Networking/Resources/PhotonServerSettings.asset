@@ -88,4 +88,7 @@ MonoBehaviour:
   - _StartGame
   - _Ready
   - _TreeVanish
+  - __ClientCellControllerOk
+  - __ClientGridMapOk
+  - _SetTurn
   DisableAutoOpenWizard: 1

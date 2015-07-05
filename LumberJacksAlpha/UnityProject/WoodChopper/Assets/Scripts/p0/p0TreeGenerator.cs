@@ -1,20 +1,20 @@
 using UnityEngine;
 using System.Collections;
 
-public class TreeGenerator : MonoBehaviour
+public class p0TreeGenerator : MonoBehaviour
 {	
 	#region hide
-	private static TreeGenerator _instance;
-	public static TreeGenerator Instance {
+	private static p0TreeGenerator _instance;
+	public static p0TreeGenerator Instance {
 		get {
 			if ( _instance == null ) {
-				_instance = GameObject.FindObjectOfType(typeof(TreeGenerator)) as TreeGenerator;
+				_instance = GameObject.FindObjectOfType(typeof(p0TreeGenerator)) as p0TreeGenerator;
 			}
 			return _instance;
 		}
 	}
 	#endregion
-
+	
 	public void OnGameStart () {
 		if ( PhotonNetwork.isMasterClient ) {
 			StartCoroutine(update = _Update());
@@ -24,11 +24,11 @@ public class TreeGenerator : MonoBehaviour
 		if ( PhotonNetwork.isMasterClient )
 			StopCoroutine(update);
 	}
-
+	
 	public float genTreeInterval;
 	public int genMin,genMax;
 	public int startNb;
-
+	
 	IEnumerator update;
 	IEnumerator _Update () {
 		yield return null;
