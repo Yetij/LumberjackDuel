@@ -101,7 +101,7 @@ public class Player : MonoBehaviour
 	}
 
 	[RPC] void _Ready(){
-		cell_manager.OnPlayerReady();
+		CellManager.Instance.OnPlayerReady();
 	}
 	#endregion
 	
