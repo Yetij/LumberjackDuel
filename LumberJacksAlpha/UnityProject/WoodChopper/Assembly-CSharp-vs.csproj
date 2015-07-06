@@ -173,6 +173,7 @@
      <Compile Include="Assets\Scripts\p0\p0Const.cs" />
      <Compile Include="Assets\Scripts\p0\p0Grid.cs" />
      <Compile Include="Assets\Scripts\p0\p0Player.cs" />
+     <Compile Include="Assets\Scripts\p0\p0TreeGenerator.cs" />
      <Compile Include="Assets\Scripts\v5\v5Const.cs" />
      <Compile Include="Assets\Scripts\v5\xTime.cs" />
      <Compile Include="Assets\SimpleAds.cs" />

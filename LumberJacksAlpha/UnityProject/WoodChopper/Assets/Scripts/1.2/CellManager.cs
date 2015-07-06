@@ -205,7 +205,7 @@ public class CellManager : MonoBehaviour
 	[RPC] void _OnPlayerPlant(int id, int x,int z, int fx,int fz, double time, bool canFastPlant ) {
 		var c = grid[x,z];
 		if ( c != null ) {
-			if ( (time < c.lock_time & c.locked != -2) | canFastPlant ) {
+			if ( (time < c.lock_time & c.locked != -2) | (canFastPlant & c.locked == id) ) {
 				TreePool.Instance.Get().AttachToCell(c,time);
 				return;
 			}
