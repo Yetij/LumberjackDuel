@@ -32,7 +32,10 @@ public class TreeGenerator : MonoBehaviour
 	IEnumerator update;
 	IEnumerator _Update () {
 		yield return null;
-		CellManager.Instance.OnGenTree(startNb);
+		for ( int k = 0; k < startNb; k ++ ) {
+			CellManager.Instance.OnGenTree(Random.Range(1,3));
+			yield return new WaitForSeconds(Random.value*0.4f);
+		}
 		yield return null;
 		while (true) {
 			yield return new WaitForSeconds(genTreeInterval);
