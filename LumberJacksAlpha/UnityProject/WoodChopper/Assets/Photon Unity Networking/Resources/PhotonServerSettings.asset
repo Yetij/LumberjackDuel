@@ -91,4 +91,8 @@ MonoBehaviour:
   - __ClientCellControllerOk
   - __ClientGridMapOk
   - _SetTurn
+  - __AllStarted
+  - _EndTurn
+  - _StartTurn
+  - _PlayerReady
   DisableAutoOpenWizard: 1

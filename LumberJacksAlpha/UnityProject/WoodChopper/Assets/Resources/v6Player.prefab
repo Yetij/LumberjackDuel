@@ -2113,8 +2113,8 @@ MonoBehaviour:
     dmg: 500
   netview: {fileID: 0}
   netID: 0
-  chopCooldown: 1
-  plantCooldown: 1
+  chopCooldown: 2
+  plantCooldown: .5
 --- !u!137 &13747886
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

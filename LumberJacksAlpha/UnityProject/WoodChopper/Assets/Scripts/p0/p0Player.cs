@@ -16,6 +16,8 @@ public class p0Player : MonoBehaviour
 	readonly Quaternion q_10 = Quaternion.Euler(0,-90,0);
 
 	public TurnState myTurnState { get; private set; }
+	public float turnTime;
+
 	TurnState globalTurnState;
 	p0CellController cellController;
 
@@ -23,17 +25,30 @@ public class p0Player : MonoBehaviour
 		
 	p0Const _const;
 
-	public PhotonView netview;
+	[HideInInspector] public PhotonView netview;
 	/* public events */
 	#region public events
 	public void OnGameStart () {
 	}
+	public void OnGameEnd () {
+	}
+	
+	bool isMyTurn;
+	float localTimer = 0;
+	public void OnStartTurn () {
+		isMyTurn = true;
+		localTimer = 0;
+	}
 
+	public void _GUI () {
+		if ( isMyTurn & netview.isMine) GUILayout.Label("timer ="+ localTimer );
+	}
+	public void OnEndTurn () {
+		isMyTurn = false;
+	}
 	#endregion
 
-	#region internal functions
 	void Start () {
-		myTurnState = PhotonNetwork.isMasterClient? TurnState.P1: TurnState.P2;
 		netview = GetComponent<PhotonView>();
 		_const = p0Const.Instance;
 
@@ -44,20 +59,33 @@ public class p0Player : MonoBehaviour
 			currentCell = netview.isMine ? host : client;
 			transform.rotation = netview.isMine ? q01 : q0_1;
 			fz =  netview.isMine ? 1 : -1;
+			myTurnState = netview.isMine ? TurnState.P1: TurnState.P2;
 		} else {
 			currentCell = netview.isMine ? client : host;
 			transform.rotation = netview.isMine ? q0_1 : q01;
 			fz =  netview.isMine ? -1 : 1;
+			myTurnState = netview.isMine ?  TurnState.P2 : TurnState.P1;
 		}
+		fx = 0;
+		nextRotation = Dir(fx,fz);
 
 		nextCell = null;
 		transform.position = currentCell.position;
+
+		if ( netview.isMine ) netview.RPC("_PlayerReady", PhotonTargets.MasterClient );
+
+	}
+
+	[RPC] void _PlayerReady () {
+		Debug.Log("Player ready");
+		p0CellController.Instance.OnPlayerReady();
 	}
 
 	bool isMoving, isPlanting, isChopping;
 	int fx,fz;
-
 	p0Cell currentCell,nextCell;
+
+	#region hide
 	
 	float _path;
 	float _distance;
@@ -76,8 +104,8 @@ public class p0Player : MonoBehaviour
 
 	void _UpdateMoveState () {
 		var _fx = (int)Input.GetAxisRaw("Horizontal");
-		var _fz = fx == 0 ? (int) Input.GetAxisRaw("Vertical"): 0;
-		isMoving = (_fx * _fz != 0 );
+		var _fz = _fx == 0 ? (int) Input.GetAxisRaw("Vertical"): 0;
+		isMoving = (_fx + _fz != 0 );
 		if ( isMoving ) {
 			var c = cellController.CellAt(currentCell.x + _fx, currentCell.z + _fz );
 			if ( c != null ) {
@@ -101,7 +129,10 @@ public class p0Player : MonoBehaviour
 				
 				fx = _fx;
 				fz = _fz;
-			} else isMoving = false;
+			} else {
+				Debug.Log("c == null ");
+				isMoving = false;
+			}
 		}
 	}
 	bool reverseMode;
@@ -110,6 +141,7 @@ public class p0Player : MonoBehaviour
 			_path += Time.deltaTime * parameters.moveSpeed;
 			transform.position = Vector3.Lerp(currentCell.position,nextCell.position, _path/_distance);
 			if ( transform.position == nextCell.position ) {
+				Debug.Log("cell reached");
 				currentCell = nextCell;
 				nextCell = null;
 			}
@@ -119,51 +151,58 @@ public class p0Player : MonoBehaviour
 			_rotPath += Time.deltaTime * parameters.rotateAngleSpeed;
 			transform.rotation = Quaternion.Lerp(lastRotation,nextRotation,_rotPath/_rotDistance);
 			if ( Quaternion.Angle(transform.rotation,nextRotation ) < 1f ) {
+				Debug.Log("rotation reached");
 				transform.rotation = nextRotation;
 				lastRotation = nextRotation;
 			}
 		}
 
-		isMoving = ( nextCell == null & lastRotation == nextRotation );
+		isMoving = !( nextCell == null & lastRotation == nextRotation );
 	}
 
 
+	#endregion
 	void Update () {
-		if ( netview.isMine & cellController.globalState == myTurnState) {
-			if ( !isMoving ) {
-				_UpdateMoveState();
-			} else {
+		if ( netview.isMine ) {
+			if ( isMoving ) {
+				Debug.Log("isMoving=true");
 				_UpdateMove();
+			}
+			if ( !isMyTurn  ) return;
+
+			if ( !isMoving ) {
+				Debug.Log("isMoving=false");
+				_UpdateMoveState();
 			}
 
 			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & isMoving;
 			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & isMoving;
 
+			localTimer += Time.deltaTime;
 		} else {
 			_UpdateSync();
 		}
 	}
-	#endregion
 
-	public float predictStrength = 0.2f;
 	#region sync
+	public float predictStrength = 0.2f;
 	Vector3 predictedPosition = Vector3.zero;
 	Vector3 realPos = Vector3.zero;
 	Vector3 positionAtLastPacket = Vector3.zero;
 	float currentTime = 0f;
 	double currentPacketTime = 0.0;
-	double timeToReachGoal = 0.0;
+	double timeToReachGoal = -1f;
 
-	float currentY, angleDif;
+	float currentY, angleDif=-1f;
 	Quaternion last_sync_rot;
 	Quaternion sync_rot;
 
 	void _UpdateSync(){
 		currentTime += Time.deltaTime;
-		transform.position = Vector3.Lerp(positionAtLastPacket, predictedPosition, (float)(currentTime / timeToReachGoal));
+		if( currentTime <= timeToReachGoal) transform.position = Vector3.Lerp(positionAtLastPacket, predictedPosition, (float)(currentTime / timeToReachGoal));
 		
 		currentY += Time.deltaTime*parameters.rotateAngleSpeed;
-		transform.rotation= Quaternion.Lerp(last_sync_rot,sync_rot,currentY/angleDif);
+		if ( currentY <= angleDif ) transform.rotation= Quaternion.Lerp(last_sync_rot,sync_rot,currentY/angleDif);
 	}
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -194,7 +233,7 @@ public class p0Player : MonoBehaviour
 			
 			predictedPosition = realPos + dp*predictStrength;
 			timeToReachGoal = info.timestamp - currentPacketTime;
-			if( timeToReachGoal > 1 ) timeToReachGoal = 0.3f;
+			if( timeToReachGoal > 1 ) timeToReachGoal = 0.2f;
 			
 			currentPacketTime = info.timestamp;
 			

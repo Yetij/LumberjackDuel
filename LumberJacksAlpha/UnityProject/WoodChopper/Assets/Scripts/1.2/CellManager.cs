@@ -154,7 +154,7 @@ public class CellManager : MonoBehaviour
 		var c = grid[x,z];
 		if ( c != null ) {
 			if ( c.tree == null ) {
-				Debug.LogError("_TreeGrow: null\nat x="+x+ " z="+z+ " isMaster="+PhotonNetwork.isMasterClient);
+				Debug.Log("_TreeGrow: null\nat x="+x+ " z="+z+ ", its ok, no panic");
 				//pool.Get().AttachToCell(c,xTime.Instance.time);
 			}
 			else {

@@ -14,6 +14,9 @@ public class p0Connector : MonoBehaviour
 	
 	void OnGUI () {
 		GUILayout.Label(m,GUILayout.Width(Screen.width));
+		if ( p0CellController.Instance != null ) {
+			p0CellController.Instance._GUI();
+		}
 		GUILayout.Label(_fps,GUILayout.Width(Screen.width/2));
 	}
 	

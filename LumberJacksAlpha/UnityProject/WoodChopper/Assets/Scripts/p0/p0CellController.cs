@@ -34,9 +34,10 @@ public class p0CellController : MonoBehaviour
 
 	void Start () {
 		netview = GetComponent<PhotonView>();
-		
+		globalState = TurnState.None;
 		_const = p0Const.Instance;
 	
+		Debug.Log("Cell controller created");
 		if ( !PhotonNetwork.isMasterClient) netview.RPC("__ClientCellControllerOk",PhotonTargets.MasterClient);
 	}
 
@@ -56,6 +57,7 @@ public class p0CellController : MonoBehaviour
 	[RPC] void __CreateGridMap (byte x,byte z, float offx, float offz, float rootx, float rooty, float rootz) {
 		grid = new p0Grid(x,z,offx,offz,rootx,rooty,rootz);
 		var cells = grid.GetCells();
+		Debug.Log("Grid map created");
 		if ( !PhotonNetwork.isMasterClient) netview.RPC("__ClientGridMapOk",PhotonTargets.MasterClient);
 	}
 
@@ -65,34 +67,99 @@ public class p0CellController : MonoBehaviour
 
 	[RPC] void __CreatePlayer () {
 		PhotonNetwork.Instantiate(p0Const.Instance.prefabNames._Player,new Vector3(0,0,0),Quaternion.identity,0);
+		Debug.Log("Players created, waiting for game to start");
 	}
 
-	List<p0Player> players;	
+	bool run;
+
+	public List<p0Player> players { get; private set; }	
 	[RPC] void __StartGame () {
 		Debug.Log("Game started");
+
 		xTime.Instance.OnGameStart();
 		var l = GameObject.FindObjectsOfType(typeof(p0Player)) as p0Player[];
-		players.AddRange(l);
+		players = new List<p0Player>(l);
+
 		foreach ( var p in l ) {
 			p.OnGameStart();
 		}
+		if ( !PhotonNetwork.isMasterClient) netview.RPC("__AllStarted",PhotonTargets.MasterClient);
 	}
-	
+
+	[RPC] void __AllStarted() {
+		run = true;
+		Debug.Log("First turn begins");
+		if ( PhotonNetwork.isMasterClient) {
+			currentTurn = Random.Range(0,2);
+			StartNewTurn();
+		}
+	}
+
+	float _timer=0;
+	float currentTurnTime=0;
+	float currentTimeScale=0;
+
+	static TurnState[] states = { TurnState.P1, TurnState.P2 };
+	int currentTurn = 0;
+
+	void Update () {
+		if ( run & PhotonNetwork.isMasterClient ) {
+			_UpdateTurnState ();
+		}
+	}
+
+	void _UpdateTurnState () {
+		if ( _timer > currentTurnTime ) {
+			EndCurrentTurn ();
+			currentTurn = ++currentTurn%2;
+			StartNewTurn ();
+		}
+		_timer += Time.deltaTime;
+	}
+	void EndCurrentTurn () {
+		netview.RPC("_EndTurn",PhotonTargets.All,(byte) states[currentTurn]);
+	}
+
+	[RPC] void _EndTurn(byte state ) {
+		var p = GetPlayer((TurnState) state);
+		p.OnEndTurn();
+	}
+
+	void StartNewTurn () {
+		netview.RPC("_StartTurn",PhotonTargets.All, (byte) states[currentTurn] );
+	}
+	int turn=0;
+	[RPC] void _StartTurn(byte state ) {
+		turn ++;
+		Debug.Log("Next turn begins: "+ turn);
+		globalState = (TurnState ) state;
+		_timer = 0;
+		var p = GetPlayer(globalState);
+		currentTurnTime = p.turnTime;
+		p.OnStartTurn();
+	}
+
+	p0Player GetPlayer (TurnState state ) {
+		foreach ( var p in players ) {
+			if ( p.myTurnState == state ) return p;
+		}
+		throw new UnityException("error");
+	}
+
 	[RPC] void __EndGame () {
 		Debug.LogError("GAME END!");
-
+		foreach ( var p in players ) {
+			p.OnGameEnd();
+		}
 	}
+
+
 
 	#endregion
 
 	public TurnState globalState { get; private set; }
-	void SetTurn(TurnState state ) {
-		netview.RPC("_SetTurn",PhotonTargets.All, (byte) state);
-	}
 
-	[RPC] void _SetTurn(byte state ) {
-		globalState = (TurnState ) state;
-	}
+
 
 
 	/* public functions */
@@ -132,7 +199,11 @@ public class p0CellController : MonoBehaviour
 
 	#region debug gui
 	public void _GUI () {
-
+		if ( players != null ) {
+			foreach ( var p in players ) {
+				p._GUI();
+			}
+		}
 	}
 	#if UNITY_EDITOR
 	void OnDrawGizmos () {

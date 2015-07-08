@@ -103,6 +103,7 @@ public class Player : MonoBehaviour
 	[RPC] void _Ready(){
 		CellManager.Instance.OnPlayerReady();
 	}
+
 	#endregion
 	
 	public bool isOnCell (int x, int z ) {
