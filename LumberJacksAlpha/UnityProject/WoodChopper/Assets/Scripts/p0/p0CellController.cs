@@ -18,7 +18,7 @@ public class p0CellController : MonoBehaviour
 	}
 	#endregion
 	
-	[SerializeField] p0Grid grid;
+	p0Grid grid;
 	public byte gridX {
 		get {
 			return grid.total_x;
@@ -36,7 +36,8 @@ public class p0CellController : MonoBehaviour
 		netview = GetComponent<PhotonView>();
 		globalState = TurnState.None;
 		_const = p0Const.Instance;
-	
+		grid = GetComponent<p0Grid>();
+
 		Debug.Log("Cell controller created");
 		if ( !PhotonNetwork.isMasterClient) netview.RPC("__ClientCellControllerOk",PhotonTargets.MasterClient);
 	}
@@ -55,7 +56,7 @@ public class p0CellController : MonoBehaviour
 	}
 
 	[RPC] void __CreateGridMap (byte x,byte z, float offx, float offz, float rootx, float rooty, float rootz) {
-		grid = new p0Grid(x,z,offx,offz,rootx,rooty,rootz);
+		grid.Init(x,z,offx,offz,rootx,rooty,rootz);
 		var cells = grid.GetCells();
 		Debug.Log("Grid map created");
 		if ( !PhotonNetwork.isMasterClient) netview.RPC("__ClientGridMapOk",PhotonTargets.MasterClient);
@@ -160,8 +161,6 @@ public class p0CellController : MonoBehaviour
 	public TurnState globalState { get; private set; }
 
 
-
-
 	/* public functions */
 	#region public functions
 	public p0Cell CellAt(int x, int z) {
@@ -193,6 +192,41 @@ public class p0CellController : MonoBehaviour
 		if ( _count == PhotonNetwork.room.maxPlayers  ) {
 			netview.RPC("__StartGame",PhotonTargets.AllViaServer);
 		}
+	}
+
+	public void OnPlayerRegMove (int id, int x, int z ) {
+		var c = grid[x,z];
+		if ( c.locked == -1 ) {
+			c.locked = id;
+			c.HighlightGround();
+			if ( players != null ) GetPlayer(id).ConsumeActionPoint(1); /* first call from Start function wont take effect */
+		}
+	}
+
+	public void OnPlayerUnRegMove (int x, int z ) {
+		grid[x,z].locked = -1;
+		grid[x,z].UnHighlightGround();
+	}
+
+	public void OnPlayerEndTurn (byte turn ) {
+		if ( (TurnState) turn == globalState ) {
+			EndCurrentTurn ();
+			currentTurn = ++currentTurn%2;
+			StartNewTurn ();
+		}
+	}
+
+	public void OnPlayerTryPlant (int id,int x, int z ) {
+		var c = grid[x,z];
+		if ( c.locked == -1 ) {
+			netview.RPC("_OnPlant", PhotonTargets.All,id,x,z);
+		}
+	}
+	[RPC] void _OnPlant (int id,int x, int z ) {
+		var c = grid[x,z];
+		c.locked = -2;
+		c.RegPlant();
+		GetPlayer(id).ConsumeActionPoint(1);
 	}
 	#endregion
 

@@ -95,4 +95,8 @@ MonoBehaviour:
   - _EndTurn
   - _StartTurn
   - _PlayerReady
+  - RegMove
+  - UnRegMove
+  - ManualEndTurn
+  - _OnPlant
   DisableAutoOpenWizard: 1

@@ -2105,10 +2105,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cde798609cb72e4d9dcc1855ba1a551, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnTime: 5
+  turnTime: 10
+  actionPoints: 4
   parameters:
-    moveSpeed: 6
-    rotateAngleSpeed: 720
+    moveSpeed: 1.5
+    rotateAngleSpeed: 540
     dmg: 500
   netview: {fileID: 0}
   predictStrength: .200000003

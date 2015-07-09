@@ -93,6 +93,7 @@ MonoBehaviour:
     chop: 111
     plant: 112
   gridSettings:
+    cell: {fileID: 194694, guid: 362f8a35247a10f4d84366231ed3b652, type: 2}
     total_x: 10
     total_z: 10
     offset_x: 1

@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 444246}
   - 114: {fileID: 11411204}
   - 114: {fileID: 11489146}
+  - 114: {fileID: 11474142}
   m_Layer: 0
   m_Name: p0CellController
   m_TagString: Untagged
@@ -54,6 +55,17 @@ MonoBehaviour:
   viewIdField: 0
   instantiationId: -1
   isRuntimeInstantiated: 0
+--- !u!114 &11474142
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 154118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20665b7ecc783cf479e4163b726f9b76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11489146
 MonoBehaviour:
   m_ObjectHideFlags: 1

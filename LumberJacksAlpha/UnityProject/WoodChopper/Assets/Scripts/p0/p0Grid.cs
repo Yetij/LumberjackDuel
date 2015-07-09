@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class p0Grid {
-	public readonly byte total_x,total_z;
-	public readonly float offset_x,offset_z;
-	public readonly Vector3 root;
+public class p0Grid : MonoBehaviour {
+	public byte total_x { get; private set; }
+	public byte total_z { get; private set; }
+	public float offset_x { get; private set; }
+	public float offset_z { get; private set; }
+	public Vector3 root { get; private set; } 
 	
-	public p0Grid(byte x,byte z, float offx, float offz, float rootx, float rooty, float rootz) {
+	public void Init (byte x,byte z, float offx, float offz, float rootx, float rooty, float rootz) {
 		total_x = x;
 		total_z = z;
 		offset_x  = offx;
@@ -17,8 +19,7 @@ public class p0Grid {
 	Vector3 Locate ( int x, int z ) {
 		return new Vector3(x*offset_x + offset_x/2 + root.x, root.y, z * offset_z + offset_z/2 + root.z);
 	}
-	
-	
+
 	public p0Cell this[int x,int z] {
 		get {
 			return IsValidIndex(x,z)? cells[x,z]: null;
@@ -29,15 +30,21 @@ public class p0Grid {
 	
 	public p0Cell[,]  GetCells () {
 		if ( cells != null ) return cells;
+		if ( root == null ) throw new UnityException("Grid params not initialized");
 		cells = new p0Cell[total_x,total_z];
 		for(int _z = 0; _z < total_z; _z ++ ) {
 			for ( int _x = 0; _x < total_x ; _x ++ ) {
-				p0Cell c = new p0Cell();
+				var g = Instantiate ( p0Const.Instance.gridSettings.cell);
+				g.transform.parent = gameObject.transform;
+
+				p0Cell c = g.GetComponent<p0Cell>();
 				c.x = _x;
 				c.z = _z;
 				c.position = Locate(_x,_z);
 				c.Free();
 				cells[_x,_z] = c;
+
+				g.transform.position = c.position;
 			}
 		}
 		for(int _z = 0; _z < total_z; _z ++ ) {

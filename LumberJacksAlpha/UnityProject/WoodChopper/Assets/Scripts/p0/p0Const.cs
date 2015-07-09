@@ -22,6 +22,7 @@ public class p0KeyboardSettings {
 
 [System.Serializable]
 public class p0GridMapSettings {
+	public GameObject cell;
 	public byte total_x, total_z;
 	public float offset_x, offset_z;
 	public Vector3 root;
@@ -43,6 +44,6 @@ public class p0Const : MonoBehaviour
 			return _instance;
 		}
 	}
-	
+
 }
 

@@ -17,6 +17,8 @@ public class p0Player : MonoBehaviour
 
 	public TurnState myTurnState { get; private set; }
 	public float turnTime;
+	public int actionPoints;
+	int _actionPoints;
 
 	TurnState globalTurnState;
 	p0CellController cellController;
@@ -30,6 +32,7 @@ public class p0Player : MonoBehaviour
 	#region public events
 	public void OnGameStart () {
 	}
+
 	public void OnGameEnd () {
 	}
 	
@@ -37,15 +40,28 @@ public class p0Player : MonoBehaviour
 	float localTimer = 0;
 	public void OnStartTurn () {
 		isMyTurn = true;
-		localTimer = 0;
+		localTimer = turnTime;
+		_actionPoints = actionPoints;
 	}
 
 	public void _GUI () {
-		if ( isMyTurn & netview.isMine) GUILayout.Label("timer ="+ localTimer );
+		if ( netview.isMine) {
+			GUILayout.Label("timer ="+ (localTimer < 0 ? "0.0" : localTimer.ToString("0.0")) );
+			GUILayout.Label("action points ="+ _actionPoints );
+			if ( isMyTurn ) {
+				GUILayout.Button("Reset action (disabled)", GUILayout.Width(100));
+				if ( GUILayout.Button("End turn", GUILayout.Width(100)) ) {
+					isMyTurn = false;
+					localTimer = 0;
+					netview.RPC("ManualEndTurn", PhotonTargets.MasterClient, (byte) myTurnState);
+				}
+			}
+		}
 	}
 	public void OnEndTurn () {
 		isMyTurn = false;
 	}
+
 	#endregion
 
 	void Start () {
@@ -72,8 +88,11 @@ public class p0Player : MonoBehaviour
 		nextCell = null;
 		transform.position = currentCell.position;
 
-		if ( netview.isMine ) netview.RPC("_PlayerReady", PhotonTargets.MasterClient );
+		p0CellController.Instance.OnPlayerRegMove(netview.owner.ID,currentCell.x, currentCell.z);
 
+		if ( netview.isMine ) {
+			netview.RPC("_PlayerReady", PhotonTargets.MasterClient );
+		}
 	}
 
 	[RPC] void _PlayerReady () {
@@ -112,11 +131,11 @@ public class p0Player : MonoBehaviour
 				nextCell = c;
 				
 				_path = 0;
-				_distance = (nextCell.position - currentCell.position).magnitude;
+				_distance = (nextCell.position - transform.position).magnitude;
 				
 				if  ( fx != _fx | fz != _fz) {
 					nextRotation = Dir (_fx,_fz);
-					lastRotation =   transform.rotation;
+					lastRotation = transform.rotation;
 					if ( reverseMode ) {
 						var q = lastRotation.eulerAngles;
 						lastRotation = Quaternion.Euler(new Vector3(q.x,q.y-180,q.z));
@@ -129,19 +148,27 @@ public class p0Player : MonoBehaviour
 				
 				fx = _fx;
 				fz = _fz;
-			} else {
-				Debug.Log("c == null ");
-				isMoving = false;
-			}
+			} else isMoving = false;
+		}
+		if ( isMoving ) {
+			netview.RPC("RegMove", PhotonTargets.All,netview.owner.ID,currentCell.x + _fx, currentCell.z + _fz);
 		}
 	}
+
+	[RPC] void RegMove(int id, int x, int z ) {
+		cellController.OnPlayerRegMove(id,x,z);
+	}
+
+	[RPC] void UnRegMove(int x, int z ) {
+		cellController.OnPlayerUnRegMove(x,z);
+	}		                            
 	bool reverseMode;
 	void _UpdateMove () {
 		if( nextCell != null ) {
 			_path += Time.deltaTime * parameters.moveSpeed;
 			transform.position = Vector3.Lerp(currentCell.position,nextCell.position, _path/_distance);
-			if ( transform.position == nextCell.position ) {
-				Debug.Log("cell reached");
+			if ( transform.position == nextCell.position ) {		
+				netview.RPC("UnRegMove", PhotonTargets.All,currentCell.x , currentCell.z );
 				currentCell = nextCell;
 				nextCell = null;
 			}
@@ -151,34 +178,49 @@ public class p0Player : MonoBehaviour
 			_rotPath += Time.deltaTime * parameters.rotateAngleSpeed;
 			transform.rotation = Quaternion.Lerp(lastRotation,nextRotation,_rotPath/_rotDistance);
 			if ( Quaternion.Angle(transform.rotation,nextRotation ) < 1f ) {
-				Debug.Log("rotation reached");
 				transform.rotation = nextRotation;
 				lastRotation = nextRotation;
 			}
 		}
 
-		isMoving = !( nextCell == null & lastRotation == nextRotation );
+		if ( nextCell == null & transform.rotation == nextRotation ) {
+			isMoving = false;
+		}
+	}
+	public void ConsumeActionPoint(int i) {
+		_actionPoints -= i;
 	}
 
+	[RPC] void ManualEndTurn (byte playerTurn) {
+		cellController.OnPlayerEndTurn(playerTurn);
+	}
 
 	#endregion
 	void Update () {
 		if ( netview.isMine ) {
 			if ( isMoving ) {
-				Debug.Log("isMoving=true");
 				_UpdateMove();
 			}
-			if ( !isMyTurn  ) return;
+			if ( !isMyTurn  | _actionPoints <= 0 ) {
+				if ( _actionPoints <= 0 ) Debug.Log("out of action points");
+				return;
+			}
 
 			if ( !isMoving ) {
-				Debug.Log("isMoving=false");
 				_UpdateMoveState();
 			}
 
-			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & isMoving;
-			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & isMoving;
+			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & !isMoving;
+			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & !isMoving;
 
-			localTimer += Time.deltaTime;
+			if( isPlanting ) {
+				cellController.OnPlayerTryPlant(netview.owner.ID,currentCell.x+ fx, currentCell.z + fz);
+			}
+
+			if( isChopping ) {
+			}
+
+			localTimer -= Time.deltaTime;
 		} else {
 			_UpdateSync();
 		}
