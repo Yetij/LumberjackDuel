@@ -49,8 +49,8 @@ public class p0Player : MonoBehaviour
 			GUILayout.Label("timer ="+ (localTimer < 0 ? "0.0" : localTimer.ToString("0.0")) );
 			GUILayout.Label("action points ="+ _actionPoints );
 			if ( isMyTurn ) {
-				GUILayout.Button("Reset action (disabled)", GUILayout.Width(100));
-				if ( GUILayout.Button("End turn", GUILayout.Width(100)) ) {
+				GUILayout.Button("Reset action (disabled)", GUILayout.Width(200));
+				if ( GUILayout.Button("End turn", GUILayout.Width(200)) ) {
 					isMyTurn = false;
 					localTimer = 0;
 					netview.RPC("ManualEndTurn", PhotonTargets.MasterClient, (byte) myTurnState);
