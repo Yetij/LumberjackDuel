@@ -40,6 +40,8 @@ public class p0Player : MonoBehaviour
 	float localTimer = 0;
 	public void OnStartTurn () {
 		isMyTurn = true;
+		canChop = true;
+		canPlant = true;
 		localTimer = turnTime;
 		_actionPoints = actionPoints;
 	}
@@ -48,6 +50,8 @@ public class p0Player : MonoBehaviour
 		if ( netview.isMine) {
 			GUILayout.Label("timer ="+ (localTimer < 0 ? "0.0" : localTimer.ToString("0.0")) );
 			GUILayout.Label("action points ="+ _actionPoints );
+			GUILayout.Label("can chop = "+ canChop );
+			GUILayout.Label("can plant = "+ canPlant );
 			if ( isMyTurn ) {
 				GUILayout.Button("Reset action (disabled)", GUILayout.Width(200));
 				if ( GUILayout.Button("End turn", GUILayout.Width(200)) ) {
@@ -154,7 +158,9 @@ public class p0Player : MonoBehaviour
 			netview.RPC("RegMove", PhotonTargets.All,netview.owner.ID,currentCell.x + _fx, currentCell.z + _fz);
 		}
 	}
-
+	string GetName () {
+		return myTurnState == TurnState.P1? "Player1 " : "Player2 ";
+	}
 	[RPC] void RegMove(int id, int x, int z ) {
 		cellController.OnPlayerRegMove(id,x,z);
 	}
@@ -195,6 +201,9 @@ public class p0Player : MonoBehaviour
 		cellController.OnPlayerEndTurn(playerTurn);
 	}
 
+	bool canPlant, canChop;
+	public float plantCooldown=1 , chopCooldown =1;
+	float _plantTimer, _chopTimer;
 	#endregion
 	void Update () {
 		if ( netview.isMine ) {
@@ -202,7 +211,6 @@ public class p0Player : MonoBehaviour
 				_UpdateMove();
 			}
 			if ( !isMyTurn  | _actionPoints <= 0 ) {
-				if ( _actionPoints <= 0 ) Debug.Log("out of action points");
 				return;
 			}
 
@@ -210,20 +218,55 @@ public class p0Player : MonoBehaviour
 				_UpdateMoveState();
 			}
 
-			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & !isMoving;
-			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & !isMoving;
+			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & !isMoving & canPlant;
+			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & !isMoving & canChop;
 
-			if( isPlanting ) {
-				cellController.OnPlayerTryPlant(netview.owner.ID,currentCell.x+ fx, currentCell.z + fz);
+			if( isPlanting & canPlant) {
+				canPlant = false;
+				_plantTimer = plantCooldown;
+				var tree_x = currentCell.x+ fx;
+				var tree_z = currentCell.z + fz;
+				if ( cellController.FreeCell(tree_x,tree_z ) ) {
+					netview.RPC("DoPlant", PhotonTargets.All, tree_x,tree_z);
+				}
+			} else if ( !canPlant ) {
+				_plantTimer -= Time.deltaTime;
+				if ( _plantTimer < 0 ) {
+					canPlant = true;
+				}
 			}
 
-			if( isChopping ) {
+			if( isChopping & canChop ) {
+				canChop = false;
+				_chopTimer = chopCooldown;
+				var tree_x = currentCell.x+ fx;
+				var tree_z = currentCell.z + fz;
+				if ( cellController.HasTree (tree_x, tree_z )) {
+					netview.RPC("DoChop", PhotonTargets.All, tree_x,tree_z,fx,fz);
+				}
+			} else if ( !canChop ) {
+				_chopTimer -= Time.deltaTime;
+				if ( _chopTimer < 0 ) {
+					canChop = true;
+				}
 			}
 
 			localTimer -= Time.deltaTime;
 		} else {
 			_UpdateSync();
 		}
+	}
+
+	[RPC] void DoChop (int x ,int z , int fx, int fz) {
+		cellController.OnPlayerChop(x,z,fx,fz);
+		ConsumeActionPoint(1);
+		Debug.Log(GetName() + " do chop");
+	}
+
+	[RPC] void DoPlant (int x ,int z) {
+		cellController.OnPlayerPlant(x,z);
+		ConsumeActionPoint(1);
+		Debug.Log(GetName() + " do plant");
 	}
 
 	#region sync

@@ -132,7 +132,6 @@ public class p0CellController : MonoBehaviour
 	int turn=0;
 	[RPC] void _StartTurn(byte state ) {
 		turn ++;
-		Debug.Log("Next turn begins: "+ turn);
 		globalState = (TurnState ) state;
 		_timer = 0;
 		var p = GetPlayer(globalState);
@@ -194,6 +193,20 @@ public class p0CellController : MonoBehaviour
 		}
 	}
 
+	public bool HasTree ( int x, int z ) {
+		var c = grid[x,z];
+		if ( c == null ) return false;
+		if ( c.locked != -2 ) return false;
+		return true;
+	}
+
+	public bool FreeCell (int x, int z ) {
+		var c = grid[x,z];
+		if ( c == null ) return false;
+		if ( c.locked != -1 ) return false;
+		return true;
+	}
+
 	public void OnPlayerRegMove (int id, int x, int z ) {
 		var c = grid[x,z];
 		if ( c.locked == -1 ) {
@@ -201,6 +214,11 @@ public class p0CellController : MonoBehaviour
 			c.HighlightGround();
 			if ( players != null ) GetPlayer(id).ConsumeActionPoint(1); /* first call from Start function wont take effect */
 		}
+	}
+
+	public void OnPlayerChop (int x ,int z , int fx, int fz) {
+		var c = grid[x,z];
+		c.RegChop(fx,fz);
 	}
 
 	public void OnPlayerUnRegMove (int x, int z ) {
@@ -215,19 +233,12 @@ public class p0CellController : MonoBehaviour
 			StartNewTurn ();
 		}
 	}
-
-	public void OnPlayerTryPlant (int id,int x, int z ) {
+	
+	public void OnPlayerPlant (int x, int z ) {
 		var c = grid[x,z];
-		if ( c.locked == -1 ) {
-			netview.RPC("_OnPlant", PhotonTargets.All,id,x,z);
-		}
-	}
-	[RPC] void _OnPlant (int id,int x, int z ) {
-		var c = grid[x,z];
-		c.locked = -2;
 		c.RegPlant();
-		GetPlayer(id).ConsumeActionPoint(1);
 	}
+
 	#endregion
 
 

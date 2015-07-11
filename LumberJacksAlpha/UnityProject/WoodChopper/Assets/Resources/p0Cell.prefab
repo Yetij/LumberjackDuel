@@ -25,7 +25,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 477508}
   - 114: {fileID: 11491906}
-  - 95: {fileID: 9593268}
   m_Layer: 0
   m_Name: p0Cell
   m_TagString: Untagged
@@ -43,6 +42,7 @@ GameObject:
   - 4: {fileID: 417036}
   - 33: {fileID: 3392784}
   - 23: {fileID: 2312140}
+  - 95: {fileID: 9559766}
   m_Layer: 0
   m_Name: TreeModel
   m_TagString: Untagged
@@ -120,16 +120,16 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 194722}
   m_Mesh: {fileID: 4300000, guid: 07ce132727f54bb41bbdd8b272d08667, type: 3}
---- !u!95 &9593268
+--- !u!95 &9559766
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 194694}
+  m_GameObject: {fileID: 194722}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 2492bf8d622678e40aa47efadd78055b, type: 2}
+  m_Controller: {fileID: 9100000, guid: 998405ffd0c180c49bc63702116ec5cd, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -158,6 +158,7 @@ MonoBehaviour:
   down: {fileID: 0}
   tree: {fileID: 2312140}
   ground: {fileID: 21282546}
+  treeAnimator: {fileID: 9559766}
 --- !u!212 &21282546
 SpriteRenderer:
   m_ObjectHideFlags: 1

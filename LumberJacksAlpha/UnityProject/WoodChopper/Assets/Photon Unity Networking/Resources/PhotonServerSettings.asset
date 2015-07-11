@@ -99,4 +99,6 @@ MonoBehaviour:
   - UnRegMove
   - ManualEndTurn
   - _OnPlant
+  - DoChop
+  - DoPlant
   DisableAutoOpenWizard: 1

@@ -9,15 +9,12 @@ public class p0Cell : MonoBehaviour {
 	[HideInInspector] public p0Cell left,right,up,down;
 	public MeshRenderer tree;
 	public SpriteRenderer ground;
-
-	Animator animator;
-
-	void Awake() {
-		animator = GetComponent<Animator>();
-	}
+	public Animator treeAnimator;
 
 	static Color regColor = Color.red;
 	static Color unregColor = Color.white;
+	static int fallHash = Animator.StringToHash("fall");
+	static int inverseHash = Animator.StringToHash("inverse");
 
 	public void HighlightGround () {
 		ground.color = regColor;
@@ -26,18 +23,28 @@ public class p0Cell : MonoBehaviour {
 	public void UnHighlightGround () {
 		ground.color = unregColor;
 	}
-	int _fx, _fz;
+
 	public void RegChop (int _fx, int _fz) {
+		int f = 0;
+		if ( _fx == 1 ) f = 2;
+		else if ( _fx == -1 ) f = 4;
+		if ( _fz == 1 ) f = 1;
+		else if ( _fz == -1 ) f = 3;
+
+		locked = -1;
+		treeAnimator.SetInteger(fallHash,f);
 	}
 
 	public void UnRegChop () {
 	}
 
 	public void RegPlant() {
+		locked = -2;
 		tree.enabled = true;
 	}
 
 	public void UnRegPlant() {
+		locked = -1;
 		tree.enabled = false;
 	}
 
