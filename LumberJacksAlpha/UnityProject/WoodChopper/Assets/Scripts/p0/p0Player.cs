@@ -40,8 +40,6 @@ public class p0Player : MonoBehaviour
 	float localTimer = 0;
 	public void OnStartTurn () {
 		isMyTurn = true;
-		canChop = true;
-		canPlant = true;
 		localTimer = turnTime;
 		_actionPoints = actionPoints;
 	}
@@ -50,8 +48,6 @@ public class p0Player : MonoBehaviour
 		if ( netview.isMine) {
 			GUILayout.Label("timer ="+ (localTimer < 0 ? "0.0" : localTimer.ToString("0.0")) );
 			GUILayout.Label("action points ="+ _actionPoints );
-			GUILayout.Label("can chop = "+ canChop );
-			GUILayout.Label("can plant = "+ canPlant );
 			if ( isMyTurn ) {
 				GUILayout.Button("Reset action (disabled)", GUILayout.Width(200));
 				if ( GUILayout.Button("End turn", GUILayout.Width(200)) ) {
@@ -200,10 +196,9 @@ public class p0Player : MonoBehaviour
 	[RPC] void ManualEndTurn (byte playerTurn) {
 		cellController.OnPlayerEndTurn(playerTurn);
 	}
+	float _lastChop = 0;
+	float _lastPlant = 0;
 
-	bool canPlant, canChop;
-	public float plantCooldown=1 , chopCooldown =1;
-	float _plantTimer, _chopTimer;
 	#endregion
 	void Update () {
 		if ( netview.isMine ) {
@@ -218,38 +213,26 @@ public class p0Player : MonoBehaviour
 				_UpdateMoveState();
 			}
 
-			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & !isMoving & canPlant;
-			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & !isMoving & canChop;
+			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & !isMoving;
+			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & !isMoving;
 
-			if( isPlanting & canPlant) {
-				canPlant = false;
-				_plantTimer = plantCooldown;
+			if( isPlanting & Time.time - _lastPlant > 0.4f) {
+				_lastPlant = Time.time;
 				var tree_x = currentCell.x+ fx;
 				var tree_z = currentCell.z + fz;
 				if ( cellController.FreeCell(tree_x,tree_z ) ) {
 					netview.RPC("DoPlant", PhotonTargets.All, tree_x,tree_z);
 				}
-			} else if ( !canPlant ) {
-				_plantTimer -= Time.deltaTime;
-				if ( _plantTimer < 0 ) {
-					canPlant = true;
-				}
-			}
+			} 
 
-			if( isChopping & canChop ) {
-				canChop = false;
-				_chopTimer = chopCooldown;
+			if( isChopping & Time.time - _lastChop > 0.4f ) {
+				_lastChop = Time.time;
 				var tree_x = currentCell.x+ fx;
 				var tree_z = currentCell.z + fz;
 				if ( cellController.HasTree (tree_x, tree_z )) {
 					netview.RPC("DoChop", PhotonTargets.All, tree_x,tree_z,fx,fz);
 				}
-			} else if ( !canChop ) {
-				_chopTimer -= Time.deltaTime;
-				if ( _chopTimer < 0 ) {
-					canChop = true;
-				}
-			}
+			} 
 
 			localTimer -= Time.deltaTime;
 		} else {
@@ -260,13 +243,11 @@ public class p0Player : MonoBehaviour
 	[RPC] void DoChop (int x ,int z , int fx, int fz) {
 		cellController.OnPlayerChop(x,z,fx,fz);
 		ConsumeActionPoint(1);
-		Debug.Log(GetName() + " do chop");
 	}
 
 	[RPC] void DoPlant (int x ,int z) {
 		cellController.OnPlayerPlant(x,z);
 		ConsumeActionPoint(1);
-		Debug.Log(GetName() + " do plant");
 	}
 
 	#region sync

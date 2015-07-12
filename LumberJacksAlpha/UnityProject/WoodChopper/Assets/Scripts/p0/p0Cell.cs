@@ -14,7 +14,11 @@ public class p0Cell : MonoBehaviour {
 	static Color regColor = Color.red;
 	static Color unregColor = Color.white;
 	static int fallHash = Animator.StringToHash("fall");
-	static int inverseHash = Animator.StringToHash("inverse");
+	static int reverseHash = Animator.StringToHash("reverse");
+
+	void Start () {
+		treeAnimator.gameObject.SetActive(false);
+	}
 
 	public void HighlightGround () {
 		ground.color = regColor;
@@ -25,29 +29,54 @@ public class p0Cell : MonoBehaviour {
 	}
 
 	public void RegChop (int _fx, int _fz) {
-		int f = 0;
-		if ( _fx == 1 ) f = 2;
-		else if ( _fx == -1 ) f = 4;
-		if ( _fz == 1 ) f = 1;
-		else if ( _fz == -1 ) f = 3;
+		if ( _d == null ) {
+			int f = 0;
+			if ( _fx == 1 ) f = 2;
+			else if ( _fx == -1 ) f = 4;
+			if ( _fz == 1 ) f = 1;
+			else if ( _fz == -1 ) f = 3;
+			
+			Debug.Log("RegChop fx="+_fx +" fz=" + _fz + " f="+f); 
 
+			treeAnimator.SetInteger(fallHash,f);
+			StartCoroutine(_d = Disapear());
+		}
+	}
+
+	IEnumerator Disapear() {
+		yield return new WaitForSeconds(disapearDelay);
 		locked = -1;
-		treeAnimator.SetInteger(fallHash,f);
+		treeAnimator.transform.rotation = Quaternion.identity;
+		treeAnimator.gameObject.SetActive(false);
+		Debug.Log("Disapear , rot = "+treeAnimator.transform.rotation);
+		_d = null;
 	}
 
 	public void UnRegChop () {
 	}
 
+	public float disapearDelay = 1.1f;
+	IEnumerator _d;
+
 	public void RegPlant() {
-		locked = -2;
-		tree.enabled = true;
+		if ( _d == null ) { 
+			Debug.Log("RegPlant");
+			treeAnimator.gameObject.SetActive(true);
+			treeAnimator.SetInteger(reverseHash,0);
+			treeAnimator.SetInteger(fallHash,0);
+			locked = -2;
+		}
 	}
 
 	public void UnRegPlant() {
-		locked = -1;
-		tree.enabled = false;
+		if ( _d == null ) {
+			locked = -1;
+			treeAnimator.gameObject.SetActive(false);
+		}
 	}
 
+
+	
 	public void Free() {
 		locked = -1;
 	}

@@ -94,7 +94,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 194722}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
@@ -159,6 +159,7 @@ MonoBehaviour:
   tree: {fileID: 2312140}
   ground: {fileID: 21282546}
   treeAnimator: {fileID: 9559766}
+  disapearDelay: 1
 --- !u!212 &21282546
 SpriteRenderer:
   m_ObjectHideFlags: 1
