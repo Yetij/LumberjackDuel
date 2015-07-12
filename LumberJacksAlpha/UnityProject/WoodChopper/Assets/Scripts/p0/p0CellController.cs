@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public enum TurnState : byte{ P1=0, P2=1, None=2 , Both=3 }
+public enum TurnState : byte{ P1=0, P2=1, None=2 }
 
 public class p0CellController : MonoBehaviour
 {
@@ -146,6 +146,10 @@ public class p0CellController : MonoBehaviour
 		throw new UnityException("error");
 	}
 
+	public void EndGame () {
+		netview.RPC("__EndGame", PhotonTargets.All);
+	}
+
 	[RPC] void __EndGame () {
 		Debug.LogError("GAME END!");
 		foreach ( var p in players ) {
@@ -210,7 +214,9 @@ public class p0CellController : MonoBehaviour
 	public void OnPlayerRegMove (int id, int x, int z ) {
 		var c = grid[x,z];
 		if ( c.locked == -1 ) {
+			Debug.Log("curent c.locked = "+ c.locked );
 			c.locked = id;
+			Debug.Log("player "+ id + " locked = " + c.locked );
 			c.HighlightGround();
 			if ( players != null ) GetPlayer(id).ConsumeActionPoint(1); /* first call from Start function wont take effect */
 		}

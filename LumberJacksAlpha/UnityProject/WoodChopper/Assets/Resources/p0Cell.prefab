@@ -159,7 +159,8 @@ MonoBehaviour:
   tree: {fileID: 2312140}
   ground: {fileID: 21282546}
   treeAnimator: {fileID: 9559766}
-  disapearDelay: 1
+  dominoDelay: .400000006
+  additiveDisapearDelay: .699999988
 --- !u!212 &21282546
 SpriteRenderer:
   m_ObjectHideFlags: 1

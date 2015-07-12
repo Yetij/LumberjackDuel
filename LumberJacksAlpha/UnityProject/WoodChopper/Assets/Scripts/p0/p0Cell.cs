@@ -3,7 +3,7 @@ using System.Collections;
 
 public class p0Cell : MonoBehaviour {
 	/* -2 == tree; -1 == free */
-	[HideInInspector] public int locked;
+	public int locked;
 	[HideInInspector] public int x,z;
 	[HideInInspector] public Vector3 position;
 	[HideInInspector] public p0Cell left,right,up,down;
@@ -28,43 +28,56 @@ public class p0Cell : MonoBehaviour {
 		ground.color = unregColor;
 	}
 
+	int fallx, fallz;
 	public void RegChop (int _fx, int _fz) {
-		if ( _d == null ) {
+		if ( _d == null & treeAnimator.isActiveAndEnabled ) {
 			int f = 0;
 			if ( _fx == 1 ) f = 2;
 			else if ( _fx == -1 ) f = 4;
 			if ( _fz == 1 ) f = 1;
 			else if ( _fz == -1 ) f = 3;
-			
-			Debug.Log("RegChop fx="+_fx +" fz=" + _fz + " f="+f); 
+
+			fallx = _fx;
+			fallz = _fz;
 
 			treeAnimator.SetInteger(fallHash,f);
 			StartCoroutine(_d = Disapear());
 		}
 	}
 
+	public float dominoDelay = 0.4f;
+
 	IEnumerator Disapear() {
-		yield return new WaitForSeconds(disapearDelay);
+		yield return new WaitForSeconds(dominoDelay);
+		var c = Get(fallx,fallz);
+		if ( c != null ) {
+			c.RegChop(fallx,fallz);
+			foreach ( var p in p0CellController.Instance.players ) {
+				if ( p.netview.isMine & p.IsOnCell ( c.x, c.z ) ) {
+					p.OnTreeFallOn();
+				}
+			}
+		}
+		yield return new WaitForSeconds(additiveDisapearDelay);
 		locked = -1;
 		treeAnimator.transform.rotation = Quaternion.identity;
 		treeAnimator.gameObject.SetActive(false);
-		Debug.Log("Disapear , rot = "+treeAnimator.transform.rotation);
 		_d = null;
 	}
 
 	public void UnRegChop () {
 	}
 
-	public float disapearDelay = 1.1f;
+	public float additiveDisapearDelay = 1.1f;
 	IEnumerator _d;
 
 	public void RegPlant() {
 		if ( _d == null ) { 
-			Debug.Log("RegPlant");
+			locked = -2;
+			Debug.Log("RegPlant , locked = " + locked);
 			treeAnimator.gameObject.SetActive(true);
 			treeAnimator.SetInteger(reverseHash,0);
 			treeAnimator.SetInteger(fallHash,0);
-			locked = -2;
 		}
 	}
 

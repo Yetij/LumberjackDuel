@@ -101,4 +101,5 @@ MonoBehaviour:
   - _OnPlant
   - DoChop
   - DoPlant
+  - LostHp
   DisableAutoOpenWizard: 1

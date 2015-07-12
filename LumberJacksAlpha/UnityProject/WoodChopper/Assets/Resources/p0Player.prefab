@@ -2106,13 +2106,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnTime: 10
-  actionPoints: 4
+  actionPoints: 6
   parameters:
     moveSpeed: 1.5
     rotateAngleSpeed: 540
     dmg: 500
   netview: {fileID: 0}
-  predictStrength: .200000003
+  predictStrength: 0
 --- !u!137 &13782282
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

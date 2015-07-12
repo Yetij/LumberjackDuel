@@ -35,7 +35,25 @@ public class p0Player : MonoBehaviour
 
 	public void OnGameEnd () {
 	}
-	
+
+	public bool IsOnCell (int x, int z ) {
+		return currentCell.x == x & currentCell.z == z;
+	}
+
+	public void OnTreeFallOn () {
+		netview.RPC("LostHp", PhotonTargets.All,1);
+	}
+	int hp = 1;
+	[RPC] void LostHp (int i) {
+		Debug.Log("player = "+netview.owner.ID+ " got hit");
+		hp -= i;
+		if ( netview.isMine ) {
+			if ( hp <= 0 ) {
+				cellController.EndGame();
+			}
+		}
+	}
+
 	bool isMyTurn;
 	float localTimer = 0;
 	public void OnStartTurn () {
@@ -46,6 +64,7 @@ public class p0Player : MonoBehaviour
 
 	public void _GUI () {
 		if ( netview.isMine) {
+			GUILayout.Label("hp ="+ hp );
 			GUILayout.Label("timer ="+ (localTimer < 0 ? "0.0" : localTimer.ToString("0.0")) );
 			GUILayout.Label("action points ="+ _actionPoints );
 			if ( isMyTurn ) {
@@ -128,26 +147,28 @@ public class p0Player : MonoBehaviour
 		if ( isMoving ) {
 			var c = cellController.CellAt(currentCell.x + _fx, currentCell.z + _fz );
 			if ( c != null ) {
-				nextCell = c;
-				
-				_path = 0;
-				_distance = (nextCell.position - transform.position).magnitude;
-				
-				if  ( fx != _fx | fz != _fz) {
-					nextRotation = Dir (_fx,_fz);
-					lastRotation = transform.rotation;
-					if ( reverseMode ) {
-						var q = lastRotation.eulerAngles;
-						lastRotation = Quaternion.Euler(new Vector3(q.x,q.y-180,q.z));
-					} 
+				if ( c.locked == -1 ) { 
+					nextCell = c;
+					
+					_path = 0;
+					_distance = (nextCell.position - transform.position).magnitude;
+					
+					if  ( fx != _fx | fz != _fz) {
+						nextRotation = Dir (_fx,_fz);
+						lastRotation = transform.rotation;
+						if ( reverseMode ) {
+							var q = lastRotation.eulerAngles;
+							lastRotation = Quaternion.Euler(new Vector3(q.x,q.y-180,q.z));
+						} 
 
-					_rotPath = 0;
-					_rotDistance = Mathf.Abs(nextRotation.eulerAngles.y - lastRotation.eulerAngles.y );
-					if ( _rotDistance > 180 ) _rotDistance -= 180;
-				}
-				
-				fx = _fx;
-				fz = _fz;
+						_rotPath = 0;
+						_rotDistance = Mathf.Abs(nextRotation.eulerAngles.y - lastRotation.eulerAngles.y );
+						if ( _rotDistance > 180 ) _rotDistance -= 180;
+					}
+					
+					fx = _fx;
+					fz = _fz;
+				} else isMoving = false;
 			} else isMoving = false;
 		}
 		if ( isMoving ) {
