@@ -93,6 +93,7 @@ public class Tree : MonoBehaviour
 	IEnumerator FallWaitForSync () {
 		yield return new WaitForSeconds(changeSyncDelay); /* after this time, no more changes will be made */
 		isFalling = true;
+		Debug.Log("verifiedRecord.domino = " +verifiedRecord.continueDomino);
 		CellManager.Instance.OnTreeStartFalling(cell.x,cell.z, verifiedRecord.dx,verifiedRecord.dz,verifiedRecord.fromMaster, verifiedRecord.continueDomino);
 	}
 
@@ -100,6 +101,7 @@ public class Tree : MonoBehaviour
 		StartCoroutine(RealFall(fx, fz, fromMaster,continueDomino));
 	}
 	IEnumerator RealFall (int fx, int fz, bool fromMaster,bool continueDomino) {
+		Debug.Log("continueDomino = " + continueDomino);
 		if ( (PhotonNetwork.isMasterClient & fromMaster) | (!PhotonNetwork.isMasterClient & !fromMaster) ) {
 			//yield return new WaitForSeconds(estimatedNetDelay);
 		}
@@ -148,7 +150,7 @@ public class Tree : MonoBehaviour
 		if ( PhotonNetwork.isMasterClient ) {
 			int fx = rand[Random.Range(0,3)];
 			int fz = fx == 0? rand[Random.Range(0,2)]: 0;
-			OnBeingDamaged(fx,fz,10000f,xTime.Instance.time,true);
+			OnBeingDamaged(fx,fz,10000f,xTime.Instance.time,true,true);
 		}
 	}
 

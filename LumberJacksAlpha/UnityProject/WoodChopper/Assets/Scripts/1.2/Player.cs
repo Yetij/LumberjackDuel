@@ -276,7 +276,7 @@ public class Player : MonoBehaviour
 		}
 		if ( canChop & isChopping ) {
 			canChop = false;
-			Chop(currentCell.x + fx,currentCell.z + fz,fx,fz , parameters.dmg, xTime.Instance.time);
+			PlayerChop(currentCell.x + fx,currentCell.z + fz,fx,fz , parameters.dmg, xTime.Instance.time);
 			_chopTimer = chopCooldown;
 		} else {
 			_chopTimer -= Time.deltaTime;
@@ -303,7 +303,7 @@ public class Player : MonoBehaviour
 		CellManager.Instance.OnPlayerPlant(id,x,z,fx,fz,time,canFastPlant);
 	}
 
-	void Chop(int x, int z, int fx, int fz, float dmg,double time ) {
+	void PlayerChop(int x, int z, int fx, int fz, float dmg,double time ) {
 		CellManager.Instance.OnPlayerChop(x,z,fx,fz,dmg,time);
 		netview.RPC("__DoChop",PhotonTargets.All);
 	}
