@@ -53,7 +53,7 @@ public class p0Cell : MonoBehaviour {
 	}
 
 	int fallx, fallz;
-	public void RegChop (int _fx, int _fz) {
+	public void ChopTree (int _fx, int _fz) {
 		if ( _d == null & treeAnimator.isActiveAndEnabled ) {
 			int f = 0;
 			if ( _fx == 1 ) f = 2;
@@ -77,10 +77,10 @@ public class p0Cell : MonoBehaviour {
 		yield return new WaitForSeconds(dominoDelay);
 		var c = Get(fallx,fallz);
 		if ( c != null ) {
-			c.RegChop(fallx,fallz);
+			c.ChopTree(fallx,fallz);
 			foreach ( var p in p0CellController.Instance.players ) {
 				if ( p.netview.isMine & p.IsOnCell ( c.x, c.z ) ) {
-					p.OnTreeFallOn();
+					p.OnLostHp(1);
 				}
 			}
 		}

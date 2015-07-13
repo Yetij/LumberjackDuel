@@ -40,8 +40,8 @@ public class p0Player : MonoBehaviour
 		return currentCell.x == x & currentCell.z == z;
 	}
 
-	public void OnTreeFallOn () {
-		netview.RPC("LostHp", PhotonTargets.All,1);
+	public void OnLostHp (int i) {
+		netview.RPC("LostHp", PhotonTargets.All,i);
 	}
 	int hp = 1;
 	[RPC] void LostHp (int i) {
@@ -251,7 +251,7 @@ public class p0Player : MonoBehaviour
 				var tree_x = currentCell.x+ fx;
 				var tree_z = currentCell.z + fz;
 				if ( cellController.HasTree (tree_x, tree_z )) {
-					netview.RPC("DoChop", PhotonTargets.All, tree_x,tree_z,fx,fz);
+					netview.RPC("DoChop", PhotonTargets.All, netview.owner.ID, tree_x,tree_z,fx,fz);
 				}
 			} 
 
@@ -261,8 +261,8 @@ public class p0Player : MonoBehaviour
 		}
 	}
 
-	[RPC] void DoChop (int x ,int z , int fx, int fz) {
-		cellController.OnPlayerChop(x,z,fx,fz);
+	[RPC] void DoChop (int id, int x ,int z , int fx, int fz) {
+		cellController.OnPlayerChop(id, x,z,fx,fz);
 		ConsumeActionPoint(1);
 	}
 

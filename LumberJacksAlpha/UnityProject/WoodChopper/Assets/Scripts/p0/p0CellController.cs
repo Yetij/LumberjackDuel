@@ -262,9 +262,14 @@ public class p0CellController : MonoBehaviour
 		}
 	}
 
-	public void OnPlayerChop (int x ,int z , int fx, int fz) {
+	public void OnPlayerChop (int id, int x ,int z , int fx, int fz) {
 		var c = grid[x,z];
-		c.RegChop(fx,fz);
+		c.ChopTree(fx,fz);
+		foreach ( var p in players ) {
+			if ( p.netview.owner.ID != id ) {
+				if ( p.IsOnCell(x,z) ) p.OnLostHp(1);
+			}
+		}
 	}
 
 	public void OnPlayerUnRegMove (int x, int z ) {

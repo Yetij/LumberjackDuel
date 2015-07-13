@@ -144,7 +144,7 @@ public class CellManager : MonoBehaviour
 		var p = GetPlayer(x+dx,z+dz);
 		if ( p != null ) p.OnLostHp();
 		if ( !PhotonNetwork.isMasterClient ) return;
-		netview.RPC("_OnDamageTree", PhotonTargets.MasterClient, new object[]{ x+dx,z+dz,dx,dz,10000f,t , PhotonNetwork.isMasterClient});
+		//netview.RPC("_OnDamageTree", PhotonTargets.MasterClient, new object[]{ x+dx,z+dz,dx,dz,10000f,t , PhotonNetwork.isMasterClient});
 	}
 
 	public void OnTreeGrow (int x,int z, int growStage) {
