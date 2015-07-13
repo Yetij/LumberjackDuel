@@ -6,6 +6,7 @@ class DmgEntry {
 	public int dx,dz;
 	public float dmg;
 	public bool fromMaster;
+	public bool continueDomino;
 }
 
 public class Tree : MonoBehaviour
@@ -38,7 +39,7 @@ public class Tree : MonoBehaviour
 	#region being damaged 
 	SortedList<double, DmgEntry > dmgRecord;
 
-	public void OnBeingDamaged (int _dx,int _dz, float _dmg, double t, bool _fromMaster) {
+	public void OnBeingDamaged (int _dx,int _dz, float _dmg, double t, bool _fromMaster, bool continueDomino) {
 		if( isFalling ) {
 			return;
 		}
@@ -55,17 +56,18 @@ public class Tree : MonoBehaviour
 					test.dx = _dx;
 					test.dz = _dz;
 					test.fromMaster = _fromMaster;
+					test.continueDomino = continueDomino;
 				}
 			}
 		}
 		RecalculateDmg();
 	}
+
 	#endregion
 
 	#region fall
-	double fall_time;
-	int fall_dx, fall_dz;
-	bool fromMaster;
+
+	DmgEntry verifiedRecord;
 
 	void RecalculateDmg () {
 		_hp = v5Const.Instance.treeGeneralSettings.maxHp[localGrowthStage];
@@ -75,9 +77,7 @@ public class Tree : MonoBehaviour
 				if ( fallRoutine == null ) {
 					StartCoroutine(fallRoutine = FallWaitForSync());
 				}
-				fall_dx= p.Value.dx;
-				fall_dz= p.Value.dz;
-				fromMaster = p.Value.fromMaster;
+				verifiedRecord = p.Value;
 				break;
 			}
 		}
@@ -93,27 +93,31 @@ public class Tree : MonoBehaviour
 	IEnumerator FallWaitForSync () {
 		yield return new WaitForSeconds(changeSyncDelay); /* after this time, no more changes will be made */
 		isFalling = true;
-		CellManager.Instance.OnTreeStartFalling(cell.x,cell.z, fall_dx,fall_dz,fromMaster);
+		CellManager.Instance.OnTreeStartFalling(cell.x,cell.z, verifiedRecord.dx,verifiedRecord.dz,verifiedRecord.fromMaster, verifiedRecord.continueDomino);
 	}
 
-	public void OnRealFall(int fx, int fz, bool fromMaster) {
-		StartCoroutine(RealFall(fx, fz, fromMaster));
+	public void OnRealFall(int fx, int fz, bool fromMaster, bool continueDomino) {
+		StartCoroutine(RealFall(fx, fz, fromMaster,continueDomino));
 	}
-	IEnumerator RealFall (int fx, int fz, bool fromMaster) {
+	IEnumerator RealFall (int fx, int fz, bool fromMaster,bool continueDomino) {
 		if ( (PhotonNetwork.isMasterClient & fromMaster) | (!PhotonNetwork.isMasterClient & !fromMaster) ) {
 			//yield return new WaitForSeconds(estimatedNetDelay);
 		}
-		if ( fx == 1 ) animator.SetInteger(fallingHash,1);
-		else if ( fx == -1 ) animator.SetInteger(fallingHash,3);
-		if ( fz == 1 ) animator.SetInteger(fallingHash,0);
-		else if ( fz == -1 ) animator.SetInteger(fallingHash,2);
-		if ( (fx == 0 & fz == 0) | (fx*fz != 0))  {
-			Debug.LogError("animation error");
+		if ( continueDomino ) {
+			if ( fx == 1 ) animator.SetInteger(fallingHash,1);
+			else if ( fx == -1 ) animator.SetInteger(fallingHash,3);
+			if ( fz == 1 ) animator.SetInteger(fallingHash,0);
+			else if ( fz == -1 ) animator.SetInteger(fallingHash,2);
+			if ( (fx == 0 & fz == 0) | (fx*fz != 0))  {
+				Debug.LogError("animation error");
+			}
 		}
 		if ( PhotonNetwork.isMasterClient ) {
-			yield return new WaitForSeconds(additiveDominoDelay);
-			CellManager.Instance.OnTreeCollide(cell.x, cell.z,fx,fz, xTime.Instance.time);
-			yield return new WaitForSeconds(additiveCompletelyDisapearDelay);
+			if( continueDomino ) { 
+				yield return new WaitForSeconds(additiveDominoDelay);
+				CellManager.Instance.OnTreeCollide(cell.x, cell.z,fx,fz, xTime.Instance.time,continueDomino);
+				yield return new WaitForSeconds(additiveCompletelyDisapearDelay);
+			}
 			CellManager.Instance.OnTreeVanish(cell.x, cell.z);
 		}
 	}

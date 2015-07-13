@@ -111,18 +111,18 @@ public class CellManager : MonoBehaviour
 			p.OnGameEnd();
 		}
 	}
-	public void OnTreeStartFalling (int x, int z, int fx, int fz,bool isFromMaster ) {
-		netview.RPC("_TreeStartFalling", PhotonTargets.All, new object[]{ x,z,fx,fz,isFromMaster });
+	public void OnTreeStartFalling (int x, int z, int fx, int fz,bool isFromMaster, bool continueDomino ) {
+		netview.RPC("_TreeStartFalling", PhotonTargets.All, new object[]{ x,z,fx,fz,isFromMaster, continueDomino});
 	}
 
-	[RPC] void _TreeStartFalling  (int x, int z, int fx, int fz,bool isFromMaster ) {
+	[RPC] void _TreeStartFalling  (int x, int z, int fx, int fz,bool isFromMaster, bool continueDomino ) {
 		var c = grid[x,z];
 		if ( c != null ) {
 			if ( c.tree == null ) {
 				Debug.Log("_TreeStartFalling: null\nat x="+x+ " z="+z+ " isMaster="+PhotonNetwork.isMasterClient);
 			}
 			else {
-				c.tree.OnRealFall(fx,fz,isFromMaster);
+				c.tree.OnRealFall(fx,fz,isFromMaster, continueDomino);
 			}
 		}
 	}
@@ -140,11 +140,14 @@ public class CellManager : MonoBehaviour
 			}
 		}
 	}
-	public void OnTreeCollide (int x, int z, int dx, int dz ,double t) {
+	public void OnTreeCollide (int x, int z, int dx, int dz ,double t, bool continueDomino) {
 		var p = GetPlayer(x+dx,z+dz);
 		if ( p != null ) p.OnLostHp();
 		if ( !PhotonNetwork.isMasterClient ) return;
-		//netview.RPC("_OnDamageTree", PhotonTargets.MasterClient, new object[]{ x+dx,z+dz,dx,dz,10000f,t , PhotonNetwork.isMasterClient});
+		if( continueDomino ) {
+			netview.RPC("_OnDamageTree", PhotonTargets.MasterClient, new object[]{ x+dx,z+dz,dx,dz,10000f,t , PhotonNetwork.isMasterClient, false});
+		}
+		//netview.RPC("_OnDamageTreeOnce", PhotonTargets.MasterClient, new object[]{ x+dx,z+dz,dx,dz,10000f,t , PhotonNetwork.isMasterClient});
 	}
 
 	public void OnTreeGrow (int x,int z, int growStage) {
@@ -170,14 +173,14 @@ public class CellManager : MonoBehaviour
 
 	public void OnPlayerChop (int x, int z, int fx, int fz, float dmg,double time ) {
 		if ( grid[x,z] == null ) return;
-		netview.RPC("_OnDamageTree", PhotonTargets.MasterClient, new object[]{ x, z, fx, fz, dmg, time, PhotonNetwork.isMasterClient });
+		netview.RPC("_OnDamageTree", PhotonTargets.MasterClient, new object[]{ x, z, fx, fz, dmg, time, PhotonNetwork.isMasterClient ,true});
 	}
 
-	[RPC] void _OnDamageTree (int x, int z, int fx, int fz, float dmg,double time ,bool fromMaster ) {		
+	[RPC] void _OnDamageTree (int x, int z, int fx, int fz, float dmg,double time ,bool fromMaster, bool continueDomino ) {		
 		var c = grid[x,z];
 		if ( c == null ) return;
 		if ( c.tree == null ) return;
-		c.tree.OnBeingDamaged(fx,fz,dmg,time,fromMaster);
+		c.tree.OnBeingDamaged(fx,fz,dmg,time,fromMaster, continueDomino);
 	}
 
 	public void OnPlayerPlant(int id, int x,int z,int fx,int fz, double time, bool canFastPlant ) {
