@@ -7,6 +7,10 @@ class DmgEntry {
 	public float dmg;
 	public bool fromMaster;
 	public bool continueDomino;
+	public override string ToString ()
+	{
+		return "dx=" + dx + " dz=" + dz + "  fromMas="+fromMaster + "  domino="+ continueDomino;
+	}
 }
 
 public class Tree : MonoBehaviour
@@ -39,7 +43,7 @@ public class Tree : MonoBehaviour
 	#region being damaged 
 	SortedList<double, DmgEntry > dmgRecord;
 
-	public void OnBeingDamaged (int _dx,int _dz, float _dmg, double t, bool _fromMaster, bool continueDomino) {
+	public void OnBeingDamaged (int _dx,int _dz, float _dmg, double t, bool _fromMaster, bool _continueDomino) {
 		if( isFalling ) {
 			return;
 		}
@@ -47,7 +51,7 @@ public class Tree : MonoBehaviour
 		DmgEntry test = null;
 		dmgRecord.TryGetValue(t,out test);
 		if ( test == null ) {
-			dmgRecord.Add(t,new DmgEntry(){dx=_dx, dz=_dz, dmg=_dmg, fromMaster=_fromMaster});
+			dmgRecord.Add(t,new DmgEntry(){dx=_dx, dz=_dz, dmg=_dmg, fromMaster=_fromMaster, continueDomino=_continueDomino});
 		}else {
 			var p = CellManager.Instance.GetPlayer(cell.x-_dx,cell.z - _dz);
 			if ( p != null ) {
@@ -56,7 +60,7 @@ public class Tree : MonoBehaviour
 					test.dx = _dx;
 					test.dz = _dz;
 					test.fromMaster = _fromMaster;
-					test.continueDomino = continueDomino;
+					test.continueDomino = _continueDomino;
 				}
 			}
 		}
@@ -77,7 +81,9 @@ public class Tree : MonoBehaviour
 				if ( fallRoutine == null ) {
 					StartCoroutine(fallRoutine = FallWaitForSync());
 				}
+				//Debug.Log("p.value = " + p.Value );
 				verifiedRecord = p.Value;
+				//Debug.Log("verifiedRecord = " + verifiedRecord );
 				break;
 			}
 		}
@@ -93,7 +99,7 @@ public class Tree : MonoBehaviour
 	IEnumerator FallWaitForSync () {
 		yield return new WaitForSeconds(changeSyncDelay); /* after this time, no more changes will be made */
 		isFalling = true;
-		Debug.Log("verifiedRecord.domino = " +verifiedRecord.continueDomino);
+		//Debug.Log("verifiedRecord = " + verifiedRecord );
 		CellManager.Instance.OnTreeStartFalling(cell.x,cell.z, verifiedRecord.dx,verifiedRecord.dz,verifiedRecord.fromMaster, verifiedRecord.continueDomino);
 	}
 
@@ -101,7 +107,7 @@ public class Tree : MonoBehaviour
 		StartCoroutine(RealFall(fx, fz, fromMaster,continueDomino));
 	}
 	IEnumerator RealFall (int fx, int fz, bool fromMaster,bool continueDomino) {
-		Debug.Log("continueDomino = " + continueDomino);
+		//Debug.Log("continueDomino = " + continueDomino);
 		if ( (PhotonNetwork.isMasterClient & fromMaster) | (!PhotonNetwork.isMasterClient & !fromMaster) ) {
 			//yield return new WaitForSeconds(estimatedNetDelay);
 		}

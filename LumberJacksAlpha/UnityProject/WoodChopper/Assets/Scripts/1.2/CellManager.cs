@@ -118,10 +118,7 @@ public class CellManager : MonoBehaviour
 	[RPC] void _TreeStartFalling  (int x, int z, int fx, int fz,bool isFromMaster, bool continueDomino ) {
 		var c = grid[x,z];
 		if ( c != null ) {
-			if ( c.tree == null ) {
-				Debug.Log("_TreeStartFalling: null\nat x="+x+ " z="+z+ " isMaster="+PhotonNetwork.isMasterClient);
-			}
-			else {
+			if ( c.tree != null )  {
 				c.tree.OnRealFall(fx,fz,isFromMaster, continueDomino);
 			}
 		}
@@ -173,13 +170,14 @@ public class CellManager : MonoBehaviour
 
 	public void OnPlayerChop (int x, int z, int fx, int fz, float dmg,double time ) {
 		if ( grid[x,z] == null ) return;
-		netview.RPC("_OnDamageTree", PhotonTargets.MasterClient, new object[]{ x, z, fx, fz, dmg, time, PhotonNetwork.isMasterClient ,true});
+		netview.RPC("_OnDamageTree", PhotonTargets.MasterClient,  x, z, fx, fz, dmg, time, PhotonNetwork.isMasterClient ,true);
 	}
 
 	[RPC] void _OnDamageTree (int x, int z, int fx, int fz, float dmg,double time ,bool fromMaster, bool continueDomino ) {		
 		var c = grid[x,z];
 		if ( c == null ) return;
 		if ( c.tree == null ) return;
+		Debug.Log("rpc domino="+ continueDomino);
 		c.tree.OnBeingDamaged(fx,fz,dmg,time,fromMaster, continueDomino);
 	}
 
