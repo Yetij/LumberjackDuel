@@ -8,7 +8,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400914}
-  - 114: {fileID: 11461628}
   - 114: {fileID: 11476930}
   - 114: {fileID: 11461938}
   - 114: {fileID: 11450660}
@@ -43,21 +42,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   room_name: 54321
---- !u!114 &11461628
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 115306}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a9de026ab872e5409e97bebe332add1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  genTreeInterval: 2
-  genMin: 1
-  genMax: 1
-  startNb: 99
 --- !u!114 &11461938
 MonoBehaviour:
   m_ObjectHideFlags: 1

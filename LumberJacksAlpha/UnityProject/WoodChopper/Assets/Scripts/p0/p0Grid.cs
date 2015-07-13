@@ -25,6 +25,8 @@ public class p0Grid : MonoBehaviour {
 			return IsValidIndex(x,z)? cells[x,z]: null;
 		}
 	}
+
+	public List<p0Cell> frees;
 	
 	p0Cell[,] cells;
 	
@@ -32,6 +34,7 @@ public class p0Grid : MonoBehaviour {
 		if ( cells != null ) return cells;
 		if ( root == null ) throw new UnityException("Grid params not initialized");
 		cells = new p0Cell[total_x,total_z];
+		frees = new List<p0Cell>(total_x*total_z);
 		for(int _z = 0; _z < total_z; _z ++ ) {
 			for ( int _x = 0; _x < total_x ; _x ++ ) {
 				var g = Instantiate ( p0Const.Instance.gridSettings.cell);
@@ -41,7 +44,9 @@ public class p0Grid : MonoBehaviour {
 				c.x = _x;
 				c.z = _z;
 				c.position = Locate(_x,_z);
-				c.Free();
+				c.freeList = frees;
+				c.locked = -1;
+
 				cells[_x,_z] = c;
 
 				g.transform.position = c.position;

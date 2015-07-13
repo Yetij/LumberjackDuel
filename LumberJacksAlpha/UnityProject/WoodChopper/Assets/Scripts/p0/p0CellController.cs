@@ -84,6 +84,9 @@ public class p0CellController : MonoBehaviour
 		foreach ( var p in l ) {
 			p.OnGameStart();
 		}
+
+		if ( PhotonNetwork.isMasterClient) genTreeReservationList = new List<p0Cell>();
+
 		if ( !PhotonNetwork.isMasterClient) netview.RPC("__AllStarted",PhotonTargets.MasterClient);
 	}
 
@@ -97,7 +100,7 @@ public class p0CellController : MonoBehaviour
 	}
 
 	float _timer=0;
-	float currentTurnTime=0;
+	float standardTurnTime=0;
 	float currentTimeScale=0;
 
 	static TurnState[] states = { TurnState.P1, TurnState.P2 };
@@ -110,14 +113,49 @@ public class p0CellController : MonoBehaviour
 	}
 
 	void _UpdateTurnState () {
-		if ( _timer > currentTurnTime ) {
+		if ( _timer > standardTurnTime + 0.4f) {
 			EndCurrentTurn ();
 			currentTurn = ++currentTurn%2;
 			StartNewTurn ();
 		}
 		_timer += Time.deltaTime;
 	}
+
+	public int startTreeNb=8;
+	public int genTreeMin=2;
+	public int genTreeMax=3;
+
+	void _ReserveTree () {
+		var f = grid.frees;
+		if ( f.Count == 0 ) return;
+		var tree_nb = Random.Range(genTreeMin,genTreeMax+1);
+
+		for(int i=0; i < tree_nb ; i++ ) {
+			var c = f[Random.Range(0,f.Count)];
+			genTreeReservationList.Add (c  );
+			netview.RPC("ReserveTree", PhotonTargets.All,c.x,c.z);
+			if ( f.Count == 0 ) return;
+		}
+	}
+
+	[RPC] void ReserveTree (int x, int z) {
+		grid[x,z].OnGenTreeReserved();
+	}
+	List<p0Cell > genTreeReservationList;
+
+	void _GenTree () {
+		foreach ( var p in genTreeReservationList  ){
+			netview.RPC("GenTree",PhotonTargets.All, p.x, p.z);
+		}
+		genTreeReservationList.Clear();
+	}
+
+	[RPC] void GenTree (int x, int z ) {
+		grid[x,z ].PlantTree();
+	}
+
 	void EndCurrentTurn () {
+		_GenTree(); 
 		netview.RPC("_EndTurn",PhotonTargets.All,(byte) states[currentTurn]);
 	}
 
@@ -127,15 +165,17 @@ public class p0CellController : MonoBehaviour
 	}
 
 	void StartNewTurn () {
+		_ReserveTree();
 		netview.RPC("_StartTurn",PhotonTargets.All, (byte) states[currentTurn] );
 	}
+
 	int turn=0;
 	[RPC] void _StartTurn(byte state ) {
 		turn ++;
 		globalState = (TurnState ) state;
 		_timer = 0;
 		var p = GetPlayer(globalState);
-		currentTurnTime = p.turnTime;
+		standardTurnTime = p.turnTime;
 		p.OnStartTurn();
 	}
 
@@ -234,15 +274,16 @@ public class p0CellController : MonoBehaviour
 
 	public void OnPlayerEndTurn (byte turn ) {
 		if ( (TurnState) turn == globalState ) {
-			EndCurrentTurn ();
-			currentTurn = ++currentTurn%2;
-			StartNewTurn ();
+			//EndCurrentTurn ();
+			//currentTurn = ++currentTurn%2;
+			//StartNewTurn ();
+			_timer = standardTurnTime;
 		}
 	}
 	
 	public void OnPlayerPlant (int x, int z ) {
 		var c = grid[x,z];
-		c.RegPlant();
+		c.PlantTree();
 	}
 
 	#endregion

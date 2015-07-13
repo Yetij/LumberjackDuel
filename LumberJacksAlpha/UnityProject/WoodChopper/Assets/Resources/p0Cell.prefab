@@ -148,7 +148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0c218c16e1ffcc45b12d8306ce1b2d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locked: 0
   x: 0
   z: 0
   position: {x: 0, y: 0, z: 0}
@@ -156,6 +155,7 @@ MonoBehaviour:
   right: {fileID: 0}
   up: {fileID: 0}
   down: {fileID: 0}
+  freeList: []
   tree: {fileID: 2312140}
   ground: {fileID: 21282546}
   treeAnimator: {fileID: 9559766}

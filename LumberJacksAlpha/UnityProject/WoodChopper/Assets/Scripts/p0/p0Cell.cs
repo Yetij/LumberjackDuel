@@ -1,18 +1,42 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class p0Cell : MonoBehaviour {
 	/* -2 == tree; -1 == free */
-	public int locked;
+	private int _locked;
+	public int locked { 
+		get {
+			return _locked;
+		}
+		set {
+			if ( value == -1 ) {
+				if ( isReservered ) ground.color = treeGenReservedColor;
+				else ground.color = unregColor;
+				freeList.Add(this);
+			} else {
+				freeList.Remove(this);
+				if ( value == -2 )  {
+					isReservered = false;
+					ground.color = unregColor;
+				}
+				else ground.color = regColor;
+			}
+			_locked = value;
+		}
+	}
 	[HideInInspector] public int x,z;
 	[HideInInspector] public Vector3 position;
 	[HideInInspector] public p0Cell left,right,up,down;
+	[HideInInspector] public List<p0Cell> freeList;
 	public MeshRenderer tree;
 	public SpriteRenderer ground;
 	public Animator treeAnimator;
 
+
 	static Color regColor = Color.red;
 	static Color unregColor = Color.white;
+	static Color treeGenReservedColor = Color.green;
 	static int fallHash = Animator.StringToHash("fall");
 	static int reverseHash = Animator.StringToHash("reverse");
 
@@ -21,11 +45,11 @@ public class p0Cell : MonoBehaviour {
 	}
 
 	public void HighlightGround () {
-		ground.color = regColor;
+
 	}
 	
 	public void UnHighlightGround () {
-		ground.color = unregColor;
+
 	}
 
 	int fallx, fallz;
@@ -40,7 +64,9 @@ public class p0Cell : MonoBehaviour {
 			fallx = _fx;
 			fallz = _fz;
 
+
 			treeAnimator.SetInteger(fallHash,f);
+			treeAnimator.transform.localScale = Vector3.one;
 			StartCoroutine(_d = Disapear());
 		}
 	}
@@ -67,21 +93,33 @@ public class p0Cell : MonoBehaviour {
 
 	public void UnRegChop () {
 	}
+	
+	bool isReservered;
+	public void OnGenTreeReserved () {
+		ground.color = treeGenReservedColor;
+		isReservered = true;
+	}
 
 	public float additiveDisapearDelay = 1.1f;
 	IEnumerator _d;
 
-	public void RegPlant() {
+	static int growHash = Animator.StringToHash("grow");
+
+	public void PlantTree() {
+		if ( locked != -1 ) {
+			isReservered = false;
+			return;
+		}
 		if ( _d == null ) { 
 			locked = -2;
-			Debug.Log("RegPlant , locked = " + locked);
 			treeAnimator.gameObject.SetActive(true);
 			treeAnimator.SetInteger(reverseHash,0);
 			treeAnimator.SetInteger(fallHash,0);
+			//treeAnimator.Play(growHash);
 		}
 	}
 
-	public void UnRegPlant() {
+	public void UnPlantTree() {
 		if ( _d == null ) {
 			locked = -1;
 			treeAnimator.gameObject.SetActive(false);

@@ -102,4 +102,6 @@ MonoBehaviour:
   - DoChop
   - DoPlant
   - LostHp
+  - GenTree
+  - ReserveTree
   DisableAutoOpenWizard: 1
