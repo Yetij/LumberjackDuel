@@ -147,6 +147,7 @@ public class p0CellController : MonoBehaviour
 	[RPC] void ReserveTree (int x, int z) {
 		grid[x,z].OnGenTreeReserved();
 	}
+
 	List<p0Cell > genTreeReservationList;
 
 	void _GenTree () {
@@ -299,7 +300,10 @@ public class p0CellController : MonoBehaviour
 	
 	public void OnPlayerPlant (int x, int z ) {
 		var c = grid[x,z];
-		c.PlantTree();
+		if ( c.locked == -1 ) {
+			genTreeReservationList.Add (c  );
+			netview.RPC("ReserveTree", PhotonTargets.All,c.x,c.z);
+		}
 	}
 
 	#endregion
