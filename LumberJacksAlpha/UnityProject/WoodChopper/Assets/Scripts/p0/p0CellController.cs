@@ -261,9 +261,7 @@ public class p0CellController : MonoBehaviour
 	public void OnPlayerRegMove (int id, int x, int z ) {
 		var c = grid[x,z];
 		if ( c.locked == -1 ) {
-			Debug.Log("curent c.locked = "+ c.locked );
 			c.locked = id;
-			Debug.Log("player "+ id + " locked = " + c.locked );
 			c.HighlightGround();
 			if ( players != null ) GetPlayer(id).ConsumeActionPoint(1); /* first call from Start function wont take effect */
 		}
@@ -273,7 +271,10 @@ public class p0CellController : MonoBehaviour
 		var c = grid[x,z];
 		c.ChopTree(id,fx,fz,tree_nb);
 		foreach ( var p in players ) {
-			if ( p.IsOnCell(x,z) ) p.OnLostHp(1);
+			if ( p.IsOnCell(x,z) ) {
+				Debug.Log("chop hit another player");
+				p.OnLostHp(1);
+			}
 		}
 	}
 
