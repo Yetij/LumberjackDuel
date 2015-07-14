@@ -30,10 +30,13 @@ public class p0Player : MonoBehaviour
 	[HideInInspector] public PhotonView netview;
 	/* public events */
 	#region public events
+	bool _run;
 	public void OnGameStart () {
+		_run = true;
 	}
 
 	public void OnGameEnd () {
+		_run = false;
 	}
 
 	public bool IsOnCell (int x, int z ) {
@@ -223,8 +226,9 @@ public class p0Player : MonoBehaviour
 	float _lastPlant = 0;
 
 	#endregion
+	bool selectCellMode;
 	void Update () {
-		if ( netview.isMine ) {
+		if ( netview.isMine & _run ) {
 			if ( isMoving ) {
 				_UpdateMove();
 			}
@@ -232,21 +236,40 @@ public class p0Player : MonoBehaviour
 				return;
 			}
 
-			if ( !isMoving ) {
+			if ( !isMoving & !selectCellMode ) {
 				_UpdateMoveState();
 			}
 
 			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & !isMoving;
 			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & !isMoving;
 
-			if( isPlanting & Time.time - _lastPlant > 0.4f) {
+			if( isPlanting & Time.time - _lastPlant > 0.5f) {
 				_lastPlant = Time.time;
-				var tree_x = currentCell.x+ fx;
-				var tree_z = currentCell.z + fz;
-				if ( cellController.FreeCell(tree_x,tree_z ) ) {
-					netview.RPC("DoPlant", PhotonTargets.All, tree_x,tree_z);
-				}
+				selectCellMode = true;
 			} 
+
+			if ( selectCellMode ) {
+				if ( Input.GetButtonDown("Fire1") ) {
+					var pointed_cell = cellController.GetPointedCell (Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+					if( pointed_cell != null ) {
+						if ( Mathf.Abs( pointed_cell.x - currentCell.x ) < 2 & Mathf.Abs( pointed_cell.z - currentCell.z ) < 2 ) {
+							var tree_x = pointed_cell.x;
+							var tree_z = pointed_cell.z;
+							if ( cellController.FreeCell(tree_x,tree_z ) ) {
+								netview.RPC("DoPlant", PhotonTargets.All, tree_x,tree_z);
+								selectCellMode = false;
+							} else {
+								Debug.Log("!!! pointed cell is not free");
+							}
+						} else {
+							Debug.Log("!!! pointed cell is too far from player");
+						}
+					} else {
+						Debug.Log("!!! pointed cell == null");
+					}
+				}
+			}
 
 			if( isChopping & Time.time - _lastChop > 0.4f ) {
 				_lastChop = Time.time;

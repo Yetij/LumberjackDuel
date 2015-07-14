@@ -71,6 +71,11 @@ public class p0CellController : MonoBehaviour
 		Debug.Log("Players created, waiting for game to start");
 	}
 
+	public p0Cell GetPointedCell(Vector3 point ) {
+		int x = (int ) (point.x - grid.root.x / grid.offset_x);
+		int z = (int ) (point.z - grid.root.z / grid.offset_z);
+		return grid[x,z];
+	}
 	bool run;
 
 	public List<p0Player> players { get; private set; }	
