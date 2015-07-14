@@ -67,6 +67,7 @@ public class p0Player : MonoBehaviour
 			GUILayout.Label("hp ="+ hp );
 			GUILayout.Label("timer ="+ (localTimer < 0 ? "0.0" : localTimer.ToString("0.0")) );
 			GUILayout.Label("action points ="+ _actionPoints );
+			GUILayout.Label("points ="+ points );
 			if ( isMyTurn ) {
 				GUILayout.Button("Reset action (disabled)", GUILayout.Width(200));
 				if ( GUILayout.Button("End turn", GUILayout.Width(200)) ) {
@@ -260,9 +261,13 @@ public class p0Player : MonoBehaviour
 			_UpdateSync();
 		}
 	}
+	public int points = 0;
+	public void CreditPoints (int p ) {
+		points += p;
+	}
 
 	[RPC] void DoChop (int id, int x ,int z , int fx, int fz) {
-		cellController.OnPlayerChop(id, x,z,fx,fz);
+		cellController.OnPlayerChop(id, x,z,fx,fz,1);
 		ConsumeActionPoint(1);
 	}
 

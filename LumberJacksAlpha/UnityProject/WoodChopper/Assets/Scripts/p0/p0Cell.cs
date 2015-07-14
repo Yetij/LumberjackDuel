@@ -52,8 +52,7 @@ public class p0Cell : MonoBehaviour {
 
 	}
 
-	int fallx, fallz;
-	public void ChopTree (int _fx, int _fz) {
+	public void ChopTree (int id, int _fx, int _fz, int tree_nb) {
 		if ( _d == null & treeAnimator.isActiveAndEnabled ) {
 			int f = 0;
 			if ( _fx == 1 ) f = 2;
@@ -61,23 +60,21 @@ public class p0Cell : MonoBehaviour {
 			if ( _fz == 1 ) f = 1;
 			else if ( _fz == -1 ) f = 3;
 
-			fallx = _fx;
-			fallz = _fz;
-
-
 			treeAnimator.SetInteger(fallHash,f);
 			treeAnimator.transform.localScale = Vector3.one;
-			StartCoroutine(_d = Disapear());
+
+			p0CellController.Instance.GetPlayer(id).CreditPoints((int)Mathf.Pow(tree_nb,2));
+			StartCoroutine(_d = Disapear(id, _fx,_fz,tree_nb));
 		}
 	}
 
 	public float dominoDelay = 0.4f;
 
-	IEnumerator Disapear() {
+	IEnumerator Disapear(int id, int fallx, int fallz, int tree_nb) {
 		yield return new WaitForSeconds(dominoDelay);
 		var c = Get(fallx,fallz);
 		if ( c != null ) {
-			c.ChopTree(fallx,fallz);
+			c.ChopTree(id,fallx,fallz,tree_nb+1);
 			foreach ( var p in p0CellController.Instance.players ) {
 				if ( p.netview.isMine & p.IsOnCell ( c.x, c.z ) ) {
 					p.OnLostHp(1);

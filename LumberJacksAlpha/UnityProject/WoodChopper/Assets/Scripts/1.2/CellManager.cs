@@ -177,7 +177,7 @@ public class CellManager : MonoBehaviour
 		var c = grid[x,z];
 		if ( c == null ) return;
 		if ( c.tree == null ) return;
-		Debug.Log("rpc domino="+ continueDomino);
+		//Debug.Log("rpc domino="+ continueDomino);
 		c.tree.OnBeingDamaged(fx,fz,dmg,time,fromMaster, continueDomino);
 	}
 

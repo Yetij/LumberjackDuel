@@ -112,6 +112,7 @@ public class p0CellController : MonoBehaviour
 		}
 	}
 
+	public int pointsToWin = 20;
 	void _UpdateTurnState () {
 		if ( _timer > standardTurnTime + 0.4f) {
 			EndCurrentTurn ();
@@ -157,6 +158,12 @@ public class p0CellController : MonoBehaviour
 	void EndCurrentTurn () {
 		_GenTree(); 
 		netview.RPC("_EndTurn",PhotonTargets.All,(byte) states[currentTurn]);
+		foreach ( var p in players ) {
+			if ( p.points >= pointsToWin ) {
+				EndGame();
+				return;
+			}
+		}
 	}
 
 	[RPC] void _EndTurn(byte state ) {
@@ -262,13 +269,11 @@ public class p0CellController : MonoBehaviour
 		}
 	}
 
-	public void OnPlayerChop (int id, int x ,int z , int fx, int fz) {
+	public void OnPlayerChop (int id, int x ,int z , int fx, int fz, int treenb) {
 		var c = grid[x,z];
-		c.ChopTree(fx,fz);
+		c.ChopTree(id,fx,fz,tree_nb);
 		foreach ( var p in players ) {
-			if ( p.netview.owner.ID != id ) {
-				if ( p.IsOnCell(x,z) ) p.OnLostHp(1);
-			}
+			if ( p.IsOnCell(x,z) ) p.OnLostHp(1);
 		}
 	}
 
