@@ -37,7 +37,8 @@ public class p0Player : MonoBehaviour
 	}
 
 	public bool IsOnCell (int x, int z ) {
-		return currentCell.x == x & currentCell.z == z;
+		var t = cellController.CellAt(x,z).position;
+		return Mathf.Abs( t.x - transform.position.x) < 0.2f & Mathf.Abs(t.z- transform.position.z) < 0.2f;
 	}
 
 	public void OnLostHp (int i) {
