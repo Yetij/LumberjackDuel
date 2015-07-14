@@ -90,7 +90,7 @@ public class p0Player : MonoBehaviour
 
 		cellController = p0CellController.Instance;
 		var host = cellController.CellAt(0,0);
-		var client = cellController.CellAt(cellController.gridX-1,cellController.gridZ-1);
+		var client = cellController.CellAt(0,cellController.gridZ-1);
 		if ( PhotonNetwork.isMasterClient ) {
 			currentCell = netview.isMine ? host : client;
 			transform.rotation = netview.isMine ? q01 : q0_1;
