@@ -94,7 +94,7 @@ public class p0Player : MonoBehaviour
 
 		cellController = p0CellController.Instance;
 		var host = cellController.CellAt(0,0);
-		var client = cellController.CellAt(0,cellController.gridZ-1);
+		var client = cellController.CellAt(cellController.gridX-1,0);
 		if ( PhotonNetwork.isMasterClient ) {
 			currentCell = netview.isMine ? host : client;
 			transform.rotation = netview.isMine ? q01 : q0_1;
@@ -226,7 +226,8 @@ public class p0Player : MonoBehaviour
 	float _lastPlant = 0;
 
 	#endregion
-	bool selectCellMode;
+	bool selectCellPlantMode;
+	bool selectCellChopMode;
 	void Update () {
 		if ( netview.isMine & _run ) {
 			if ( isMoving ) {
@@ -236,19 +237,19 @@ public class p0Player : MonoBehaviour
 				return;
 			}
 
-			if ( !isMoving & !selectCellMode ) {
+			if ( !isMoving & !selectCellPlantMode & !selectCellChopMode) {
 				_UpdateMoveState();
 			}
 
-			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & !isMoving;
-			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & !isMoving;
+			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & !isMoving & !selectCellPlantMode & !selectCellChopMode;
+			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & !isMoving & !selectCellPlantMode & !selectCellChopMode;
 
 			if( isPlanting & Time.time - _lastPlant > 0.5f) {
 				_lastPlant = Time.time;
-				selectCellMode = true;
+				selectCellPlantMode = true;
 			} 
 
-			if ( selectCellMode ) {
+			if ( selectCellPlantMode ) {
 				if ( Input.GetButtonDown("Fire1") ) {
 					var pointed_cell = cellController.GetPointedCell (Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
@@ -258,7 +259,37 @@ public class p0Player : MonoBehaviour
 							var tree_z = pointed_cell.z;
 							if ( cellController.FreeCell(tree_x,tree_z ) ) {
 								netview.RPC("DoPlant", PhotonTargets.All, tree_x,tree_z);
-								selectCellMode = false;
+								selectCellPlantMode = false;
+							} else {
+								//Debug.Log("!!! pointed cell is not free");
+							}
+						} else {
+							//Debug.Log("!!! pointed cell is too far from player");
+						}
+					} else {
+						//Debug.Log("!!! pointed cell == null");
+					}
+				}
+			}
+
+			if( isChopping & Time.time - _lastChop > 0.4f ) {
+				_lastChop = Time.time;
+				selectCellChopMode = true;
+			} 
+
+			if ( selectCellChopMode ) {
+				if ( Input.GetButtonDown("Fire1") ) {
+					var pointed_cell = cellController.GetPointedCell (Camera.main.ScreenToWorldPoint(Input.mousePosition));
+					
+					if( pointed_cell != null ) {
+						if ( Mathf.Abs( pointed_cell.x - currentCell.x ) < 2 & Mathf.Abs( pointed_cell.z - currentCell.z ) < 2 ) {
+							var tree_fx = pointed_cell.x - currentCell.x;
+							var tree_fz = pointed_cell.z - currentCell.z;
+							var tree_x = pointed_cell.x;
+							var tree_z = pointed_cell.z;
+							if ( cellController.HasTree (tree_x, tree_z )) {
+								netview.RPC("DoChop", PhotonTargets.All, netview.owner.ID, tree_x,tree_z,tree_fx,tree_fz);
+								selectCellChopMode = false;
 							} else {
 								Debug.Log("!!! pointed cell is not free");
 							}
@@ -270,15 +301,6 @@ public class p0Player : MonoBehaviour
 					}
 				}
 			}
-
-			if( isChopping & Time.time - _lastChop > 0.4f ) {
-				_lastChop = Time.time;
-				var tree_x = currentCell.x+ fx;
-				var tree_z = currentCell.z + fz;
-				if ( cellController.HasTree (tree_x, tree_z )) {
-					netview.RPC("DoChop", PhotonTargets.All, netview.owner.ID, tree_x,tree_z,fx,fz);
-				}
-			} 
 
 			localTimer -= Time.deltaTime;
 		} else {
