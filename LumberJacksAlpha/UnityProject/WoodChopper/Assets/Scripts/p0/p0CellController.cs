@@ -269,7 +269,7 @@ public class p0CellController : MonoBehaviour
 		}
 	}
 
-	public void OnPlayerChop (int id, int x ,int z , int fx, int fz, int treenb) {
+	public void OnPlayerChop (int id, int x ,int z , int fx, int fz, int tree_nb) {
 		var c = grid[x,z];
 		c.ChopTree(id,fx,fz,tree_nb);
 		foreach ( var p in players ) {
