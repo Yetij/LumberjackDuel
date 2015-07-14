@@ -300,9 +300,11 @@ public class p0CellController : MonoBehaviour
 	
 	public void OnPlayerPlant (int x, int z ) {
 		var c = grid[x,z];
-		if ( c.locked == -1 ) {
-			genTreeReservationList.Add (c  );
-			netview.RPC("ReserveTree", PhotonTargets.All,c.x,c.z);
+		if ( c != null ) {
+			if ( c.locked == -1 ) {
+				genTreeReservationList.Add (c  );
+				netview.RPC("ReserveTree", PhotonTargets.All,c.x,c.z);
+			}
 		}
 	}
 

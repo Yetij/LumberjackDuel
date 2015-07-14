@@ -62,6 +62,8 @@ public class p0Player : MonoBehaviour
 	float localTimer = 0;
 	public void OnStartTurn () {
 		isMyTurn = true;
+		selectCellPlantMode = false;
+		selectCellChopMode = false;
 		localTimer = turnTime;
 		_actionPoints = actionPoints;
 	}
