@@ -5,7 +5,6 @@ using System.Collections;
 public class p0Prefabs {
 	public string _GameController;
 	public string _Player;
-	public string _Tree;
 }
 [System.Serializable]
 public class p0ConnectionSettings {
@@ -13,11 +12,6 @@ public class p0ConnectionSettings {
 	public string _LobbyName;
 	public int _MaxPlayerPerRoom;
 	public LobbyType _LobbyType;
-}
-[System.Serializable]
-public class p0KeyboardSettings {
-	public KeyCode chop;
-	public KeyCode plant;
 }
 
 [System.Serializable]
@@ -27,12 +21,51 @@ public class p0GridMapSettings {
 	public float offset_x, offset_z;
 	public Vector3 root;
 }
+
+[System.Serializable]
+public class p0GameplaySettings {
+	public int playerMaxHp = 1;
+	public int treeFallDamage = 1;
+	public int directChopDamage = 1;
+	public int pointsToWin = 20;
+	public int actionPointsPerTurn = 4;
+	public float timePerTurn = 10f;
+	public int chopActionCost = 1;
+	public int plantActionCost = 1;
+	public int moveActionCost = 1;
+}
+[System.Serializable]
+public class p0PlayerSettings {
+	public KeyCode chopKey = KeyCode.O;
+	public KeyCode plantKey = KeyCode.P;
+	public float moveSpeed = 6;
+	public float rotateAngleSpeed = 720;
+}
+
+[System.Serializable]
+public class p0TreeSettings {
+	public float dominoDelay = 0.4f;
+	public float additiveDisapearDelay = 1.1f;
+}
+
+[System.Serializable]
+public class p0CellSettings {
+	public Color reservedForPlayer = Color.red;
+	public Color free = Color.white;
+	public Color reservedForTree = Color.green;
+	public Color availableInSelectMode = Color.grey;
+	public Color selectedInSelectMode = Color.yellow;
+}
+
 public class p0Const : MonoBehaviour
 {
+	public p0GameplaySettings gameplaySettings;
+	public p0PlayerSettings playerSettings;
+	public p0TreeSettings treeSettings;
+	public p0CellSettings cellSettings;
+	public p0GridMapSettings gridSettings;
 	public p0Prefabs prefabNames;
 	public p0ConnectionSettings netConnectionSettings;
-	public p0KeyboardSettings keyboardSettings;
-	public p0GridMapSettings gridSettings;
 	
 	private static p0Const _instance;
 	public static p0Const Instance {

@@ -43,26 +43,71 @@ public class p0CellController : MonoBehaviour
 	}
 
 	/* INITIALIZATION : rpc as signals */
-	#region rpc
+	#region rp
 	[RPC] void __ClientCellControllerOk () {
-		netview.RPC("__CreateGridMap",PhotonTargets.AllBuffered,new object[] { 
-			_const.gridSettings.total_x, 
-			_const.gridSettings.total_z,
-			_const.gridSettings.offset_x,
-			_const.gridSettings.offset_z,
-			_const.gridSettings.root.x,
-			_const.gridSettings.root.y,
-			_const.gridSettings.root.z });
+		var grid = _const.gridSettings;
+		var gameplay = _const.gameplaySettings;
+		var player = _const.playerSettings;
+		var tree = _const.treeSettings;
+		netview.RPC("__SyncSettings",PhotonTargets.All,
+		            grid.total_x, grid.total_z,
+		            grid.offset_x, grid.offset_z,
+		            grid.root.x,grid.root.y, grid.root.z,
+
+		            gameplay.playerMaxHp, gameplay.treeFallDamage, gameplay.directChopDamage,
+		            gameplay.pointsToWin, gameplay.actionPointsPerTurn, gameplay.timePerTurn,
+		            gameplay.chopActionCost, gameplay.plantActionCost, gameplay.moveActionCost,
+
+		            player.moveSpeed, player.rotateAngleSpeed,
+
+		            tree.dominoDelay, tree.additiveDisapearDelay  );
 	}
 
-	[RPC] void __CreateGridMap (byte x,byte z, float offx, float offz, float rootx, float rooty, float rootz) {
-		grid.Init(x,z,offx,offz,rootx,rooty,rootz);
-		var cells = grid.GetCells();
-		Debug.Log("Grid map created");
-		if ( !PhotonNetwork.isMasterClient) netview.RPC("__ClientGridMapOk",PhotonTargets.MasterClient);
-	}
+	[RPC] void __SyncSettings ( 
+						           byte total_x, byte total_z,
+						           float offset_x, float offset_z,
+						           float rootx, float rooty, float rootz,
 
-	[RPC] void __ClientGridMapOk () {
+						           int playerMaxHp, int treeFallDamage, int directChopDamage,
+						           int pointsToWin, int actionPointsPerTurn, float timePerTurn,
+						           int chopActionCost, int plantActionCost, int moveActionCost,
+
+						           float moveSpeed, float rotateAngleSpeed,
+
+						           float dominoDelay , float additiveDisapearDelay  ) {
+
+
+		grid.Init(total_x,total_z,offset_x,offset_z,rootx,rooty,rootz);
+
+		var gameplay = _const.gameplaySettings;
+		var player = _const.playerSettings;
+		var tree = _const.treeSettings;
+
+		gameplay.playerMaxHp = playerMaxHp;
+		gameplay.treeFallDamage = treeFallDamage;
+		gameplay.directChopDamage = directChopDamage;
+		gameplay.pointsToWin= pointsToWin;
+		gameplay.actionPointsPerTurn = actionPointsPerTurn; 
+		gameplay.timePerTurn = timePerTurn;
+		gameplay.chopActionCost = chopActionCost;
+		gameplay.actionPointsPerTurn = actionPointsPerTurn;
+		gameplay.timePerTurn = timePerTurn;
+		gameplay.chopActionCost = chopActionCost;
+		gameplay.plantActionCost = plantActionCost;
+		gameplay.moveActionCost = moveActionCost;
+
+		player.moveSpeed = moveSpeed;
+		player.rotateAngleSpeed = rotateAngleSpeed;
+		
+		tree.dominoDelay = dominoDelay;
+		tree.additiveDisapearDelay = additiveDisapearDelay;
+
+		Debug.Log("Game settings sync-ed");
+
+		if ( !PhotonNetwork.isMasterClient) netview.RPC("__ClientSyncSettingsOk",PhotonTargets.MasterClient);
+	}
+	
+	[RPC] void __ClientSyncSettingsOk () {
 		netview.RPC("__CreatePlayer",PhotonTargets.AllBufferedViaServer);
 	}
 
@@ -76,16 +121,16 @@ public class p0CellController : MonoBehaviour
 		int z = (int ) (point.z - grid.root.z / grid.offset_z);
 		return grid[x,z];
 	}
-	bool run;
+	bool _run;
 
 	public List<p0Player> players { get; private set; }	
 	[RPC] void __StartGame () {
 		Debug.Log("Game started");
 
-		xTime.Instance.OnGameStart();
 		var l = GameObject.FindObjectsOfType(typeof(p0Player)) as p0Player[];
 		players = new List<p0Player>(l);
 
+		_run = true;
 		foreach ( var p in l ) {
 			p.OnGameStart();
 		}
@@ -96,7 +141,7 @@ public class p0CellController : MonoBehaviour
 	}
 
 	[RPC] void __AllStarted() {
-		run = true;
+		_run = true;
 		Debug.Log("First turn begins");
 		if ( PhotonNetwork.isMasterClient) {
 			currentTurn = Random.Range(0,2);
@@ -112,7 +157,7 @@ public class p0CellController : MonoBehaviour
 	int currentTurn = 0;
 
 	void Update () {
-		if ( run & PhotonNetwork.isMasterClient ) {
+		if ( _run & PhotonNetwork.isMasterClient ) {
 			_UpdateTurnState ();
 		}
 	}
@@ -130,7 +175,7 @@ public class p0CellController : MonoBehaviour
 	public int startTreeNb=8;
 	public int genTreeMin=2;
 	public int genTreeMax=3;
-
+	
 	void _ReserveTree () {
 		var f = grid.frees;
 		if ( f.Count == 0 ) return;
@@ -188,7 +233,7 @@ public class p0CellController : MonoBehaviour
 		globalState = (TurnState ) state;
 		_timer = 0;
 		var p = GetPlayer(globalState);
-		standardTurnTime = p.turnTime;
+		standardTurnTime = _const.gameplaySettings.timePerTurn;
 		p.OnStartTurn();
 	}
 
@@ -205,6 +250,7 @@ public class p0CellController : MonoBehaviour
 
 	[RPC] void __EndGame () {
 		Debug.LogError("GAME END!");
+		_run = false;
 		foreach ( var p in players ) {
 			p.OnGameEnd();
 		}
@@ -257,19 +303,11 @@ public class p0CellController : MonoBehaviour
 		return true;
 	}
 
-	public bool FreeCell (int x, int z ) {
-		var c = grid[x,z];
-		if ( c == null ) return false;
-		if ( c.locked != -1 ) return false;
-		return true;
-	}
-
 	public void OnPlayerRegMove (int id, int x, int z ) {
 		var c = grid[x,z];
-		if ( c.locked == -1 ) {
+		if ( c.CanStepOn() ) {
 			c.locked = id;
-			c.HighlightGround();
-			if ( players != null ) GetPlayer(id).ConsumeActionPoint(1); /* first call from Start function wont take effect */
+			if ( players != null ) GetPlayer(id).ConsumeActionPoint(_const.gameplaySettings.moveActionCost); /* first call from Start function wont take effect */
 		}
 	}
 
@@ -279,31 +317,29 @@ public class p0CellController : MonoBehaviour
 		foreach ( var p in players ) {
 			if ( p.IsOnCell(x,z) ) {
 				Debug.Log("chop hit another player");
-				p.OnLostHp(1);
+				p.OnLostHp(_const.gameplaySettings.directChopDamage);
 			}
 		}
 	}
 
 	public void OnPlayerUnRegMove (int x, int z ) {
 		grid[x,z].locked = -1;
-		grid[x,z].UnHighlightGround();
 	}
 
 	public void OnPlayerEndTurn (byte turn ) {
 		if ( (TurnState) turn == globalState ) {
-			//EndCurrentTurn ();
-			//currentTurn = ++currentTurn%2;
-			//StartNewTurn ();
 			_timer = standardTurnTime;
 		}
 	}
-	
+
 	public void OnPlayerPlant (int x, int z ) {
-		var c = grid[x,z];
-		if ( c != null ) {
-			if ( c.locked == -1 ) {
-				genTreeReservationList.Add (c  );
-				netview.RPC("ReserveTree", PhotonTargets.All,c.x,c.z);
+		if ( PhotonNetwork.isMasterClient ) {
+			var c = grid[x,z];
+			if ( c != null ) {
+				if ( c.CanPlantTreeOn() ) {
+					genTreeReservationList.Add (c  );
+					netview.RPC("ReserveTree", PhotonTargets.All,c.x,c.z);
+				}
 			}
 		}
 	}

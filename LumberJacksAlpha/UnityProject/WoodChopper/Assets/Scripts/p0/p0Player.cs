@@ -1,12 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-[System.Serializable]
-public class p0Parameters {
-	public float moveSpeed;
-	public float rotateAngleSpeed;
-	public float dmg;
-}
 [RequireComponent(typeof(PhotonView))]
 public class p0Player : MonoBehaviour
 {
@@ -16,14 +10,10 @@ public class p0Player : MonoBehaviour
 	readonly Quaternion q_10 = Quaternion.Euler(0,-90,0);
 
 	public TurnState myTurnState { get; private set; }
-	public float turnTime;
-	public int actionPoints;
 	int _actionPoints;
 
 	TurnState globalTurnState;
 	p0CellController cellController;
-
-	public p0Parameters parameters;
 		
 	p0Const _const;
 
@@ -47,9 +37,13 @@ public class p0Player : MonoBehaviour
 	public void OnLostHp (int i) {
 		netview.RPC("LostHp", PhotonTargets.All,i);
 	}
-	int hp = 1;
+	int hp;
 	[RPC] void LostHp (int i) {
 		Debug.Log("player = "+netview.owner.ID+ " got hit");
+		if ( hp <= 0 ) {
+			Debug.LogError("game has ended but stil recieved dmg ! - no error , just warning");
+			return;
+		}
 		hp -= i;
 		if ( netview.isMine ) {
 			if ( hp <= 0 ) {
@@ -64,8 +58,8 @@ public class p0Player : MonoBehaviour
 		isMyTurn = true;
 		selectCellPlantMode = false;
 		selectCellChopMode = false;
-		localTimer = turnTime;
-		_actionPoints = actionPoints;
+		localTimer = _const.gameplaySettings.timePerTurn;
+		_actionPoints = _const.gameplaySettings.actionPointsPerTurn;
 	}
 
 	public void _GUI () {
@@ -86,8 +80,11 @@ public class p0Player : MonoBehaviour
 	}
 	public void OnEndTurn () {
 		isMyTurn = false;
+		foreach ( var c in currentCell.map ) {
+			if ( c != null ) c.OnNotSelectMode();
+		}
 	}
-
+	
 	#endregion
 
 	void Start () {
@@ -113,6 +110,8 @@ public class p0Player : MonoBehaviour
 
 		nextCell = null;
 		transform.position = currentCell.position;
+
+		hp = _const.gameplaySettings.playerMaxHp;
 
 		p0CellController.Instance.OnPlayerRegMove(netview.owner.ID,currentCell.x, currentCell.z);
 
@@ -154,7 +153,7 @@ public class p0Player : MonoBehaviour
 		if ( isMoving ) {
 			var c = cellController.CellAt(currentCell.x + _fx, currentCell.z + _fz );
 			if ( c != null ) {
-				if ( c.locked == -1 ) { 
+				if ( c.CanStepOn() ) { 
 					nextCell = c;
 					
 					_path = 0;
@@ -195,7 +194,7 @@ public class p0Player : MonoBehaviour
 	bool reverseMode;
 	void _UpdateMove () {
 		if( nextCell != null ) {
-			_path += Time.deltaTime * parameters.moveSpeed;
+			_path += Time.deltaTime * _const.playerSettings.moveSpeed;
 			transform.position = Vector3.Lerp(currentCell.position,nextCell.position, _path/_distance);
 			if ( transform.position == nextCell.position ) {		
 				netview.RPC("UnRegMove", PhotonTargets.All,currentCell.x , currentCell.z );
@@ -205,7 +204,7 @@ public class p0Player : MonoBehaviour
 		}
 		
 		if ( transform.rotation != nextRotation ) {
-			_rotPath += Time.deltaTime * parameters.rotateAngleSpeed;
+			_rotPath += Time.deltaTime * _const.playerSettings.rotateAngleSpeed;
 			transform.rotation = Quaternion.Lerp(lastRotation,nextRotation,_rotPath/_rotDistance);
 			if ( Quaternion.Angle(transform.rotation,nextRotation ) < 1f ) {
 				transform.rotation = nextRotation;
@@ -230,12 +229,14 @@ public class p0Player : MonoBehaviour
 	#endregion
 	bool selectCellPlantMode;
 	bool selectCellChopMode;
+
+
 	void Update () {
-		if ( netview.isMine & _run ) {
+		if ( netview.isMine  ) {
 			if ( isMoving ) {
 				_UpdateMove();
 			}
-			if ( !isMyTurn  | _actionPoints <= 0 ) {
+			if ( !_run | !isMyTurn  | _actionPoints <= 0 ) {
 				return;
 			}
 
@@ -243,8 +244,8 @@ public class p0Player : MonoBehaviour
 				_UpdateMoveState();
 			}
 
-			isPlanting = Input.GetKey(_const.keyboardSettings.plant) & !isMoving & !selectCellPlantMode & !selectCellChopMode;
-			isChopping = Input.GetKey(_const.keyboardSettings.chop)  & !isMoving & !selectCellPlantMode & !selectCellChopMode;
+			isPlanting = Input.GetKey(_const.playerSettings.plantKey) & !isMoving & !selectCellPlantMode & !selectCellChopMode;
+			isChopping = Input.GetKey(_const.playerSettings.chopKey)  & !isMoving & !selectCellPlantMode & !selectCellChopMode;
 
 			if( isPlanting & Time.time - _lastPlant > 0.5f) {
 				_lastPlant = Time.time;
@@ -252,25 +253,39 @@ public class p0Player : MonoBehaviour
 			} 
 
 			if ( selectCellPlantMode ) {
-				if ( Input.GetButtonDown("Fire1") ) {
-					var pointed_cell = cellController.GetPointedCell (Camera.main.ScreenToWorldPoint(Input.mousePosition));
+				var pointed_cell = cellController.GetPointedCell (Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
-					if( pointed_cell != null ) {
-						if ( Mathf.Abs( pointed_cell.x - currentCell.x ) < 2 & Mathf.Abs( pointed_cell.z - currentCell.z ) < 2 ) {
-							var tree_x = pointed_cell.x;
-							var tree_z = pointed_cell.z;
-							if ( cellController.FreeCell(tree_x,tree_z ) ) {
+				if ( pointed_cell != null ) {
+					var selectable = Mathf.Abs( pointed_cell.x - currentCell.x ) < 2 & Mathf.Abs( pointed_cell.z - currentCell.z ) < 2;
+					var m = currentCell.map;
+					var cellsAvailable = false;
+					foreach ( var c in m ) {
+						if ( c == null ) continue;
+						if ( c.CanPlantTreeOn() ) {
+							cellsAvailable = true;
+							if ( c == pointed_cell & selectable) {
+								c.OnSelected();
+							} else c.OnSelectMode();
+						}
+					}
+
+					selectCellPlantMode = cellsAvailable;
+
+					if ( Input.GetButtonDown("Fire1") & selectable & cellsAvailable ) {
+						var tree_x = pointed_cell.x;
+						var tree_z = pointed_cell.z;
+						var _c = cellController.CellAt(tree_x,tree_z );
+						if ( _c != null ) {
+							if ( _c.CanPlantTreeOn() ) {
 								netview.RPC("DoPlant", PhotonTargets.All, tree_x,tree_z);
 								selectCellPlantMode = false;
-							} else {
-								//Debug.Log("!!! pointed cell is not free");
+								foreach ( var c in m ) {
+									if ( c == null ) continue;
+									c.OnNotSelectMode();
+								}
 							}
-						} else {
-							//Debug.Log("!!! pointed cell is too far from player");
-						}
-					} else {
-						//Debug.Log("!!! pointed cell == null");
-					}
+						} 
+					} 
 				}
 			}
 
@@ -280,27 +295,46 @@ public class p0Player : MonoBehaviour
 			} 
 
 			if ( selectCellChopMode ) {
-				if ( Input.GetButtonDown("Fire1") ) {
-					var pointed_cell = cellController.GetPointedCell (Camera.main.ScreenToWorldPoint(Input.mousePosition));
-					
-					if( pointed_cell != null ) {
-						if ( Mathf.Abs( pointed_cell.x - currentCell.x ) < 2 & Mathf.Abs( pointed_cell.z - currentCell.z ) < 2 ) {
-							var tree_fx = pointed_cell.x - currentCell.x;
-							var tree_fz = pointed_cell.z - currentCell.z;
+				var pointed_cell = cellController.GetPointedCell (Camera.main.ScreenToWorldPoint(Input.mousePosition));
+				
+				if ( pointed_cell != null ) {
+					var selectable = Mathf.Abs( pointed_cell.x - currentCell.x ) < 2 & Mathf.Abs( pointed_cell.z - currentCell.z ) < 2;
+					var m = currentCell.map;
+					var cellsAvailable = false;
+					foreach ( var c in m ) {
+						if ( c == null ) continue;
+						if ( c.CanChop() ) {
+							cellsAvailable = true;
+							if ( c == pointed_cell & selectable) {
+								c.OnSelected();
+							} else c.OnSelectMode();
+						}
+					}
+					selectCellChopMode = cellsAvailable;
+
+					if ( Input.GetButtonDown("Fire1") & selectable & cellsAvailable ) {
+						var tree_fx = pointed_cell.x - currentCell.x;
+						var tree_fz = pointed_cell.z - currentCell.z;
+						if ( tree_fx == 0 & tree_fz == 0 ) {
+							Debug.Log("You cant chop urself ... or u can , but not in this game ");
+						} else {
 							var tree_x = pointed_cell.x;
 							var tree_z = pointed_cell.z;
-							if ( cellController.HasTree (tree_x, tree_z )) {
-								netview.RPC("DoChop", PhotonTargets.All, netview.owner.ID, tree_x,tree_z,tree_fx,tree_fz);
-								selectCellChopMode = false;
-							} else {
-								Debug.Log("!!! pointed cell is not free");
-							}
-						} else {
-							Debug.Log("!!! pointed cell is too far from player");
+
+							var _c = cellController.CellAt(tree_x,tree_z );
+							if ( _c != null ) {
+								if ( _c.CanChop() ) {
+									netview.RPC("DoChop", PhotonTargets.All, netview.owner.ID, tree_x,tree_z,tree_fx,tree_fz);
+									selectCellChopMode = false;
+
+									foreach ( var c in m ) {
+										if ( c == null ) continue;
+										c.OnNotSelectMode();
+									}
+								}
+							} 
 						}
-					} else {
-						Debug.Log("!!! pointed cell == null");
-					}
+					} 
 				}
 			}
 
@@ -315,18 +349,16 @@ public class p0Player : MonoBehaviour
 	}
 
 	[RPC] void DoChop (int id, int x ,int z , int fx, int fz) {
-		cellController.OnPlayerChop(id, x,z,fx,fz,1);
-		ConsumeActionPoint(1);
+		cellController.OnPlayerChop(id, x,z,fx,fz,0);
+		ConsumeActionPoint(_const.gameplaySettings.chopActionCost);
 	}
 
 	[RPC] void DoPlant (int x ,int z) {
 		cellController.OnPlayerPlant(x,z);
-		ConsumeActionPoint(1);
+		ConsumeActionPoint(_const.gameplaySettings.plantActionCost);
 	}
 
 	#region sync
-	public float predictStrength = 0.2f;
-	Vector3 predictedPosition = Vector3.zero;
 	Vector3 realPos = Vector3.zero;
 	Vector3 positionAtLastPacket = Vector3.zero;
 	float currentTime = 0f;
@@ -339,9 +371,9 @@ public class p0Player : MonoBehaviour
 
 	void _UpdateSync(){
 		currentTime += Time.deltaTime;
-		if( currentTime <= timeToReachGoal) transform.position = Vector3.Lerp(positionAtLastPacket, predictedPosition, (float)(currentTime / timeToReachGoal));
+		if( currentTime <= timeToReachGoal) transform.position = Vector3.Lerp(positionAtLastPacket, realPos, (float)(currentTime / timeToReachGoal));
 		
-		currentY += Time.deltaTime*parameters.rotateAngleSpeed;
+		currentY += Time.deltaTime*_const.playerSettings.rotateAngleSpeed;
 		if ( currentY <= angleDif ) transform.rotation= Quaternion.Lerp(last_sync_rot,sync_rot,currentY/angleDif);
 	}
 
@@ -355,23 +387,19 @@ public class p0Player : MonoBehaviour
 		}
 		else
 		{
-			var _pos = (Vector3)stream.ReceiveNext();
+			realPos = (Vector3)stream.ReceiveNext();
 			isMoving = (bool )stream.ReceiveNext();
 			var _y = (float ) stream.ReceiveNext();
 			
 			currentY = 0;
 			last_sync_rot = transform.rotation;
-			//	var _dy = Mathf.Abs(last_sync_rot.eulerAngles.y - _y);
-			angleDif = Mathf.Abs(_y /* + _dy*rotPredictionStrength*/ - last_sync_rot.eulerAngles.y );
+			angleDif = Mathf.Abs(_y - last_sync_rot.eulerAngles.y );
 			if ( angleDif > 180 ) angleDif -= 180;
-			sync_rot = Quaternion.Euler(new Vector3(0,_y  /*+ _dy*rotPredictionStrength*/,0));
+			sync_rot = Quaternion.Euler(new Vector3(0,_y ,0));
 			
 			currentTime = 0;
 			positionAtLastPacket = transform.position;
-			var dp = (_pos - realPos);
-			realPos = _pos;
-			
-			predictedPosition = realPos + dp*predictStrength;
+		
 			timeToReachGoal = info.timestamp - currentPacketTime;
 			if( timeToReachGoal > 1 ) timeToReachGoal = 0.2f;
 			

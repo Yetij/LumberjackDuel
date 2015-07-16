@@ -14,6 +14,8 @@ public class p0Grid : MonoBehaviour {
 		offset_x  = offx;
 		offset_z = offz;
 		root = new Vector3(rootx,rooty,rootz);
+
+		GetCells();
 	}
 	
 	Vector3 Locate ( int x, int z ) {
@@ -55,10 +57,15 @@ public class p0Grid : MonoBehaviour {
 		for(int _z = 0; _z < total_z; _z ++ ) {
 			for ( int _x = 0; _x < total_x ; _x ++ ) {
 				var c = cells[_x,_z];
-				c.up = _z + 1 < total_z? cells[_x,_z+1] : null;
-				c.down = _z - 1 >= 0 ? cells[_x,_z-1] : null;
-				c.right = _x + 1 < total_x ? cells[_x+1,_z] : null;
-				c.left = _x - 1 >= 0 ? cells[_x-1, _z] : null;
+				c.Map(0,1,_z + 1 < total_z? cells[_x,_z+1] : null);
+				c.Map(0,-1, _z - 1 >= 0 ? cells[_x,_z-1] : null);
+				c.Map(1,0,_x + 1 < total_x ? cells[_x+1,_z] : null);
+				c.Map(-1,0,_x - 1 >= 0 ? cells[_x-1, _z] : null);
+
+				c.Map(-1,1,(_z + 1 < total_z & _x - 1 >= 0 ) ? cells[_x - 1,_z + 1] : null);
+				c.Map(1,1,(_z + 1 < total_z & _x + 1 < total_x ) ? cells[_x + 1,_z + 1] : null);
+				c.Map(1,-1,(_z - 1 >= 0 & _x + 1 < total_x ) ? cells[_x+1,_z -1] : null);
+				c.Map(-1,-1,(_z - 1 >= 0 & _x - 1 >= 0 ) ? cells[_x-1, _z-1] : null);
 			}
 		}
 		return cells;

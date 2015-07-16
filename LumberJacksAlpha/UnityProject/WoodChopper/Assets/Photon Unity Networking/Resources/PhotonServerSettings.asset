@@ -104,4 +104,6 @@ MonoBehaviour:
   - LostHp
   - GenTree
   - ReserveTree
+  - __ClientSyncSettingsOk
+  - __SyncSettings
   DisableAutoOpenWizard: 1

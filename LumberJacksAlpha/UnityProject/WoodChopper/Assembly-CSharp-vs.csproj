@@ -177,6 +177,8 @@
      <Compile Include="Assets\Scripts\v5\xTime.cs" />
      <Compile Include="Assets\SimpleAds.cs" />
      <Compile Include="Assets\SkyboxRotate.cs" />
+     <Compile Include="Assets\TEST_PREFAB.cs" />
+     <Compile Include="Assets\TEST_SCRIPT.cs" />
      <Compile Include="Assets\TestCanvas.cs" />
      <Compile Include="Assets\TestPanel.cs" />
      <Compile Include="Assets\TestWWW.cs" />
