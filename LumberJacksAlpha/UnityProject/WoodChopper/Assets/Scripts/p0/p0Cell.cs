@@ -68,7 +68,7 @@ public class p0Cell : MonoBehaviour {
 	}
 
 	public bool CanChop () {
-		return locked == -2;
+		return locked == -2 | locked >= 0;
 	}
 
 	public void ChopTree (int id, int _fx, int _fz, int tree_nb) {

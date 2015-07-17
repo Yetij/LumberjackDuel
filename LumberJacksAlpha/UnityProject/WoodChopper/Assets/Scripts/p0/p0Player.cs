@@ -64,6 +64,7 @@ public class p0Player : MonoBehaviour
 
 	public void _GUI () {
 		if ( netview.isMine) {
+			GUILayout.Label("=== MY STATISTICS ===");
 			GUILayout.Label("hp ="+ hp );
 			GUILayout.Label("timer ="+ (localTimer < 0 ? "0.0" : localTimer.ToString("0.0")) );
 			GUILayout.Label("action points ="+ _actionPoints );
@@ -76,6 +77,9 @@ public class p0Player : MonoBehaviour
 					netview.RPC("ManualEndTurn", PhotonTargets.MasterClient, (byte) myTurnState);
 				}
 			}
+		} else {
+			GUILayout.Label("=== OPPONENTS STATISTICS ===");
+			GUILayout.Label("points ="+ points );
 		}
 	}
 	public void OnEndTurn () {
