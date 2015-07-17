@@ -149,6 +149,15 @@ public class p0CellController : MonoBehaviour
 		Debug.Log("First turn begins");
 		if ( PhotonNetwork.isMasterClient) {
 			currentTurn = Random.Range(0,2);
+			var f = grid.frees;
+			if ( f.Count != 0 ) {
+				for(int i=0; i < _const.gameplaySettings.startTreeNb ; i++ ) {
+					var c = f[Random.Range(0,f.Count)];
+					genTreeReservationList[currentTurn].Add (c  );
+					netview.RPC("ReserveTree", PhotonTargets.All,c.x,c.z);
+					if ( f.Count == 0 ) break;
+				}
+			}
 			StartNewTurn();
 		}
 	}
