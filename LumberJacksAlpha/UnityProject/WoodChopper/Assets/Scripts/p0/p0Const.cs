@@ -28,12 +28,16 @@ public class p0GameplaySettings {
 	public int treeFallDamage = 1;
 	public int directChopDamage = 1;
 	public int pointsToWin = 20;
-	public int actionPointsPerTurn = 4;
 	public float timePerTurn = 10f;
+	public int actionPointsPerTurn = 4;
 	public int chopActionCost = 1;
 	public int plantActionCost = 1;
 	public int moveActionCost = 1;
+	public int startTreeNb=8;
+	public int genTreeMin=2;
+	public int genTreeMax=3;
 }
+
 [System.Serializable]
 public class p0PlayerSettings {
 	public KeyCode chopKey = KeyCode.O;

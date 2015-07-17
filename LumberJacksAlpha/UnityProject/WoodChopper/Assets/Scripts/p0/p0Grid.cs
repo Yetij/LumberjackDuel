@@ -28,7 +28,7 @@ public class p0Grid : MonoBehaviour {
 		}
 	}
 
-	public List<p0Cell> frees;
+	[HideInInspector]public List<p0Cell> frees;
 	
 	p0Cell[,] cells;
 	

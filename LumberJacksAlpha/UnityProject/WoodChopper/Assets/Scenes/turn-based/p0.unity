@@ -134,6 +134,22 @@ Prefab:
       propertyPath: netConnectionSettings._GameVersion
       value: 0.3
       objectReference: {fileID: 0}
+    - target: {fileID: 11476930, guid: b23181f9d418ec844a095a3a8bde7917, type: 2}
+      propertyPath: playerSettings.moveSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11476930, guid: b23181f9d418ec844a095a3a8bde7917, type: 2}
+      propertyPath: gameplaySettings.genTreeMin
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11476930, guid: b23181f9d418ec844a095a3a8bde7917, type: 2}
+      propertyPath: gameplaySettings.genTreeMax
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11476930, guid: b23181f9d418ec844a095a3a8bde7917, type: 2}
+      propertyPath: gameplaySettings.startTreeNb
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11461938, guid: b23181f9d418ec844a095a3a8bde7917, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: b23181f9d418ec844a095a3a8bde7917, type: 2}

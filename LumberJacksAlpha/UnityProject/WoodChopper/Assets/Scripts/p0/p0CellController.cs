@@ -135,7 +135,11 @@ public class p0CellController : MonoBehaviour
 			p.OnGameStart();
 		}
 
-		if ( PhotonNetwork.isMasterClient) genTreeReservationList = new List<p0Cell>();
+		if ( PhotonNetwork.isMasterClient) {
+			genTreeReservationList = new List<p0Cell> [2];
+			genTreeReservationList[0] = new List<p0Cell>();
+			genTreeReservationList[1] = new List<p0Cell>();
+		}
 
 		if ( !PhotonNetwork.isMasterClient) netview.RPC("__AllStarted",PhotonTargets.MasterClient);
 	}
@@ -172,18 +176,14 @@ public class p0CellController : MonoBehaviour
 		_timer += Time.deltaTime;
 	}
 
-	public int startTreeNb=8;
-	public int genTreeMin=2;
-	public int genTreeMax=3;
-	
 	void _ReserveTree () {
 		var f = grid.frees;
 		if ( f.Count == 0 ) return;
-		var tree_nb = Random.Range(genTreeMin,genTreeMax+1);
+		var tree_nb = Random.Range(_const.gameplaySettings.genTreeMin,_const.gameplaySettings.genTreeMax+1);
 
 		for(int i=0; i < tree_nb ; i++ ) {
 			var c = f[Random.Range(0,f.Count)];
-			genTreeReservationList.Add (c  );
+			genTreeReservationList[currentTurn].Add (c  );
 			netview.RPC("ReserveTree", PhotonTargets.All,c.x,c.z);
 			if ( f.Count == 0 ) return;
 		}
@@ -193,17 +193,18 @@ public class p0CellController : MonoBehaviour
 		grid[x,z].OnGenTreeReserved();
 	}
 
-	List<p0Cell > genTreeReservationList;
+	List<p0Cell >[] genTreeReservationList;
 
 	void _GenTree () {
-		foreach ( var p in genTreeReservationList  ){
+		var i = (currentTurn + 1 ) %2;
+		foreach ( var p in genTreeReservationList[i]  ){
 			netview.RPC("GenTree",PhotonTargets.All, p.x, p.z);
 		}
-		genTreeReservationList.Clear();
+		genTreeReservationList[i].Clear();
 	}
 
 	[RPC] void GenTree (int x, int z ) {
-		grid[x,z ].PlantTree();
+		if ( grid[x,z].locked == -3 )  grid[x,z ].PlantTree();
 	}
 
 	void EndCurrentTurn () {
@@ -337,7 +338,7 @@ public class p0CellController : MonoBehaviour
 			var c = grid[x,z];
 			if ( c != null ) {
 				if ( c.CanPlantTreeOn() ) {
-					genTreeReservationList.Add (c  );
+					genTreeReservationList[currentTurn].Add (c  );
 					netview.RPC("ReserveTree", PhotonTargets.All,c.x,c.z);
 				}
 			}

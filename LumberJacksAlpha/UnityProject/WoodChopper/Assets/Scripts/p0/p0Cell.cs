@@ -25,6 +25,7 @@ public class p0Cell : MonoBehaviour {
 				break;
 			default :
 				ground.color = p0Const.Instance.cellSettings.reservedForPlayer;
+				freeList.Remove(this);
 				break;
 			}
 			_locked = value;
