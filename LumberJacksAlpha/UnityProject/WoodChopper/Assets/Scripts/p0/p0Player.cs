@@ -37,9 +37,9 @@ public class p0Player : MonoBehaviour
 	public void OnLostHp (int i) {
 		netview.RPC("LostHp", PhotonTargets.All,i);
 	}
+
 	int hp;
 	[RPC] void LostHp (int i) {
-		Debug.Log("player = "+netview.owner.ID+ " got hit");
 		if ( hp <= 0 ) {
 			Debug.LogError("game has ended but stil recieved dmg ! - no error , just warning");
 			return;

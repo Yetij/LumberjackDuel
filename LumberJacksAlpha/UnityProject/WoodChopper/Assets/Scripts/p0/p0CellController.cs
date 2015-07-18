@@ -325,8 +325,7 @@ public class p0CellController : MonoBehaviour
 		var c = grid[x,z];
 		c.ChopTree(id,fx,fz,tree_nb);
 		foreach ( var p in players ) {
-			if ( p.IsOnCell(x,z) ) {
-				Debug.Log("chop hit another player");
+			if ( p.netview.isMine & p.IsOnCell(x,z) ) {
 				p.OnLostHp(_const.gameplaySettings.directChopDamage);
 			}
 		}
