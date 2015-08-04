@@ -106,4 +106,13 @@ MonoBehaviour:
   - ReserveTree
   - __ClientSyncSettingsOk
   - __SyncSettings
+  - Chop
+  - OnGameEnd
+  - OnGameStart
+  - OnTurnEnd
+  - OnTurnStart
+  - Plant
+  - OnBackgroundProcess
+  - MoveTo
+  - OnBackgroundStart
   DisableAutoOpenWizard: 1
