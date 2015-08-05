@@ -4,13 +4,22 @@ using System.Collections.Generic;
 
 public class p2Cell : MonoBehaviour, AbsServerObserver {
 	[HideInInspector] public int x,z;
-	[HideInInspector] public Vector3 position;
 	
 	public GameObject highlight;
 	public GameObject selected;
 
 	[HideInInspector] public AbsTree tree;
 	[HideInInspector] public p2Player player;
+
+	public void OnPlayerMoveIn ( p2Player player ) {
+		player.transform.position = transform.position;
+		player.currentCell = this;
+		this.player = player;
+	}
+
+	public void OnPlayerMoveOut ( ) {
+		this.player = null;
+	}
 
 	public void OnTurnStart ( int turn_nb ){
 	}
@@ -32,7 +41,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 	public void AddTree (AbsTree t) {
 		tree = t;
 		
-		t.transform.position = position;
+		t.transform.position = transform.position;
 		t.cell = this;
 	}
 

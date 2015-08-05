@@ -117,11 +117,10 @@ public class TouchInput : MonoBehaviour
 			case TouchPhase.Ended:
 				if ( isInControlZone ) break;
 
-
 				var delta = t.position - startPos;
 				Debug.Log("swipe distance = " + delta.y);
 
-				if (delta.y > minSwipeDistance) {
+				if (Mathf.Abs(delta.y) > minSwipeDistance) {
 					
 					float swipeValue = Mathf.Sign(delta.y);
 					

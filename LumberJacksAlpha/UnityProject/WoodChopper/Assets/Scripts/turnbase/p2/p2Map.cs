@@ -58,11 +58,11 @@ public class p2Map : MonoBehaviour {
 				p2Cell c = g.GetComponent<p2Cell>();
 				c.x = _x;
 				c.z = _z;
-				c.position = Locate(_x,_z);
+				c.transform.position = Locate(_x,_z);
 				
 				cells[_x,_z] = c;
 				
-				g.transform.position = c.position;
+				g.transform.position = c.transform.position;
 			}
 		}
 		for(int _z = 0; _z < total_z; _z ++ ) {

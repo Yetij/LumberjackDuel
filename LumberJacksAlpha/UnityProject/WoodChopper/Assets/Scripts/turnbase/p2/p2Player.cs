@@ -14,7 +14,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	int moveAC;
 	int plantAC;
 
-	p2Cell currentCell;
+	[HideInInspector] public p2Cell currentCell;
 
 	int currentAC;
 	int additionalPerActionCostAC;
@@ -43,7 +43,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			//fz =  photonView.isMine ? -1 : 1;
 			//myTurnState = photonView.isMine ?  TurnState.P2 : TurnState.P1;
 		}
-		transform.position = currentCell.transform.localPosition;
+		currentCell.OnPlayerMoveIn(this);
 
 		p2Server.Instance.OnPlayerReady(this);
 	}
@@ -83,8 +83,8 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	[RPC] void MoveTo ( int x, int z, bool interpolate ) {
 		var cell = localMap[x,z];
 		if ( !interpolate) {
-			transform.position = cell.position;
-			currentCell = cell;
+			currentCell.OnPlayerMoveOut();
+			cell.OnPlayerMoveIn(this);
 		} else {
 		}
 	}
@@ -148,8 +148,6 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			}
 			return;
 		}
-		Debug.Log("cell pos = " + cell.position + " cell.x z = " + cell.x + ", " + cell.z);
-
 		//if ( Mathf.Abs(cell.x - currentCell.x ) > 1 | Mathf.Abs(cell.z - currentCell.z) > 1 ) return;
 
 		if ( lastPointedCell != null & lastPointedCell != cell ) {
