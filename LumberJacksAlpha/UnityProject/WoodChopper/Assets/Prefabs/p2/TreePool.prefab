@@ -11,6 +11,7 @@ GameObject:
   - 114: {fileID: 11432444}
   - 114: {fileID: 11478296}
   - 114: {fileID: 11474922}
+  - 114: {fileID: 11406972}
   m_Layer: 0
   m_Name: TreePool
   m_TagString: Untagged
@@ -25,11 +26,25 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 130854}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .00013923645, y: -.00262641907, z: -.00134348869}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &11406972
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 130854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62022c9460f45c14da22d6c9eaa1e32e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  prefab: {fileID: 11412986, guid: bd0f38e7d6e7cc3469a503fe4e434daf, type: 2}
+  init_cap: 5
 --- !u!114 &11432444
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -203,9 +203,10 @@
      <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Basic.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Custom01.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Custom02.cs" />
+     <Compile Include="Assets\Scripts\turnbase\p2\UI\p2Gui.cs" />
+     <Compile Include="Assets\Scripts\turnbase\p2\UI\p2GuiTree.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Cell.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p2\p2Gui.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p2\p2GuiTree.cs" />
+     <Compile Include="Assets\Scripts\turnbase\p2\p2Connector.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Map.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Player.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2PoolInfo.cs" />

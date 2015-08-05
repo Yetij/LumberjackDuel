@@ -10,7 +10,7 @@ public class p2TreePool : MonoBehaviour
 	void Awake () {
 		pool = new Dictionary<p2TreeType,List<AbsTree>>();
 
-		var seeds = GetComponents<p2PoolInfo>();
+		seeds = GetComponents<p2PoolInfo>();
 		for ( int i = 0; i < seeds.Length; i ++ ) {
 			GameObject g = new GameObject(seeds[i].type.ToString());
 			g.transform.parent = gameObject.transform;

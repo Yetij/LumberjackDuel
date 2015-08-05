@@ -3,6 +3,12 @@ using System.Collections;
 
 [RequireComponent(typeof(PhotonView))]
 public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserver, AbsGuiListener {
+	
+	readonly Quaternion q01 = Quaternion.Euler(0,0,0);
+	readonly Quaternion q0_1 = Quaternion.Euler(0,180,0);
+	readonly Quaternion q10 = Quaternion.Euler(0,90,0);
+	readonly Quaternion q_10 = Quaternion.Euler(0,-90,0);
+
 	p2Map localMap;
 
 	int moveAC;
@@ -23,12 +29,33 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		TouchInput.Instance.AddListener(this);
 		p2Gui.Instance.AddListener(this);
 		localMap = p2Map.Instance;
-		currentCell = localMap[2,2];
+
+		var host = localMap[0,0];
+		var client = localMap[localMap.total_x-1,0];
+		if ( PhotonNetwork.isMasterClient ) {
+			currentCell = photonView.isMine ? host : client;
+			transform.rotation = photonView.isMine ? q01 : q0_1;
+			//fz =  photonView.isMine ? 1 : -1;
+			//myTurnState = photonView.isMine ? TurnState.P1: TurnState.P2;
+		} else {
+			currentCell = photonView.isMine ? client : host;
+			transform.rotation = photonView.isMine ? q0_1 : q01;
+			//fz =  photonView.isMine ? -1 : 1;
+			//myTurnState = photonView.isMine ?  TurnState.P2 : TurnState.P1;
+		}
 		transform.position = currentCell.transform.localPosition;
+
+		p2Server.Instance.OnPlayerReady(this);
+	}
+
+	public void OnGameStart () {
+	}
+
+	public void OnGameEnd () {
 	}
 
 	public void OnTreeSelected (p2GuiTree t) {
-
+		guiSelectedTree = t;
 	}
 
 	public void OnBackgroundStart ()

@@ -9,6 +9,7 @@ delegate void _OnBackgroundStart ();
 public class p2Server : Photon.MonoBehaviour
 {
 	public float intervalBetweensTurns = 0.5f;
+	public string playerPrefabName = "PlayerP2";
 
 	event _OnTurnStart onTurnStart;
 	event _OnBackgroundStart onBackgroundStart;
@@ -18,7 +19,57 @@ public class p2Server : Photon.MonoBehaviour
 	
 	bool _run;
 	int currentTurnNb;
+
+	void Start () {
+		players = new List<p2Player>();
+		Debug.Log("p2Server Start ");
+		if ( !PhotonNetwork.isMasterClient) photonView.RPC("ServerLoaded",PhotonTargets.MasterClient);
+	}
 	
+	[RPC] void ServerLoaded () {
+		photonView.RPC("CreatePlayers", PhotonTargets.AllViaServer);
+	}
+	
+	[RPC] void CreatePlayers () {
+		PhotonNetwork.Instantiate(playerPrefabName,new Vector3(0,0,0),Quaternion.identity,0);
+	}
+
+	List<p2Player> players;
+
+	bool masterReady, nonMasterReady;
+
+	public void OnPlayerReady (p2Player p) {
+		players.Add(p);
+		if ( !PhotonNetwork.isMasterClient &  players.Count >= PhotonNetwork.room.maxPlayers ) {
+			photonView.RPC("NonMasterClientReady", PhotonTargets.MasterClient);
+		}
+		if ( PhotonNetwork.isMasterClient &  players.Count >= PhotonNetwork.room.maxPlayers ) {
+			masterReady = true;
+			if ( nonMasterReady & !_run ) {
+				photonView.RPC("OnGameStart",PhotonTargets.AllViaServer);
+			}
+		}
+	}
+
+	[RPC] void NonMasterClientReady () {
+		nonMasterReady = true;
+		if ( masterReady & !_run ) photonView.RPC("OnGameStart",PhotonTargets.AllViaServer);
+	}
+
+	[RPC] void OnGameStart () {
+		_run = true;
+		foreach ( var p in players ) {
+			p.OnGameStart ();
+		}
+	}
+
+	[RPC] void OnGameEnd () {
+		_run = false;
+		foreach ( var p in players ) {
+			p.OnGameEnd ();
+		}
+	}
+
 	void Update () {
 		if ( _run & PhotonNetwork.isMasterClient & photonView.isMine) {
 			UpdateState ();
@@ -65,5 +116,17 @@ public class p2Server : Photon.MonoBehaviour
 			break;
 		}
 	}
+
+	#region hide
+	private static p2Server _instance;
+	public static p2Server Instance {
+		get {
+			if ( _instance == null ) {
+				_instance = GameObject.FindObjectOfType(typeof(p2Server)) as p2Server;
+			}
+			return _instance;
+		}
+	}
+	#endregion
 }
 
