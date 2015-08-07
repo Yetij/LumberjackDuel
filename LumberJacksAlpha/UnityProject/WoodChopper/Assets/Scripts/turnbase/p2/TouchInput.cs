@@ -8,17 +8,20 @@ public class TouchInput : MonoBehaviour
 
 	Vector2 startPos;
 
-	AbsInputListener attachedListener;
+	AbsInputListener listener;
 	p2Map localMap;
 	p2Gui gui;
+	p2Scene globalScene;
 
 	void Start () {
 		localMap = p2Map.Instance;
 		gui = p2Gui.Instance;
+		globalScene = p2Scene.Instance;
+		Debug.Log("TouchInput created ");
 	}
 	
-	public void AddListener (AbsInputListener listener ) {
-		attachedListener = listener;
+	public void AddListener (AbsInputListener _listener ) {
+		this.listener = _listener;
 	}
 
 	bool isInControlZone;
@@ -49,6 +52,7 @@ public class TouchInput : MonoBehaviour
 #endif
 
 	void Update () {
+		if ( !globalScene._run ) return;
 #if UNITY_STANDALONE_WIN
 		if ( Input.GetMouseButtonDown(0) ) {
 			if ( !touchStart) {
@@ -59,7 +63,16 @@ public class TouchInput : MonoBehaviour
 				isInMapZone = IsInMapZone( startPos );
 			}
 		}
-
+		if ( touchStart ) {
+			var current = ConvertAxes(Camera.main.ScreenToWorldPoint(Input.mousePosition)); 
+			if (isInControlZone ) {
+				listener.OnControlZoneTouchMove(current - lastPos);
+				lastPos = current;
+			}
+			if ( isInMapZone ) {
+				listener.OnMapZoneTouchMove(current);
+			}
+		}
 
 		if ( Input.GetMouseButtonUp(0)) { 
 			if ( touchStart ) {
@@ -72,31 +85,18 @@ public class TouchInput : MonoBehaviour
 						float swipeValue = Mathf.Sign(delta.y);
 						
 						if (swipeValue > 0){
-							attachedListener.OnApprove();
+							listener.OnSwipeUp();
 						}else if (swipeValue < 0) {
-							attachedListener.OnCancel();
+							listener.OnSwipeDown();
 						}
 						
 					} else if ( isInMapZone ) {
-						attachedListener.OnMapZoneTap(current);
+						listener.OnMapZoneTap(current);
 					}
 				}
 				touchStart = false;
 			}
 		}
-
-		if ( touchStart ) {
-			var current = ConvertAxes(Camera.main.ScreenToWorldPoint(Input.mousePosition)); 
-			if (isInControlZone ) {
-				attachedListener.OnControlZoneTouchMove(current - lastPos);
-				lastPos = current;
-			}
-			if ( isInMapZone ) {
-				attachedListener.OnMapZoneTouchMove(current);
-			}
-		}
-		
-
 #elif UNITY_ANDROID 
 		if ( Input.touchCount > 0 ) {
 			var t = Input.GetTouch(0);
@@ -108,30 +108,29 @@ public class TouchInput : MonoBehaviour
 				break;
 			case TouchPhase.Moved:
 				if (isInControlZone ) {
-					attachedListener.OnControlZoneTouchMove(t.deltaPosition);
+					listener.OnControlZoneTouchMove(t.deltaPosition);
 				}
 				if ( isInMapZone ) {
-					attachedListener.OnMapZoneTouchMove(t.position);
+					listener.OnMapZoneTouchMove(t.position);
 				}
 				break;
 			case TouchPhase.Ended:
 				if ( isInControlZone ) break;
 
 				var delta = t.position - startPos;
-				Debug.Log("swipe distance = " + delta.y);
 
 				if (Mathf.Abs(delta.y) > minSwipeDistance) {
 					
 					float swipeValue = Mathf.Sign(delta.y);
 					
 					if (swipeValue > 0){
-						attachedListener.OnApprove();
+						listener.OnSwipeUp();
 					}else if (swipeValue < 0) {
-						attachedListener.OnCancel();
+						listener.OnSwipeDown();
 					}
 							
 				} else if ( isInMapZone ) {
-					attachedListener.OnMapZoneTap(t.position);
+					listener.OnMapZoneTap(t.position);
 				}
 				break;
 			}

@@ -20,9 +20,15 @@ public class p2Map : MonoBehaviour {
 		CreateOne(10,8,1,1,-7,0,-4);
 	}
 
-	public void ApplyPerActionBuffs (p2Player player, p2Cell currentCell) {
+	public void ApplyPerActionBuffsBefore (p2Player player) {
+		//foreach ( var t in perActionTreeList ) {
+			
+		//}
 	}
 
+	public List<p2Cell> FreeCells () {
+		return p2Cell.free;
+	}
 	public p2Cell GetPointedCell(Vector2 point ) {
 		int x = Mathf.FloorToInt ((point.x - root.x) / offset_x);
 		int z = Mathf.FloorToInt ((point.y - root.z) / offset_z);
@@ -34,6 +40,14 @@ public class p2Map : MonoBehaviour {
 			& point.y >= root.z & point.y <= (root.z + total_z*offset_z );
 	}
 
+	List<p2FallRecord > markedToFallList = new List<p2FallRecord>();
+	bool hasJobInThisTurn = false;
+
+	public void OnPlayerChop ( p2Player p, p2Cell chopedCell ) {
+		if ( chopedCell.tree == null ? false: chopedCell.tree.CanBeChopedDirectly() ) {
+			chopedCell.tree.OnBeingChoped(markedToFallList, p, 0);
+		}
+	}
 //--------------------------------------------------------------------------------------------------------------
 	public p2Cell this[int x,int z] {
 		get {

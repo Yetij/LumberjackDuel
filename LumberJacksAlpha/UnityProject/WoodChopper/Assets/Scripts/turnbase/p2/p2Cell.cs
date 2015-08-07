@@ -4,12 +4,36 @@ using System.Collections.Generic;
 
 public class p2Cell : MonoBehaviour, AbsServerObserver {
 	[HideInInspector] public int x,z;
-	
+
+	public static List<p2Cell > free = new List<p2Cell>();
+
 	public GameObject highlight;
 	public GameObject selected;
 
-	[HideInInspector] public AbsTree tree;
-	[HideInInspector] public p2Player player;
+	AbsTree _tree;
+	public AbsTree tree { 
+		get {
+			return _tree;
+		}
+		private set {
+			if ( value == null & _player == null) { 
+				free.Add(this);
+			} else if ( free.Contains(this) ) free.Remove(this);
+			_tree = value;
+		}
+	}
+	p2Player _player;
+	public p2Player player { 
+		get {
+			return _player;
+		}
+		private set {
+			if ( value == null & tree == null) { 
+				free.Add(this);
+			} else if ( free.Contains(this) ) free.Remove(this);
+			_player = value;
+		}
+	}
 
 	public void OnPlayerMoveIn ( p2Player player ) {
 		player.transform.position = transform.position;
@@ -43,6 +67,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 		
 		t.transform.position = transform.position;
 		t.cell = this;
+
 	}
 
 	public void HighLightOn (bool t) {
@@ -52,9 +77,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 	public void SelectedOn (bool t) {
 		selected.SetActive(t);
 	}
-
-	public void OnChop () {
-	}
+	
 
 	public p2Cell[,] map { get; private set; }
 	

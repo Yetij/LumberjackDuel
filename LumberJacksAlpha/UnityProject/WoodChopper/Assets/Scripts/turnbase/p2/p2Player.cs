@@ -10,34 +10,50 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	readonly Quaternion q_10 = Quaternion.Euler(0,-90,0);
 
 	p2Map localMap;
+	p2Scene globalScene;
+
+	int turn_identity;
 
 	int moveAC;
 	int plantAC;
 
+	public int ActionPointsPerTurn = 4;
+
 	[HideInInspector] public p2Cell currentCell;
 
 	int currentAC;
-	int additionalPerActionCostAC;
-	int additionalPerTurnCostAC;
+	int additionalPerActionCostAC = 0;
+	int additionalPerTurnCostAC = 0;
 
-	enum TurnState { MyTurn, Background, OpponentsTurn }
-	TurnState state;
+	enum TurnState : byte { MyTurn, Background, OpponentsTurn , NetWait }
+	[SerializeField] TurnState state;
 
-	int turn_id;
+
+	p2PlayerParameters basic;
+	p2PlayerParameters actual;
 
 	void Start () {
-		TouchInput.Instance.AddListener(this);
-		p2Gui.Instance.AddListener(this);
 		localMap = p2Map.Instance;
+		globalScene = p2Scene.Instance;
+		
+		if ( photonView.isMine ) {
+			TouchInput.Instance.AddListener(this);
+			p2Gui.Instance.AddListener(this);
+		}
 
 		var host = localMap[0,0];
 		var client = localMap[localMap.total_x-1,0];
+
+		state = TurnState.Background;
+
 		if ( PhotonNetwork.isMasterClient ) {
+			turn_identity = photonView.isMine ? 0 : 1;
 			currentCell = photonView.isMine ? host : client;
 			transform.rotation = photonView.isMine ? q01 : q0_1;
 			//fz =  photonView.isMine ? 1 : -1;
 			//myTurnState = photonView.isMine ? TurnState.P1: TurnState.P2;
 		} else {
+			turn_identity = photonView.isMine ? 1 : 0;
 			currentCell = photonView.isMine ? client : host;
 			transform.rotation = photonView.isMine ? q0_1 : q01;
 			//fz =  photonView.isMine ? -1 : 1;
@@ -45,35 +61,68 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		}
 		currentCell.OnPlayerMoveIn(this);
 
-		p2Server.Instance.OnPlayerReady(this);
+		p2Scene.Instance.OnPlayerReady(this);
 	}
+	[SerializeField] p2PlayerParameters parameters;
+	float _timer;
 
-	public void OnGameStart () {
+	void Update () {
+		if ( photonView.isMine & globalScene._run ) {
+			switch ( state ) {
+			case TurnState.MyTurn :
+				_timer += Time.deltaTime;
+				
+				if ( _timer < parameters.turnTime ) {
+				} else {
+					_timer = 0;
+					state = TurnState.NetWait;
+					p2Scene.Instance.OnBackgroundStart ();
+				}
+				break;
+			case TurnState.NetWait:
+				Debug.Log("netwait");
+				break;
+			case TurnState.Background:
+				state = TurnState.NetWait;
+				Debug.Log("OnBackgroundEnd");
+				p2Scene.Instance.OnBackgroundEnd();
+				break;
+			case TurnState.OpponentsTurn:
+				Debug.Log("OpponentsTurn");
+				break;
+			}
+
+		}
+	}
+	//------------------------ server messages ----------------------------------
+	public void OnGameStart (int start_turn) {
+		state = start_turn % 2 == turn_identity ? TurnState.MyTurn : TurnState.OpponentsTurn;
 	}
 
 	public void OnGameEnd () {
-	}
 
-	public void OnTreeSelected (p2GuiTree t) {
-		guiSelectedTree = t;
 	}
-
+	
 	public void OnBackgroundStart ()
 	{
+		Debug.Log("OnBackgroundStart");
 		state = TurnState.Background;
 	}
 
 	public void OnTurnStart (int turn_nb)
 	{
-		if ( turn_nb % 2 == turn_id ) {
-			state = TurnState.MyTurn;
-		} else {
-			state = TurnState.OpponentsTurn;
-		}
+		state = turn_nb % 2 == turn_identity? TurnState.MyTurn : TurnState.OpponentsTurn;
+		Debug.Log("OnTurnStart : " + turn_nb + " state="+ state);
 	}
 
+	//------------------------ ui messages ---------------------------------------
+	public void OnTreeSelected (p2GuiTree t) {
+		guiSelectedTree = t;
+	}
+	
 	void PreMove ( int x, int z, bool interpolate ) {
-		localMap.ApplyPerActionBuffs(this, currentCell);
+		Debug.Log("PreMove");
+		localMap.ApplyPerActionBuffsBefore(this);
 		var enoughAC = currentAC - (moveAC + additionalPerActionCostAC ) >= 0; 
 		if ( enoughAC ) {
 			photonView.RPC("MoveTo", PhotonTargets.All, x,z,interpolate);
@@ -81,6 +130,8 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 
 	[RPC] void MoveTo ( int x, int z, bool interpolate ) {
+		Debug.Log("MoveTo");
+
 		var cell = localMap[x,z];
 		if ( !interpolate) {
 			currentCell.OnPlayerMoveOut();
@@ -90,7 +141,9 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 
 	void PrePlant ( int x, int z, byte treeType ) {
-		localMap.ApplyPerActionBuffs(this,currentCell);
+		Debug.Log("PrePlant");
+
+		localMap.ApplyPerActionBuffsBefore(this);
 		var enoughAC = currentAC - (plantAC + additionalPerActionCostAC ) >= 0; 
 		if ( enoughAC ) {
 			photonView.RPC("Plant",PhotonTargets.All, x,z, treeType);
@@ -98,13 +151,17 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 
 	[RPC] void Plant ( int x, int z, byte treeType ) {
+		Debug.Log("Plant");
+
 		var cell = localMap[x,z];
 		var t = p2TreePool.Instance.Get((p2TreeType) treeType);
 		cell.AddTree(t);
 	}
 
 	void PreChop ( int x, int z ) {
-		localMap.ApplyPerActionBuffs(this,currentCell);
+		Debug.Log("PreChop");
+
+		localMap.ApplyPerActionBuffsBefore(this);
 		var enoughAC = currentAC - (moveAC + additionalPerActionCostAC ) >= 0; 
 		if ( enoughAC ) {
 			photonView.RPC("Chop", PhotonTargets.All, x,z );
@@ -112,25 +169,31 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 
 	[RPC] void Chop ( int x, int z ) {
+		Debug.Log("Chop");
+
 		var cell = localMap[x,z];
-		cell.OnChop();
+		localMap.OnPlayerChop(this,cell);
 	}
 
 	public bool IsPassable () {
 		return false;
 	}
-	public void OnApprove ()
+
+	//------------------------------ Input Message ------------------
+	public void OnSwipeUp ()
 	{
+		if ( state != TurnState.MyTurn ) return;
 		Debug.Log("OnApprove");
 	}
 
-	public void OnCancel ()
+	public void OnSwipeDown ()
 	{
 		Debug.Log("OnCancel");
 	}
 
 	public void OnControlZoneTouchMove (Vector2 delta)
 	{
+		if ( state != TurnState.MyTurn ) return;
 		Debug.Log("OnControlZoneTouchMove");
 	}
 
@@ -138,7 +201,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 	public void OnMapZoneTouchMove (Vector2 pos)
 	{
-		Debug.Log(pos);
+		if ( state != TurnState.MyTurn ) return;
 		var cell = localMap.GetPointedCell(pos);
 
 		if ( cell == null ) {
@@ -163,13 +226,14 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 	public void OnMapZoneTap (Vector2 pos)
 	{
+		if ( state != TurnState.MyTurn ) return;
 		var cell = localMap.GetPointedCell(pos);
 		if ( cell == null ) return;
 
 		if ( cell.player == this ) return;
 
 		if ( cell.CanChop () ) {
-
+			PreChop(cell.x,cell.z);
 		} else if ( cell.CanPlant () & guiSelectedTree != null ) {
 			/******
 			 * need to add tree type 

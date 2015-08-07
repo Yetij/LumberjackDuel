@@ -2087,6 +2087,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4abcf55304cfdd4f95864d62fdfdf4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ActionPointsPerTurn: 4
+  currentCell: {fileID: 0}
+  parameters:
+    actionPoints: 0
+    plantCost: 0
+    chopCost: 0
+    moveCost: 0
+    hp: 0
+    turnTime: 10
 --- !u!137 &13773740
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

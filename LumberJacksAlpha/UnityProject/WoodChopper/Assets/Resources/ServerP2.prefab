@@ -37,11 +37,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 117066}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 871813dd40cf4c4448af6a65ee24f1c0, type: 3}
+  m_Script: {fileID: 11500000, guid: 93950e96c6a747c4e977c2de8e5bf3ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   intervalBetweensTurns: .5
   playerPrefabName: PlayerP2
+  currentTurnTime: 10
+  treeList:
+  - {fileID: 11408606, guid: 74dbfdd477c0f7d479d520c8379389e1, type: 2}
+  - {fileID: 11412986, guid: bd0f38e7d6e7cc3469a503fe4e434daf, type: 2}
+  - {fileID: 11476756, guid: 4c224ae12683fe946bcc146ed10791a6, type: 2}
+  weights: 210000002100000021000000
 --- !u!114 &11497770
 MonoBehaviour:
   m_ObjectHideFlags: 1

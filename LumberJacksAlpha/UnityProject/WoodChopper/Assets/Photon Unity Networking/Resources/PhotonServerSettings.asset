@@ -118,4 +118,8 @@ MonoBehaviour:
   - CreatePlayers
   - NonMasterClientReady
   - ServerLoaded
+  - _OnBackgroundEnd
+  - _OnBackgroundStart
+  - _OnTurnStart
+  - SceneLoaded
   DisableAutoOpenWizard: 1
