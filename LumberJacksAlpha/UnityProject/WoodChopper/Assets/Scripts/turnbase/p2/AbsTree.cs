@@ -1,18 +1,57 @@
 using UnityEngine;
 using System.Collections.Generic;
+using StaticStructure;
 
-public class AbsTree : MonoBehaviour
+
+public abstract class AbsTree : MonoBehaviour
 {
 	[HideInInspector] public p2Cell cell;
-	public AbsBuff[] buffs;
-	public int pointCredit;
+	public TreeType type;
+	public TreeActivateTime activateTime;
+	AbsBuff[] buffs;
+	public int basicPointCredit;
 
-	public int turnToLife;
+	public int defaultTurnToLife = 2;
+	int turnToLifeCounter;
+	protected TreeState state;
 
-	virtual public void OnBeingPlant (p2Player p , int deltaTurn ) {
-		turnToLife = deltaTurn;
+	virtual protected void Start () {
+		buffs = GetComponents<AbsBuff>();
 	}
 
+	float _timer;
+	Quaternion fallingQuat;
+
+	virtual protected void Update () {
+		switch (state ) {
+		case TreeState.InSeed:
+			break;
+		case TreeState.Growing:
+			_timer += Time.deltaTime;
+			transform.localScale = Vector3.Lerp(Vector3.one*0.2f, Vector3.one,_timer);
+			if ( transform.localScale == Vector3.one ) { 
+				state = TreeState.Grown;
+			}
+			break;
+		case TreeState.Grown:
+			break;
+		case TreeState.Falling:
+			if (Quaternion.Angle ( transform.rotation,fallingQuat ) < 0.1f ) {
+				gameObject.SetActive(false);
+				transform.rotation = Quaternion.identity;
+				p2Scene.Instance.treesInScene.Remove(this);
+				cell.RemoveTree(choper);
+				break;
+			}
+			_timer += Time.deltaTime;
+			transform.rotation = Quaternion.Lerp(Quaternion.identity, fallingQuat,_timer);
+		
+			break;
+		}
+	}
+
+
+	//---------------------------------- state query -----------------------------------------
 	virtual public bool IsPassable () {
 		return false;
 	}
@@ -30,17 +69,32 @@ public class AbsTree : MonoBehaviour
 		return dominoPass;
 	}
 
-	virtual public void OnBeingChoped ( List<p2FallRecord> falllist, p2Player player, int tier ) {
-		int fx = player.currentCell.x - cell.x;
-		int fz = player.currentCell.z - cell.z;
-		ActivateOnChop(player, ref fx, ref fz);
-		if ( !(fx == 0 & fz == 0 ) ) {
-			//falllist.Add(new p2FallRecord(this,DeltaTurn(),tier));
-		}
+	//------------------------------- player messages --------------------------------------------------
+	
+	virtual public void OnBeingPlant (p2Player p , int deltaTurn ) {
+		turnToLifeCounter = defaultTurnToLife + deltaTurn;
+		p2Scene.Instance.treesInScene.Add(this);
+		
+		state = TreeState.InSeed;
+		transform.localScale = Vector3.one*0.2f;
 	}
 
-	virtual protected int DeltaTurn () {
-		return 0;
+	p2Player choper;
+	virtual public void OnBeingChoped (  p2Player player, int tier ) {
+		if ( state == TreeState.Falling ) {
+			return;
+		}
+		int fx = cell.x- player.currentCell.x;
+		int fz = cell.z- player.currentCell.z;
+		choper = player;
+
+		ActivateOnChop(player, ref fx, ref fz);
+
+		if ( !(fx == 0 & fz == 0 ) ) {
+			fallingQuat = Angle.Convert(fx,fz);
+			state = TreeState.Falling;
+			_timer = 0;
+		}
 	}
 
 	virtual protected void ActivateOnChop (p2Player player, ref int fx, ref int fz ) {
@@ -49,8 +103,29 @@ public class AbsTree : MonoBehaviour
 	virtual protected void ActivateOnFall (p2Player player ) {
 	}
 
-	virtual public p2TreeType TreeType () {
-		return p2TreeType.Basic;
+	virtual public void Activate () { }
+
+
+	//------------------------------ update per turn ----------------------------------------
+	virtual public void OnBackgroundUpdate (List<p2Player> players ) {
+		if ( turnToLifeCounter < 0 ) {
+			return;
+		}
+		if ( turnToLifeCounter == 0 ) {
+			_timer = 0;
+			state = TreeState.Growing;
+		}
+		turnToLifeCounter --;
+	}
+	
+	//-------------------------- used by pool ---------------------------
+	virtual public bool CanBeReused () {
+		if ( buffs != null ) {
+			foreach ( var b in buffs ) {
+				if ( b.IsBeingUsed() ) return false;
+			}
+		}
+		return !isActiveAndEnabled;
 	}
 }
 

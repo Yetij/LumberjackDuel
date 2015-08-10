@@ -21,10 +21,10 @@ public class p2Map : MonoBehaviour {
 	}
 
 	public void ApplyPerActionBuffsBefore (p2Player player) {
-		//foreach ( var t in perActionTreeList ) {
-			
-		//}
+
 	}
+
+
 
 	public List<p2Cell> FreeCells () {
 		return p2Cell.free;
@@ -40,12 +40,15 @@ public class p2Map : MonoBehaviour {
 			& point.y >= root.z & point.y <= (root.z + total_z*offset_z );
 	}
 
-	List<p2FallRecord > markedToFallList = new List<p2FallRecord>();
-	bool hasJobInThisTurn = false;
+	//List<p2FallRecord > markedToFallList = new List<p2FallRecord>();
+//	bool hasJobInThisTurn = false;
 
 	public void OnPlayerChop ( p2Player p, p2Cell chopedCell ) {
 		if ( chopedCell.tree == null ? false: chopedCell.tree.CanBeChopedDirectly() ) {
-			chopedCell.tree.OnBeingChoped(markedToFallList, p, 0);
+			chopedCell.tree.OnBeingChoped( p, 0);
+		}
+		if ( chopedCell.player != null &  chopedCell.player != p ) {
+			chopedCell.player.OnBeingChoped();
 		}
 	}
 //--------------------------------------------------------------------------------------------------------------

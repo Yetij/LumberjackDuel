@@ -170,9 +170,14 @@
      <Compile Include="Assets\Scripts\turnbase\p2\AbsInputListener.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\AbsServerObserver.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\AbsTree.cs" />
+     <Compile Include="Assets\Scripts\turnbase\p2\StaticStructure.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\TouchInput.cs" />
+     <Compile Include="Assets\Scripts\turnbase\p2\TreeActivateTime.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Basic.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Etheral.cs" />
+     <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2BonusAc.cs" />
+     <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Ethereal.cs" />
+     <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Monumental.cs" />
+     <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Stone.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Swamp.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\UI\p2Gui.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\UI\p2GuiTree.cs" />
@@ -181,11 +186,9 @@
      <Compile Include="Assets\Scripts\turnbase\p2\p2FallRecord.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Map.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Player.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p2\p2PlayerParameters.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2PoolInfo.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Scene.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2TreePool.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p2\p2TreeType.cs" />
      <Compile Include="Assets\SimpleAds.cs" />
      <Compile Include="Assets\TestWWW.cs" />
      <Compile Include="Assets\ToonMaidCool\Resources\Scripts\EditCamera.cs" />

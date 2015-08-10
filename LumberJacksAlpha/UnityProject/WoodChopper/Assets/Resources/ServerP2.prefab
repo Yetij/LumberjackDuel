@@ -42,12 +42,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   intervalBetweensTurns: .5
   playerPrefabName: PlayerP2
+  treesInScene: []
   currentTurnTime: 10
-  treeList:
-  - {fileID: 11408606, guid: 74dbfdd477c0f7d479d520c8379389e1, type: 2}
-  - {fileID: 11412986, guid: bd0f38e7d6e7cc3469a503fe4e434daf, type: 2}
-  - {fileID: 11476756, guid: 4c224ae12683fe946bcc146ed10791a6, type: 2}
-  weights: 210000002100000021000000
+  treeWeightList:
+  - type: 0
+    weight: 40
+  - type: 1
+    weight: 10
+  - type: 2
+    weight: 10
+  - type: 3
+    weight: 5
+  - type: 4
+    weight: 10
+  - type: 5
+    weight: 15
 --- !u!114 &11497770
 MonoBehaviour:
   m_ObjectHideFlags: 1

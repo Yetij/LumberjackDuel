@@ -1,9 +1,9 @@
 using UnityEngine;
-using System.Collections;
+using StaticStructure;
 
 public class p2PoolInfo : MonoBehaviour
 {
-	public p2TreeType type;
+	public TreeType type;
 	public AbsTree prefab;
 	public int init_cap;
 }

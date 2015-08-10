@@ -1,0 +1,16 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\turnbase\p2\p2Player.cs">
+    <Files>
+      <File FileName="Assets\Scripts\turnbase\p2\Trees\p2Ethereal.cs" Line="13" Column="3" />
+      <File FileName="Assets\Scripts\turnbase\p2\Trees\p2Swamp.cs" Line="16" Column="30" />
+      <File FileName="Assets\Scripts\turnbase\p2\Buffs\SlowAoe.cs" Line="8" Column="20" />
+      <File FileName="Assets\Scripts\turnbase\p2\AbsBuff.cs" Line="7" Column="41" />
+      <File FileName="Assets\Scripts\turnbase\p2\p2Player.cs" Line="181" Column="24" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

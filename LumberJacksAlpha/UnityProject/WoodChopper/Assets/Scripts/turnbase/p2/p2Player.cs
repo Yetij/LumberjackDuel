@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using StaticStructure;
 
 [RequireComponent(typeof(PhotonView))]
 public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserver, AbsGuiListener {
@@ -11,6 +12,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 	p2Map localMap;
 	p2Scene globalScene;
+	p2Gui gui;
 
 	int turn_identity;
 
@@ -21,24 +23,20 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 	[HideInInspector] public p2Cell currentCell;
 
-	int currentAC;
-	int additionalPerActionCostAC = 0;
-	int additionalPerTurnCostAC = 0;
 
 	enum TurnState : byte { MyTurn, Background, OpponentsTurn , NetWait }
 	[SerializeField] TurnState state;
 
 
-	p2PlayerParameters basic;
-	p2PlayerParameters actual;
 
 	void Start () {
 		localMap = p2Map.Instance;
 		globalScene = p2Scene.Instance;
+		gui = p2Gui.Instance;
 		
 		if ( photonView.isMine ) {
 			TouchInput.Instance.AddListener(this);
-			p2Gui.Instance.AddListener(this);
+			gui.AddListener(this);
 		}
 
 		var host = localMap[0,0];
@@ -50,8 +48,6 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			turn_identity = photonView.isMine ? 0 : 1;
 			currentCell = photonView.isMine ? host : client;
 			transform.rotation = photonView.isMine ? q01 : q0_1;
-			//fz =  photonView.isMine ? 1 : -1;
-			//myTurnState = photonView.isMine ? TurnState.P1: TurnState.P2;
 		} else {
 			turn_identity = photonView.isMine ? 1 : 0;
 			currentCell = photonView.isMine ? client : host;
@@ -63,8 +59,39 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 		p2Scene.Instance.OnPlayerReady(this);
 	}
-	[SerializeField] p2PlayerParameters parameters;
+	
+	[HideInInspector] public p2PlayerParameters bonus;
+	public p2PlayerParameters basic;
 	float _timer;
+
+	public void MoveHighlight (bool on) {
+		p2Cell c;
+		if ( (c = currentCell.Get(0,1 )) != null ) {
+			if ( c.CanMoveTo() ) c.HighLightOn(on);
+			else c.HighLightOn(false);
+		}
+		if ( (c = currentCell.Get(0,-1 )) != null ) {
+			if ( c.CanMoveTo() ) c.HighLightOn(on);
+			else c.HighLightOn(false);
+		}
+		if ( (c = currentCell.Get(1,0 )) != null ) {
+			if ( c.CanMoveTo() ) c.HighLightOn(on);
+			else c.HighLightOn(false);
+		}
+		if ( (c = currentCell.Get(-1,0 )) != null ) {
+			if ( c.CanMoveTo() ) c.HighLightOn(on);
+			else c.HighLightOn(false);
+		}
+	}
+	
+	public void PlantHighlight (bool on) {
+		var m = currentCell.map;
+		foreach( var c in m ) {
+			if ( c == currentCell | c == null ) continue;
+			if ( c.CanPlant() ) c.HighLightOn(on);
+			else c.HighLightOn(false);
+		}
+	}
 
 	void Update () {
 		if ( photonView.isMine & globalScene._run ) {
@@ -72,23 +99,30 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			case TurnState.MyTurn :
 				_timer += Time.deltaTime;
 				
-				if ( _timer < parameters.turnTime ) {
+				if ( _timer < basic.turnTime ) {
+					gui.timer.text = _timer.ToString("0.00");
 				} else {
 					_timer = 0;
+					gui.timer.text = _timer.ToString("0.00");
 					state = TurnState.NetWait;
-					p2Scene.Instance.OnBackgroundStart ();
+					p2Scene.Instance.OnBackgroundStart (this);
+					gui.Reset();
+					if ( lastPointedCell != null ) {
+						lastPointedCell.SelectedOn(false);
+						lastPointedCell = null;
+					}
+					PlantHighlight(false);
+					ActivateTree(TreeActivateTime.AfterTurn);
 				}
 				break;
 			case TurnState.NetWait:
-				Debug.Log("netwait");
 				break;
 			case TurnState.Background:
 				state = TurnState.NetWait;
-				Debug.Log("OnBackgroundEnd");
+
 				p2Scene.Instance.OnBackgroundEnd();
 				break;
 			case TurnState.OpponentsTurn:
-				Debug.Log("OpponentsTurn");
 				break;
 			}
 
@@ -96,7 +130,11 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 	//------------------------ server messages ----------------------------------
 	public void OnGameStart (int start_turn) {
-		state = start_turn % 2 == turn_identity ? TurnState.MyTurn : TurnState.OpponentsTurn;
+		if ( photonView.isMine ) {
+			basic.actionPoints = ActionPointsPerTurn;
+			gui.ac.text = "AC:"+ActionPointsPerTurn;
+		}
+		OnTurnStart (start_turn);
 	}
 
 	public void OnGameEnd () {
@@ -105,74 +143,134 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	
 	public void OnBackgroundStart ()
 	{
-		Debug.Log("OnBackgroundStart");
 		state = TurnState.Background;
+
 	}
 
+	void ZeroBonus () {
+		bonus.actionPoints  = 0;
+		bonus.chopCost = 0;
+		bonus.moveCost = 0;
+		bonus.plantCost = 0;
+		bonus.hp = 0;
+		bonus.turnTime = 0;
+	}
 	public void OnTurnStart (int turn_nb)
 	{
 		state = turn_nb % 2 == turn_identity? TurnState.MyTurn : TurnState.OpponentsTurn;
-		Debug.Log("OnTurnStart : " + turn_nb + " state="+ state);
+		if ( photonView.isMine ) {
+			if ( state == TurnState.MyTurn ) { 
+				gui.SetColor( Color.green);
+				ZeroBonus();
+				basic.actionPoints = ActionPointsPerTurn;
+				bonus.actionPoints = 0;
+				MoveHighlight(true);
+				ActivateTree(TreeActivateTime.BeforeTurn);
+				gui.hp.text = "HP:"+basic.hp.ToString();
+			}
+			else {
+				gui.SetColor( Color.yellow);
+			}
+		}
 	}
 
 	//------------------------ ui messages ---------------------------------------
 	public void OnTreeSelected (p2GuiTree t) {
 		guiSelectedTree = t;
-	}
-	
-	void PreMove ( int x, int z, bool interpolate ) {
-		Debug.Log("PreMove");
-		localMap.ApplyPerActionBuffsBefore(this);
-		var enoughAC = currentAC - (moveAC + additionalPerActionCostAC ) >= 0; 
-		if ( enoughAC ) {
-			photonView.RPC("MoveTo", PhotonTargets.All, x,z,interpolate);
+		if ( state != TurnState.MyTurn ) return;
+		if ( t == null ) {
+			PlantHighlight(false);
+			MoveHighlight(true);
+		}
+		else {
+			MoveHighlight(false);
+			PlantHighlight(true);
 		}
 	}
 
-	[RPC] void MoveTo ( int x, int z, bool interpolate ) {
-		Debug.Log("MoveTo");
 
+	//----------------------- player core behaviors -------------------------------
+	void ActivateTree ( TreeActivateTime time ) {
+		var l = globalScene.treesInScene;
+		foreach ( var t in l ) {
+			if ( t.isActiveAndEnabled & t.activateTime == time ) {
+				t.Activate();
+			}
+		}
+	}
+
+	void PreMove ( int x, int z, bool teleport ) {
+		if ( !teleport & !ValidateRange(x,z) ) return;
+		var acLeft = ( basic.actionPoints + bonus.actionPoints ) - (basic.moveCost + bonus.moveCost ); 
+		if ( acLeft >= 0 ) {
+			photonView.RPC("MoveTo", PhotonTargets.All, x,z, basic.moveCost + bonus.moveCost);
+		}
+	}
+
+	[RPC] void MoveTo ( int x, int z, int acCost ) {
 		var cell = localMap[x,z];
-		if ( !interpolate) {
-			currentCell.OnPlayerMoveOut();
-			cell.OnPlayerMoveIn(this);
-		} else {
+
+		if ( photonView.isMine ) MoveHighlight(false);
+		currentCell.OnPlayerMoveOut();
+		cell.OnPlayerMoveIn(this);
+		if ( photonView.isMine ) {
+			MoveHighlight(true);
+			while ( acCost > 0 ) {
+				if( bonus.actionPoints > 0 ) bonus.actionPoints--;
+				else basic.actionPoints --;
+				acCost --;
+			}
+			gui.ac.text = "AC:"+(basic.actionPoints + bonus.actionPoints).ToString();
 		}
 	}
 
+	bool ValidateRange ( int x, int z ) {
+		return Mathf.Abs(x-currentCell.x ) < 2 & Mathf.Abs(z-currentCell.z) < 2;
+	}
 	void PrePlant ( int x, int z, byte treeType ) {
-		Debug.Log("PrePlant");
-
-		localMap.ApplyPerActionBuffsBefore(this);
-		var enoughAC = currentAC - (plantAC + additionalPerActionCostAC ) >= 0; 
-		if ( enoughAC ) {
-			photonView.RPC("Plant",PhotonTargets.All, x,z, treeType);
+		if ( !ValidateRange(x,z) ) return;
+		var acLeft = ( basic.actionPoints + bonus.actionPoints ) - (basic.plantCost + bonus.plantCost ); 
+		if ( acLeft >= 0 ) {
+			photonView.RPC("Plant", PhotonTargets.All, x,z,treeType, basic.plantCost + bonus.plantCost);
 		}
 	}
 
-	[RPC] void Plant ( int x, int z, byte treeType ) {
-		Debug.Log("Plant");
-
+	[RPC] void Plant ( int x, int z, byte treeType,int acCost ) {
+		
+		if ( !ValidateRange(x,z) ) return;
 		var cell = localMap[x,z];
-		var t = p2TreePool.Instance.Get((p2TreeType) treeType);
-		cell.AddTree(t);
+		var t = p2TreePool.Instance.Get((TreeType) treeType);
+		cell.AddTree(t,this,0);
+		if ( photonView.isMine ) {
+			while ( acCost > 0 ) {
+				if( bonus.actionPoints > 0 ) bonus.actionPoints--;
+				else basic.actionPoints --;
+				acCost --;
+			}
+			gui.ac.text = "AC:"+(basic.actionPoints + bonus.actionPoints).ToString();
+		}
 	}
 
 	void PreChop ( int x, int z ) {
-		Debug.Log("PreChop");
-
-		localMap.ApplyPerActionBuffsBefore(this);
-		var enoughAC = currentAC - (moveAC + additionalPerActionCostAC ) >= 0; 
-		if ( enoughAC ) {
-			photonView.RPC("Chop", PhotonTargets.All, x,z );
+		if ( !ValidateRange(x,z) ) return;
+		var acLeft = ( basic.actionPoints + bonus.actionPoints ) - (basic.chopCost + bonus.chopCost ); 
+		if ( acLeft >= 0 ) {
+			photonView.RPC("Chop", PhotonTargets.All, x,z, basic.chopCost + bonus.chopCost);
 		}
 	}
 
-	[RPC] void Chop ( int x, int z ) {
-		Debug.Log("Chop");
+	[RPC] void Chop ( int x, int z,int acCost ) {
 
 		var cell = localMap[x,z];
 		localMap.OnPlayerChop(this,cell);
+		if ( photonView.isMine ) {
+			while ( acCost > 0 ) {
+				if( bonus.actionPoints > 0 ) bonus.actionPoints--;
+				else basic.actionPoints --;
+				acCost --;
+			}
+			gui.ac.text = "AC:"+(basic.actionPoints + bonus.actionPoints).ToString();
+		}
 	}
 
 	public bool IsPassable () {
@@ -194,7 +292,6 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	public void OnControlZoneTouchMove (Vector2 delta)
 	{
 		if ( state != TurnState.MyTurn ) return;
-		Debug.Log("OnControlZoneTouchMove");
 	}
 
 	p2Cell lastPointedCell;
@@ -242,5 +339,34 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		} else if ( cell.CanMoveTo() ) {
 			PreMove(cell.x,cell.z,false);
 		}
+	}
+
+	public void OnBeingChoped () {
+		if ( photonView.isMine ){
+			if ( bonus.hp > 0 ) bonus.hp --;
+			else basic.hp --;
+			if ( basic.hp < 0 ) p2Scene.Instance.OnPlayerDie ();
+		}
+	}
+
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+	{
+		if ( globalScene == null ? false : !globalScene._run ) return;
+		if (stream.isWriting)
+		{
+			stream.SendNext(_timer);
+			stream.SendNext(basic.hp + bonus.hp);
+			stream.SendNext(basic.actionPoints + bonus.actionPoints);
+		}
+		else
+		{
+			var _timer = (float)stream.ReceiveNext();
+		 	if( state == TurnState.MyTurn ) gui.timer.text = _timer.ToString("0.00");
+			var _hp = (int)stream.ReceiveNext();
+			if( state == TurnState.MyTurn ) gui.hp.text = "HP:"+_hp.ToString();
+			var _ac = (int)stream.ReceiveNext();
+			if( state == TurnState.MyTurn ) gui.ac.text = "AC:"+_ac.ToString();
+		}
+
 	}
 }

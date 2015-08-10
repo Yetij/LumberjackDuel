@@ -12,15 +12,22 @@ public class p2Gui : MonoBehaviour
 			return _instance;
 		}
 	}
-
+	public Text timer;
+	public Text ac;
+	public Text hp;
 	public Toggle[] treeButtons;
-	
+	public Toggle currentSelected { get; private set; }
+
 	void Awake () {
 		if ( treeButtons.Length != 0 ) {
 			foreach ( var t in treeButtons ) {
 				SetupButton(t);
 			}
 		}
+	}
+
+	public void Reset () {
+		if ( currentSelected != null ) currentSelected.isOn = false;
 	}
 
 	AbsGuiListener listener;
@@ -34,13 +41,17 @@ public class p2Gui : MonoBehaviour
 	}
 	
 	void TreeSelected (bool value, Toggle source ) {
-		p2GuiTree uiSelectedTree = null;
+		p2GuiTree selected = null;
 		if( value ) {
-			uiSelectedTree = source.GetComponent<p2GuiTree>();
+			currentSelected = source;
+			selected = source.GetComponent<p2GuiTree>();
 			Debug.Log("Selected tree = " + source);
-		} 
+		} else {
+			currentSelected = null;
+			selected = null;
+		}
 
-		listener.OnTreeSelected(uiSelectedTree);
+		listener.OnTreeSelected(selected);
 	}
 
 	bool _isInControlZone;
@@ -51,6 +62,12 @@ public class p2Gui : MonoBehaviour
 
 	public bool IsInControlZone() {
 		return _isInControlZone;
+	}
+
+	public void SetColor (Color r ) {
+		timer.color = r;
+		ac.color = r;
+		hp.color = r;
 	}
 }
 

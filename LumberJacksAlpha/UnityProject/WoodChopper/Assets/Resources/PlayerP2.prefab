@@ -2066,12 +2066,12 @@ MonoBehaviour:
   group: 0
   prefixBackup: -1
   observed: {fileID: 0}
-  synchronization: 0
+  synchronization: 3
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0
   ObservedComponents:
-  - {fileID: 0}
+  - {fileID: 11441240}
   ObservedComponentsFoldoutOpen: 1
   viewIdField: 0
   instantiationId: -1
@@ -2089,12 +2089,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionPointsPerTurn: 4
   currentCell: {fileID: 0}
-  parameters:
+  state: 1
+  bonus:
     actionPoints: 0
     plantCost: 0
     chopCost: 0
     moveCost: 0
     hp: 0
+    turnTime: 0
+  basic:
+    actionPoints: 6
+    plantCost: 1
+    chopCost: 1
+    moveCost: 1
+    hp: 4
     turnTime: 10
 --- !u!137 &13773740
 SkinnedMeshRenderer:

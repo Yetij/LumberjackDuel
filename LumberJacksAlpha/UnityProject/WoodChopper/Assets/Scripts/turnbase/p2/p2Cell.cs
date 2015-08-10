@@ -62,12 +62,16 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 		return player != null | ( tree == null ? false: !tree.IsPassable() );
 	}
 	
-	public void AddTree (AbsTree t) {
+	public void AddTree (AbsTree t, p2Player p,  int deltaTurn) {
 		tree = t;
-		
+		tree.OnBeingPlant(p, 0);
+
 		t.transform.position = transform.position;
 		t.cell = this;
+	}
 
+	public void RemoveTree(p2Player choper) {
+		tree = null;
 	}
 
 	public void HighLightOn (bool t) {

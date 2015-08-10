@@ -1,14 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
+using StaticStructure;
 
 
 public class p2TreePool : MonoBehaviour
 {
-	Dictionary<p2TreeType,List<AbsTree>> pool;
+	Dictionary<TreeType,List<AbsTree>> pool;
 
 	p2PoolInfo[] seeds;
 	void Awake () {
-		pool = new Dictionary<p2TreeType,List<AbsTree>>();
+		pool = new Dictionary<TreeType,List<AbsTree>>();
 
 		seeds = GetComponents<p2PoolInfo>();
 		for ( int i = 0; i < seeds.Length; i ++ ) {
@@ -27,13 +28,13 @@ public class p2TreePool : MonoBehaviour
 		}
 	}	
 
-	public AbsTree Get(p2TreeType type) {
+	public AbsTree Get(TreeType type) {
 		List<AbsTree> subPool = null;
 		pool.TryGetValue(type, out subPool);
 
 		if ( subPool != null ) {
 			foreach ( AbsTree m in subPool ) {
-				if ( !m.isActiveAndEnabled ) {
+				if ( m.CanBeReused() ) {
 					m.gameObject.SetActive(true);
 					return m;
 				}

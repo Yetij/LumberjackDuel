@@ -1,8 +1,8 @@
 using UnityEngine;
-using System.Collections;
+using StaticStructure;
 
 public class p2GuiTree : MonoBehaviour
 {
-	public p2TreeType type;
+	public TreeType type;
 }
 

@@ -1,9 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\turnbase\p2\p2Map.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\turnbase\p2\UI\p2GuiTree.cs">
     <Files>
-      <File FileName="Assets\Scripts\turnbase\p2\p2Player.cs" Line="90" Column="3" />
-      <File FileName="Assets\Scripts\turnbase\p2\p2Map.cs" Line="15" Column="33" />
+      <File FileName="Assets\Scripts\turnbase\p2\Trees\p2BonusAc.cs" Line="3" Column="1" />
+      <File FileName="Assets\Scripts\turnbase\p2\AbsTree.cs" Line="18" Column="26" />
+      <File FileName="Assets\Scripts\turnbase\p2\StaticStructure.cs" Line="22" Column="17" />
+      <File FileName="Assets\Scripts\turnbase\p2\p2Player.cs" Line="4" Column="1" />
+      <File FileName="Assets\Scripts\turnbase\p2\UI\p2GuiTree.cs" Line="9" Column="1" />
+      <File FileName="Assets\Scripts\turnbase\p2\p2TreePool.cs" Line="5" Column="1" />
+      <File FileName="Assets\Scripts\turnbase\p2\p2Scene.cs" Line="9" Column="44" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
