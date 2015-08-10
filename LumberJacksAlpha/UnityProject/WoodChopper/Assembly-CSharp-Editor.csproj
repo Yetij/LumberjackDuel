@@ -101,16 +101,16 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="JMOAssets">
- <HintPath>G:/Ważne/Projekty/LumberjackRepo/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/JMO Assets/Editor/JMOAssets.dll</HintPath>
+ <HintPath>G:/Ważne/Repozytoria/Drwale/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/JMO Assets/Editor/JMOAssets.dll</HintPath>
  </Reference>
  <Reference Include="Newtonsoft.Json">
- <HintPath>G:/Ważne/Projekty/LumberjackRepo/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Photon Unity Networking/Editor/PhotonNetwork/Newtonsoft.Json.dll</HintPath>
+ <HintPath>G:/Ważne/Repozytoria/Drwale/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Photon Unity Networking/Editor/PhotonNetwork/Newtonsoft.Json.dll</HintPath>
  </Reference>
  <Reference Include="Photon3Unity3D">
- <HintPath>G:/Ważne/Projekty/LumberjackRepo/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/Photon3Unity3D.dll</HintPath>
+ <HintPath>G:/Ważne/Repozytoria/Drwale/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/Photon3Unity3D.dll</HintPath>
  </Reference>
  <Reference Include="websocket-sharp">
- <HintPath>G:/Ważne/Projekty/LumberjackRepo/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
+ <HintPath>G:/Ważne/Repozytoria/Drwale/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>

@@ -109,10 +109,10 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Photon3Unity3D">
- <HintPath>G:/Ważne/Projekty/LumberjackRepo/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/Photon3Unity3D.dll</HintPath>
+ <HintPath>G:/Ważne/Repozytoria/Drwale/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/Photon3Unity3D.dll</HintPath>
  </Reference>
  <Reference Include="websocket-sharp">
- <HintPath>G:/Ważne/Projekty/LumberjackRepo/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
+ <HintPath>G:/Ważne/Repozytoria/Drwale/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
