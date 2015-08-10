@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
+  auraColor: {r: .713235259, g: .713235259, b: .713235259, a: 0}
   type: 3
   activateTime: 0
   basicPointCredit: 0
