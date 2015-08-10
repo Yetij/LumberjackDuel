@@ -74,6 +74,7 @@
      <None Include="Assets\Fonts\Documentation\JazzCreateBubble_VersionHistory_1.1.txt" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_TextureMult_Bumped.shader" />
      <None Include="Assets\ToonMaidCool\Documents\Readme_EN.txt" />
+     <None Include="Assets\DAX\Shields Collection\Shaders\DAX_AlphaBlend+Add.shader" />
      <None Include="Assets\Plugins\release_history.txt" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_Lit.shader" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_Plain_Bumped.shader" />
