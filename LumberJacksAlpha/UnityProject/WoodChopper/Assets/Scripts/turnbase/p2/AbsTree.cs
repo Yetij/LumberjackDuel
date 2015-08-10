@@ -6,6 +6,7 @@ using StaticStructure;
 public abstract class AbsTree : MonoBehaviour
 {
 	[HideInInspector] public p2Cell cell;
+	public Color auraColor;
 	public TreeType type;
 	public TreeActivateTime activateTime;
 	AbsBuff[] buffs;

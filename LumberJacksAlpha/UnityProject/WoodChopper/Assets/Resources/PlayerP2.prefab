@@ -2098,7 +2098,7 @@ MonoBehaviour:
     hp: 0
     turnTime: 0
   basic:
-    actionPoints: 6
+    actionPoints: 4
     plantCost: 1
     chopCost: 1
     moveCost: 1

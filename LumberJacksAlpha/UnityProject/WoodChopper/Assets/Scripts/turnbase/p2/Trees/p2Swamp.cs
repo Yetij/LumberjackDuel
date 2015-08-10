@@ -4,10 +4,12 @@ using System.Collections;
 // bagienne
 public class p2Swamp : AbsTree
 {
+	public int moveAdditionalCost=1;
 	[Range(1,50)]
 	public int area_x;
 	[Range(1,50)]
 	public int area_z;
+
 
 	protected override void Start ()
 	{
@@ -26,7 +28,7 @@ public class p2Swamp : AbsTree
 				var c = p2Map.Instance[i,j];
 				if ( c != null ) {
 					if ( c.player != null ){
-						c.player.bonus.moveCost += 2;
+						c.player.bonus.moveCost += moveAdditionalCost;
 					}
 				}
 			}
