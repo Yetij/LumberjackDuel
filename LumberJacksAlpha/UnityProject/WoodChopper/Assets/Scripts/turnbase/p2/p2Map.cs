@@ -15,9 +15,12 @@ public class p2Map : MonoBehaviour {
 	List<AbsTree > perTurnTreeList;
 
 	public p2Cell[,] cells { get; private set; }
-	
+
+	public byte localTotalX=10, localTotalY=8;
+	public float localOffsetX=1, localOffsetY=1;
+
 	void Awake () {
-		CreateOne(10,8,1,1,-7,0,-4);
+		CreateOne(localTotalX,localTotalY,localOffsetX,localOffsetY,-7,0,-4);
 	}
 
 	public void ApplyPerActionBuffsBefore (p2Player player) {
