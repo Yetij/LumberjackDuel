@@ -22,6 +22,7 @@ public abstract class AbsTree : MonoBehaviour
 
 	float _timer;
 	Quaternion fallingQuat;
+	float dominoDelayTime;
 
 	virtual protected void Update () {
 		switch (state ) {
@@ -35,6 +36,12 @@ public abstract class AbsTree : MonoBehaviour
 			}
 			break;
 		case TreeState.Grown:
+			break;
+		case TreeState.WaitDomino:
+			if ( dominoDelayTime < 0 ) {
+				_timer = 0;
+				state = TreeState.Falling;
+			} else dominoDelayTime -= Time.deltaTime;
 			break;
 		case TreeState.Falling:
 			if (Quaternion.Angle ( transform.rotation,fallingQuat ) < 0.1f ) {
@@ -81,20 +88,26 @@ public abstract class AbsTree : MonoBehaviour
 	}
 
 	p2Player choper;
-	virtual public void OnBeingChoped (  p2Player player, int tier ) {
-		if ( state == TreeState.Falling ) {
+	virtual public void OnBeingChoped (  p2Player player, p2Cell sourceCell , int tier ) {
+		if ( state == TreeState.Falling | state == TreeState.WaitDomino ) {
 			return;
 		}
-		int fx = cell.x- player.currentCell.x;
-		int fz = cell.z- player.currentCell.z;
+		int fx = cell.x- sourceCell.x;
+		int fz = cell.z- sourceCell.z;
 		choper = player;
 
 		ActivateOnChop(player, ref fx, ref fz);
 
 		if ( !(fx == 0 & fz == 0 ) ) {
 			fallingQuat = Angle.Convert(fx,fz);
-			state = TreeState.Falling;
-			_timer = 0;
+			dominoDelayTime = tier * p2Scene.Instance.globalDominoDelay;
+			state = TreeState.WaitDomino;
+			p2Cell c;
+			if ( (c= cell.Get(fx,fz) ) != null ) {
+				if ( c.tree == null ? false : c.tree.CanBeAffectedByDomino()  ) {
+					c.tree.OnBeingChoped(player, cell,tier+1);
+				}
+			}
 		}
 	}
 

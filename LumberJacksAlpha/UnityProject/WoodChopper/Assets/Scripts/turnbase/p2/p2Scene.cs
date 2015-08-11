@@ -9,6 +9,7 @@ delegate void _OnBackgroundStart ();
 public class p2Scene : Photon.MonoBehaviour
 {
 	public string playerPrefabName = "PlayerP2";
+	public float globalDominoDelay = 0.25f;
 
 	public bool _run { get; private set; } 
 	public int currentTurnNb { get; private set; }

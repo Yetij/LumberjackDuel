@@ -12,10 +12,10 @@ public class p2Ethereal : AbsTree
 		source = p;
 	}
 
-	public override void OnBeingChoped ( p2Player player, int tier)
+	public override void OnBeingChoped ( p2Player player, p2Cell sourceCell, int tier)
 	{
 		if ( player != source ) return;
-		base.OnBeingChoped (player, tier);
+		base.OnBeingChoped (player,sourceCell, tier);
 	}
 }
 

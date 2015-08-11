@@ -4,6 +4,7 @@ using System.Collections;
 public class p2Connector : MonoBehaviour
 {	
 	public string room_name;
+	public string my_name="player";
 	public string gameVersion = "p2";
 	public string serverPrefabName = "ServerP2";
 	public string lobbyName = "p2lobby";
@@ -12,6 +13,7 @@ public class p2Connector : MonoBehaviour
 	public void Start()
 	{
 		PhotonNetwork.autoJoinLobby = false;    
+		PhotonNetwork.playerName = my_name + Random.Range(0,1000);
 		PhotonNetwork.ConnectUsingSettings(gameVersion);
 	}
 

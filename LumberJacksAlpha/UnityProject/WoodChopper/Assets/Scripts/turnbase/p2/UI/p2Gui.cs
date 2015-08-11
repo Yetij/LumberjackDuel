@@ -14,7 +14,11 @@ public class p2Gui : MonoBehaviour
 	}
 	public Text timer;
 	public Text ac;
-	public Text hp;
+	public Text opponentHp;
+	public Text myHp;
+	public Text opponentName;
+	public Text myName;
+
 	public Toggle[] treeButtons;
 	public Toggle currentSelected { get; private set; }
 
@@ -67,7 +71,6 @@ public class p2Gui : MonoBehaviour
 	public void SetColor (Color r ) {
 		timer.color = r;
 		ac.color = r;
-		hp.color = r;
 	}
 }
 

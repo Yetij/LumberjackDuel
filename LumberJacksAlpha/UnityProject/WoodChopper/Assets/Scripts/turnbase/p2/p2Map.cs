@@ -45,7 +45,7 @@ public class p2Map : MonoBehaviour {
 
 	public void OnPlayerChop ( p2Player p, p2Cell chopedCell ) {
 		if ( chopedCell.tree == null ? false: chopedCell.tree.CanBeChopedDirectly() ) {
-			chopedCell.tree.OnBeingChoped( p, 0);
+			chopedCell.tree.OnBeingChoped( p, p.currentCell, 0);
 		}
 		if ( chopedCell.player != null &  chopedCell.player != p ) {
 			chopedCell.player.OnBeingChoped();

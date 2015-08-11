@@ -13,6 +13,7 @@ namespace StaticStructure {
 		InSeed, 
 		Growing,  
 		Grown, 
+		WaitDomino,
 		Falling 
 	} 
 
@@ -52,6 +53,7 @@ namespace StaticStructure {
 		static UnityEngine.Quaternion[,] map = { { q_1_1, q_10, q_11 }  ,{ q0_1, UnityEngine.Quaternion.identity, q01 } , { q1_1, q10, q11 } };
 
 		public static UnityEngine.Quaternion Convert (int fx, int fz ) {
+			UnityEngine.Debug.Log("fx="+fx+", fz="+fx);
 			return map[fx+1,fz+1];
 		}
 	}

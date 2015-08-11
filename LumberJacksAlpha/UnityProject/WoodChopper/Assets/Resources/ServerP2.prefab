@@ -40,10 +40,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93950e96c6a747c4e977c2de8e5bf3ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intervalBetweensTurns: .5
   playerPrefabName: PlayerP2
+  globalDominoDelay: .75
   treesInScene: []
-  currentTurnTime: 10
   treeWeightList:
   - type: 0
     weight: 40

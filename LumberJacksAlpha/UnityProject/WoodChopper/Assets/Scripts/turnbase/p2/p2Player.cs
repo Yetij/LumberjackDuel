@@ -37,6 +37,9 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		if ( photonView.isMine ) {
 			TouchInput.Instance.AddListener(this);
 			gui.AddListener(this);
+			gui.myName.text = photonView.owner.name;
+		} else {
+			gui.opponentName.text = photonView.owner.name;
 		}
 
 		var host = localMap[0,0];
@@ -52,8 +55,6 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			turn_identity = photonView.isMine ? 1 : 0;
 			currentCell = photonView.isMine ? client : host;
 			transform.rotation = photonView.isMine ? q0_1 : q01;
-			//fz =  photonView.isMine ? -1 : 1;
-			//myTurnState = photonView.isMine ?  TurnState.P2 : TurnState.P1;
 		}
 		currentCell.OnPlayerMoveIn(this);
 
@@ -166,7 +167,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				bonus.actionPoints = 0;
 				MoveHighlight(true);
 				ActivateTree(TreeActivateTime.BeforeTurn);
-				gui.hp.text = "HP:"+basic.hp.ToString();
+				gui.myHp.text = "HP:"+basic.hp.ToString();
 			}
 			else {
 				gui.SetColor( Color.yellow);
@@ -200,7 +201,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 
 	void PreMove ( int x, int z, bool teleport ) {
-		if ( !teleport & !ValidateRange(x,z) ) return;
+		if ( !teleport & !ValidateSquareRange(x,z) ) return;
 		var acLeft = ( basic.actionPoints + bonus.actionPoints ) - (basic.moveCost + bonus.moveCost ); 
 		if ( acLeft >= 0 ) {
 			photonView.RPC("MoveTo", PhotonTargets.All, x,z, basic.moveCost + bonus.moveCost);
@@ -226,6 +227,9 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 	bool ValidateRange ( int x, int z ) {
 		return Mathf.Abs(x-currentCell.x ) < 2 & Mathf.Abs(z-currentCell.z) < 2;
+	}
+	bool ValidateSquareRange ( int x, int z ) {
+		return Mathf.Abs(x-currentCell.x ) + Mathf.Abs(z-currentCell.z) == 1;
 	}
 	void PrePlant ( int x, int z, byte treeType ) {
 		if ( !ValidateRange(x,z) ) return;
@@ -342,10 +346,11 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 
 	public void OnBeingChoped () {
-		if ( photonView.isMine ){
+		if ( photonView.isMine & basic.hp >=0 ){
 			if ( bonus.hp > 0 ) bonus.hp --;
 			else basic.hp --;
-			if ( basic.hp < 0 ) p2Scene.Instance.OnPlayerDie ();
+			gui.myHp.text = "HP:"+(basic.hp + bonus.hp).ToString();
+			if ( basic.hp == 0 ) p2Scene.Instance.OnPlayerDie ();
 		}
 	}
 
@@ -363,7 +368,12 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			var _timer = (float)stream.ReceiveNext();
 		 	if( state == TurnState.MyTurn ) gui.timer.text = _timer.ToString("0.00");
 			var _hp = (int)stream.ReceiveNext();
-			if( state == TurnState.MyTurn ) gui.hp.text = "HP:"+_hp.ToString();
+			if ( photonView.isMine ) {
+				if ( gui != null) gui.myHp.text = "HP:"+_hp.ToString();
+			}
+			else {
+				if ( gui != null) gui.opponentHp.text = "HP:"+_hp.ToString();
+			}
 			var _ac = (int)stream.ReceiveNext();
 			if( state == TurnState.MyTurn ) gui.ac.text = "AC:"+_ac.ToString();
 		}
