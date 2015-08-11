@@ -553,3 +553,9 @@ Cmd: compileSnippet
   api=1 type=0 insize=1079 outsize=159 kw= ok=1
 Cmd: compileSnippet
   api=4 type=1 insize=1079 outsize=1510 kw= ok=1
+Unhandled exception: Readfile from pipe failed. GLE=Potok został zakończony.
+
+
+Quitting shader compiler process
+
+Crashed!
