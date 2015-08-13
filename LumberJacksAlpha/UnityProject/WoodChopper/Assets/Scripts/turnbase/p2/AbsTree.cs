@@ -6,7 +6,6 @@ using StaticStructure;
 public abstract class AbsTree : MonoBehaviour
 {
 	[HideInInspector] public p2Cell cell;
-	public Color auraColor;
 	public TreeType type;
 	public TreeActivateTime activateTime;
 	AbsBuff[] buffs;
@@ -44,7 +43,7 @@ public abstract class AbsTree : MonoBehaviour
 			} else dominoDelayTime -= Time.deltaTime;
 			break;
 		case TreeState.Falling:
-			if (Quaternion.Angle ( transform.rotation,fallingQuat ) < 0.1f ) {
+			if (Quaternion.Angle ( transform.rotation,fallingQuat ) < 1f ) {
 				gameObject.SetActive(false);
 				transform.rotation = Quaternion.identity;
 				p2Scene.Instance.treesInScene.Remove(this);

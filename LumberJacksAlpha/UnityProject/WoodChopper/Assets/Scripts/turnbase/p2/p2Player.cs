@@ -120,7 +120,6 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				break;
 			case TurnState.Background:
 				state = TurnState.NetWait;
-
 				p2Scene.Instance.OnBackgroundEnd();
 				break;
 			case TurnState.OpponentsTurn:
@@ -131,11 +130,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 	//------------------------ server messages ----------------------------------
 	public void OnGameStart (int start_turn) {
-		if ( photonView.isMine ) {
-			basic.actionPoints = ActionPointsPerTurn;
-			gui.ac.text = "AC:"+ActionPointsPerTurn;
-		}
-		OnTurnStart (start_turn);
+	//	OnTurnStart (start_turn);
 	}
 
 	public void OnGameEnd () {
@@ -156,6 +151,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		bonus.hp = 0;
 		bonus.turnTime = 0;
 	}
+
 	public void OnTurnStart (int turn_nb)
 	{
 		state = turn_nb % 2 == turn_identity? TurnState.MyTurn : TurnState.OpponentsTurn;
@@ -164,6 +160,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				gui.SetColor( Color.green);
 				ZeroBonus();
 				basic.actionPoints = ActionPointsPerTurn;
+				gui.ac.text = "AC:"+ActionPointsPerTurn;
 				bonus.actionPoints = 0;
 				MoveHighlight(true);
 				ActivateTree(TreeActivateTime.BeforeTurn);

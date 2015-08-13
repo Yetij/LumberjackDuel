@@ -1,17 +1,17 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &139110
+--- !u!1 &148028
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 404630}
-  - 33: {fileID: 3381034}
-  - 23: {fileID: 2369652}
+  - 4: {fileID: 423682}
+  - 33: {fileID: 3355354}
+  - 23: {fileID: 2399470}
   m_Layer: 0
-  m_Name: Tree_Candelabra_NoSnow
+  m_Name: Tree_Birch_Summer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,15 +33,15 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &404630
+--- !u!4 &423682
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 139110}
+  m_GameObject: {fileID: 148028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: .686994314, y: .686994255, z: .686994255}
   m_Children: []
   m_Father: {fileID: 439668}
   m_RootOrder: 0
@@ -55,20 +55,20 @@ Transform:
   m_LocalPosition: {x: 1.49699998, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 404630}
+  - {fileID: 423682}
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!23 &2369652
+--- !u!23 &2399470
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 139110}
+  m_GameObject: {fileID: 148028}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: 2f26405c521dd6842b0b392d50c6b1d8, type: 2}
+  - {fileID: 2100000, guid: 1ef0310e900b6384494683c199409ab3, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -82,13 +82,13 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
---- !u!33 &3381034
+--- !u!33 &3355354
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 139110}
-  m_Mesh: {fileID: 4300000, guid: 6ec02f4bbb5615f4fa1460430ac7960e, type: 3}
+  m_GameObject: {fileID: 148028}
+  m_Mesh: {fileID: 4300000, guid: 7c967d3c8b39a9e4f99a0af92a3e5064, type: 3}
 --- !u!114 &11426930
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
+  auraColor: {r: 0, g: 0, b: 0, a: 0}
   type: 4
   activateTime: 3
   basicPointCredit: 0
