@@ -14,14 +14,16 @@ public class p2Gui : MonoBehaviour
 	}
 	public Text timer;
 	public Text ac;
-	public Text opponentHp;
 	public Text myHp;
-	public Text opponentName;
 	public Text myName;
+	public Text myPoints;
+	public Text opponentHp;
+	public Text opponentName;
+	public Text opponentPoints;
 
 	public Toggle[] treeButtons;
 	public Toggle currentSelected { get; private set; }
-
+	  
 	void Awake () {
 		if ( treeButtons.Length != 0 ) {
 			foreach ( var t in treeButtons ) {

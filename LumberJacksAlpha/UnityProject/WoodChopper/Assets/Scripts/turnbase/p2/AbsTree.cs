@@ -100,6 +100,7 @@ public abstract class AbsTree : MonoBehaviour
 		if ( !(fx == 0 & fz == 0 ) ) {
 			fallingQuat = Angle.Convert(fx,fz);
 			dominoDelayTime = tier * p2Scene.Instance.globalDominoDelay;
+			player.OnCredit(tier);
 			state = TreeState.WaitDomino;
 			p2Cell c;
 			if ( (c= cell.Get(fx,fz) ) != null ) {

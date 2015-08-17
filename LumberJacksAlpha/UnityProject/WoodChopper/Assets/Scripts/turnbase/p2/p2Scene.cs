@@ -81,7 +81,7 @@ public class p2Scene : Photon.MonoBehaviour
 		}
 	}
 	
-	public void OnPlayerDie () {
+	public void OnVictoryConditionsReached () {
 		photonView.RPC("OnGameEnd",PhotonTargets.All);
 	}
 

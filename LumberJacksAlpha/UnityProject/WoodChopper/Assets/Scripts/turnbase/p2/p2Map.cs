@@ -20,7 +20,7 @@ public class p2Map : MonoBehaviour {
 	public float localOffsetX=1, localOffsetY=1;
 
 	void Awake () {
-		CreateOne(localTotalX,localTotalY,localOffsetX,localOffsetY,-7,0,-4);
+		CreateOne(localTotalX,localTotalY,localOffsetX,localOffsetY,-6,0,-4);
 	}
 
 	public void ApplyPerActionBuffsBefore (p2Player player) {

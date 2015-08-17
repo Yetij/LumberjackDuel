@@ -25,7 +25,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 
 	enum TurnState : byte { MyTurn, Background, OpponentsTurn , NetWait }
-	[SerializeField] TurnState state;
+	TurnState state;
 
 
 
@@ -91,6 +91,16 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			if ( c == currentCell | c == null ) continue;
 			if ( c.CanPlant() ) c.HighLightOn(on);
 			else c.HighLightOn(false);
+		}
+	}
+	public int pointsToWin = 20;
+	int points = 0;
+	public void OnCredit (int tree_nb ) {
+		if ( photonView.isMine ) {
+			points += (int)Mathf.Pow(tree_nb+1,2);
+			gui.myPoints.text = "Points: " + points;
+
+			if ( points >= pointsToWin ) p2Scene.Instance.OnVictoryConditionsReached ();
 		}
 	}
 
@@ -347,7 +357,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			if ( bonus.hp > 0 ) bonus.hp --;
 			else basic.hp --;
 			gui.myHp.text = "HP:"+(basic.hp + bonus.hp).ToString();
-			if ( basic.hp == 0 ) p2Scene.Instance.OnPlayerDie ();
+			if ( basic.hp == 0 ) p2Scene.Instance.OnVictoryConditionsReached ();
 		}
 	}
 
@@ -359,20 +369,23 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			stream.SendNext(_timer);
 			stream.SendNext(basic.hp + bonus.hp);
 			stream.SendNext(basic.actionPoints + bonus.actionPoints);
+			stream.SendNext(points);
 		}
 		else
 		{
 			var _timer = (float)stream.ReceiveNext();
 		 	if( state == TurnState.MyTurn ) gui.timer.text = _timer.ToString("0.00");
 			var _hp = (int)stream.ReceiveNext();
-			if ( photonView.isMine ) {
-				if ( gui != null) gui.myHp.text = "HP:"+_hp.ToString();
-			}
-			else {
+			if ( !photonView.isMine ) {
 				if ( gui != null) gui.opponentHp.text = "HP:"+_hp.ToString();
 			}
 			var _ac = (int)stream.ReceiveNext();
 			if( state == TurnState.MyTurn ) gui.ac.text = "AC:"+_ac.ToString();
+			
+			var _points = (int)stream.ReceiveNext();
+			if ( !photonView.isMine ) {
+				if ( gui != null) gui.opponentPoints.text = "Points:"+ _points;
+			}
 		}
 
 	}
