@@ -23,13 +23,14 @@ public abstract class AbsTree : MonoBehaviour
 	Quaternion fallingQuat;
 	float dominoDelayTime;
 
+	float startScale = 0.5f;
 	virtual protected void Update () {
 		switch (state ) {
 		case TreeState.InSeed:
 			break;
 		case TreeState.Growing:
 			_timer += Time.deltaTime;
-			transform.localScale = Vector3.Lerp(Vector3.one*0.2f, Vector3.one,_timer);
+			transform.localScale = Vector3.Lerp(Vector3.one*startScale, Vector3.one,_timer);
 			if ( transform.localScale == Vector3.one ) { 
 				state = TreeState.Grown;
 			}
@@ -48,6 +49,11 @@ public abstract class AbsTree : MonoBehaviour
 				transform.rotation = Quaternion.identity;
 				p2Scene.Instance.treesInScene.Remove(this);
 				cell.RemoveTree(choper);
+
+				var c = cell.Get(fx,fz);
+				if ( c != null ) {
+					if ( c.player != null ) c.player.OnBeingChoped();
+				}
 				break;
 			}
 			_timer += Time.deltaTime;
@@ -81,18 +87,21 @@ public abstract class AbsTree : MonoBehaviour
 	virtual public void OnBeingPlant (p2Player p , int deltaTurn ) {
 		turnToLifeCounter = defaultTurnToLife + deltaTurn;
 		p2Scene.Instance.treesInScene.Add(this);
-		
+
+		fx = 0; 
+		fz = 0;
 		state = TreeState.InSeed;
-		transform.localScale = Vector3.one*0.2f;
+		transform.localScale = Vector3.one*startScale;
 	}
 
 	p2Player choper;
+	int fx,fz;
 	virtual public void OnBeingChoped (  p2Player player, p2Cell sourceCell , int tier ) {
 		if ( state == TreeState.Falling | state == TreeState.WaitDomino ) {
 			return;
 		}
-		int fx = cell.x- sourceCell.x;
-		int fz = cell.z- sourceCell.z;
+		fx = cell.x- sourceCell.x;
+		fz = cell.z- sourceCell.z;
 		choper = player;
 
 		ActivateOnChop(player, ref fx, ref fz);
@@ -100,14 +109,13 @@ public abstract class AbsTree : MonoBehaviour
 		if ( !(fx == 0 & fz == 0 ) ) {
 			fallingQuat = Angle.Convert(fx,fz);
 			dominoDelayTime = tier * p2Scene.Instance.globalDominoDelay;
-			player.OnCredit(tier);
 			state = TreeState.WaitDomino;
 			p2Cell c;
 			if ( (c= cell.Get(fx,fz) ) != null ) {
 				if ( c.tree == null ? false : c.tree.CanBeAffectedByDomino()  ) {
 					c.tree.OnBeingChoped(player, cell,tier+1);
-				}
-			}
+				} else player.OnCredit(tier);
+			} else player.OnCredit(tier);
 		}
 	}
 
