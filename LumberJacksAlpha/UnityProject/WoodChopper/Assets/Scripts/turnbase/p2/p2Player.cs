@@ -27,13 +27,15 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	enum TurnState : byte { MyTurn, Background, OpponentsTurn , NetWait }
 	TurnState state;
 
-
-
+	
 	void Start () {
 		localMap = p2Map.Instance;
 		globalScene = p2Scene.Instance;
 		gui = p2Gui.Instance;
-		
+
+		ResetBasic();
+		ZeroBonus();
+
 		if ( photonView.isMine ) {
 			TouchInput.Instance.AddListener(this);
 			gui.AddListener(this);
@@ -45,7 +47,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		var host = localMap[0,0];
 		var client = localMap[localMap.total_x-1,0];
 
-		state = TurnState.Background;
+		state = TurnState.NetWait;
 
 		if ( PhotonNetwork.isMasterClient ) {
 			turn_identity = photonView.isMine ? 0 : 1;
@@ -62,7 +64,8 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 	
 	[HideInInspector] public p2PlayerParameters bonus;
-	public p2PlayerParameters basic;
+	[HideInInspector] public p2PlayerParameters basic;
+	public p2PlayerParameters predef;
 	float _timer;
 
 	public void MoveHighlight (bool on) {
@@ -100,7 +103,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			points += (int)Mathf.Pow(tree_nb+1,2);
 			gui.myPoints.text = "Points: " + points;
 
-			if ( points >= pointsToWin ) p2Scene.Instance.OnVictoryConditionsReached ();
+			if ( points >= pointsToWin ) p2Scene.Instance.OnVictoryConditionsReached (photonView.owner.ID);
 		}
 	}
 
@@ -140,11 +143,27 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 	//------------------------ server messages ----------------------------------
 	public void OnGameStart (int start_turn) {
-	//	OnTurnStart (start_turn);
+		_timer = 0;
+		if ( photonView.isMine ) {
+			_timer = 0;
+			gui.timer.text = _timer.ToString("0.00");
+			state = TurnState.NetWait;
+			p2Scene.Instance.OnBackgroundStart (this);
+			gui.Reset();
+			if ( lastPointedCell != null ) {
+				lastPointedCell.SelectedOn(false);
+				lastPointedCell = null;
+			}
+			PlantHighlight(false);
+		}
 	}
-
-	public void OnGameEnd () {
-
+		
+	public void OnGameEnd (int winner) {
+		if ( photonView.isMine ) {
+			bool i_won = winner == photonView.owner.ID;
+			gui.endGamePanel.ShowResult(i_won);
+			if ( i_won ) gui.opponentHp.text = "HP: 0";
+		}
 	}
 	
 	public void OnBackgroundStart ()
@@ -170,11 +189,11 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				gui.SetColor( Color.green);
 				ZeroBonus();
 				basic.actionPoints = ActionPointsPerTurn;
-				gui.ac.text = "AC:"+ActionPointsPerTurn;
+				gui.ac.text = "AC: "+ActionPointsPerTurn;
 				bonus.actionPoints = 0;
 				MoveHighlight(true);
 				ActivateTree(TreeActivateTime.BeforeTurn);
-				gui.myHp.text = "HP:"+basic.hp.ToString();
+				gui.myHp.text = "HP: "+basic.hp.ToString();
 			}
 			else {
 				gui.SetColor( Color.yellow);
@@ -228,7 +247,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				else basic.actionPoints --;
 				acCost --;
 			}
-			gui.ac.text = "AC:"+(basic.actionPoints + bonus.actionPoints).ToString();
+			gui.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
 		}
 	}
 
@@ -258,7 +277,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				else basic.actionPoints --;
 				acCost --;
 			}
-			gui.ac.text = "AC:"+(basic.actionPoints + bonus.actionPoints).ToString();
+			gui.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
 		}
 	}
 
@@ -280,7 +299,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				else basic.actionPoints --;
 				acCost --;
 			}
-			gui.ac.text = "AC:"+(basic.actionPoints + bonus.actionPoints).ToString();
+			gui.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
 		}
 	}
 
@@ -356,9 +375,43 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		if ( photonView.isMine & basic.hp >=0 ){
 			if ( bonus.hp > 0 ) bonus.hp --;
 			else basic.hp --;
-			gui.myHp.text = "HP:"+(basic.hp + bonus.hp).ToString();
-			if ( basic.hp == 0 ) p2Scene.Instance.OnVictoryConditionsReached ();
+			gui.myHp.text = "HP: "+(basic.hp + bonus.hp).ToString();
+			if ( basic.hp == 0 ) {
+				int winner_id = -1;
+				foreach ( var p in globalScene.players ) {
+					if ( p.photonView.owner.ID != photonView.owner.ID ) {
+						winner_id = p.photonView.owner.ID;
+						break;
+					}
+				}
+				if ( winner_id == -1 ) throw new UnityException("Invalid owner id");
+				p2Scene.Instance.OnVictoryConditionsReached (winner_id);
+			}
 		}
+	}
+
+	void ResetBasic () {
+		basic.actionPoints = predef.actionPoints;
+		basic.chopCost = predef.chopCost;
+		basic.hp = predef.hp;
+		basic.moveCost = predef.moveCost;
+		basic.plantCost = predef.plantCost;
+		basic.turnTime = predef.turnTime;
+	}
+
+	public void OnRematch () {
+		ResetBasic();
+		gui.timer.color = Color.black;
+		gui.timer.text = "0.00";
+		gui.ac.color = Color.black;
+		gui.ac.text = "AC: 0";
+
+		gui.opponentHp.text = "HP: "+basic.hp;
+		gui.myHp.text = "HP: "+basic.hp;
+		
+		gui.myPoints.text = "Points: 0";
+		gui.opponentPoints.text = "Points: 0";
+		Start();
 	}
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -374,17 +427,17 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		else
 		{
 			var _timer = (float)stream.ReceiveNext();
-		 	if( state == TurnState.MyTurn ) gui.timer.text = _timer.ToString("0.00");
+			if( state == TurnState.MyTurn & gui != null ) gui.timer.text = _timer.ToString("0.00");
 			var _hp = (int)stream.ReceiveNext();
-			if ( !photonView.isMine ) {
-				if ( gui != null) gui.opponentHp.text = "HP:"+_hp.ToString();
+			if ( !photonView.isMine & gui != null ) {
+				gui.opponentHp.text = "HP: "+_hp.ToString();
 			}
 			var _ac = (int)stream.ReceiveNext();
-			if( state == TurnState.MyTurn ) gui.ac.text = "AC:"+_ac.ToString();
+			if( state == TurnState.MyTurn ) gui.ac.text = "AC: "+_ac.ToString();
 			
 			var _points = (int)stream.ReceiveNext();
-			if ( !photonView.isMine ) {
-				if ( gui != null) gui.opponentPoints.text = "Points:"+ _points;
+			if ( !photonView.isMine & gui != null) {
+				 gui.opponentPoints.text = "Points: "+ _points;
 			}
 		}
 

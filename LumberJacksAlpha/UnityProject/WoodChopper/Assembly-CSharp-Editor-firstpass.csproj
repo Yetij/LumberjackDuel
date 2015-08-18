@@ -71,8 +71,10 @@
      <None Include="Assets\ToonMaidCool\Resources\Texts\ToonMaidCool_MotionList.txt" />
      <None Include="Assets\Photon Unity Networking\Demos\MarcoPolo-Tutorial\marcopolo-readme.txt" />
      <None Include="Assets\Plugins\Photon3Unity3D.xml" />
+     <None Include="Assets\LeanTween\Examples\Shader\2dUnlitWithFade.shader" />
      <None Include="Assets\Fonts\Documentation\JazzCreateBubble_VersionHistory_1.1.txt" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_TextureMult_Bumped.shader" />
+     <None Include="Assets\LeanTween\ReadMe.txt" />
      <None Include="Assets\ToonMaidCool\Documents\Readme_EN.txt" />
      <None Include="Assets\DAX\Shields Collection\Shaders\DAX_AlphaBlend+Add.shader" />
      <None Include="Assets\Plugins\release_history.txt" />

@@ -2089,7 +2089,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionPointsPerTurn: 4
   currentCell: {fileID: 0}
-  state: 1
   bonus:
     actionPoints: 0
     plantCost: 0
@@ -2104,6 +2103,14 @@ MonoBehaviour:
     moveCost: 1
     hp: 4
     turnTime: 10
+  predef:
+    actionPoints: 4
+    plantCost: 1
+    chopCost: 1
+    moveCost: 1
+    hp: 3
+    turnTime: 10
+  pointsToWin: 20
 --- !u!137 &13773740
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

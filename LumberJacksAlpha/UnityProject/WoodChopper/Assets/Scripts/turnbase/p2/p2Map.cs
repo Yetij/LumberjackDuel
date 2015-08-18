@@ -23,11 +23,11 @@ public class p2Map : MonoBehaviour {
 		CreateOne(localTotalX,localTotalY,localOffsetX,localOffsetY,-6,0,-4);
 	}
 
-	public void ApplyPerActionBuffsBefore (p2Player player) {
-
+	public void OnRematch () {
+		foreach(var c in cells ) {
+			c.OnRematch();
+		}
 	}
-
-
 
 	public List<p2Cell> FreeCells () {
 		return p2Cell.free;
@@ -45,7 +45,7 @@ public class p2Map : MonoBehaviour {
 
 	//List<p2FallRecord > markedToFallList = new List<p2FallRecord>();
 //	bool hasJobInThisTurn = false;
-
+	
 	public void OnPlayerChop ( p2Player p, p2Cell chopedCell ) {
 		if ( chopedCell.tree == null ? false: chopedCell.tree.CanBeChopedDirectly() ) {
 			chopedCell.tree.OnBeingChoped( p, p.currentCell, 0);

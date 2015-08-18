@@ -12,6 +12,9 @@ public class p2Gui : MonoBehaviour
 			return _instance;
 		}
 	}
+
+	public p2EndGamePanel endGamePanel;
+
 	public Text timer;
 	public Text ac;
 	public Text myHp;
@@ -20,6 +23,8 @@ public class p2Gui : MonoBehaviour
 	public Text opponentHp;
 	public Text opponentName;
 	public Text opponentPoints;
+	
+	AbsGuiListener listener;
 
 	public Toggle[] treeButtons;
 	public Toggle currentSelected { get; private set; }
@@ -36,7 +41,6 @@ public class p2Gui : MonoBehaviour
 		if ( currentSelected != null ) currentSelected.isOn = false;
 	}
 
-	AbsGuiListener listener;
 
 	public void AddListener ( AbsGuiListener listener ) {
 		this.listener = listener;

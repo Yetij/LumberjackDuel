@@ -47,6 +47,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 
 	public void OnTurnStart ( int turn_nb ){
 	}
+
 	public void OnBackgroundStart ( ){
 	}
 
@@ -68,6 +69,14 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 
 		t.transform.position = transform.position;
 		t.cell = this;
+	}
+
+	public void OnRematch () {
+		if ( tree != null ) tree.gameObject.SetActive(false);
+		tree = null;
+		player = null;
+		highlight.SetActive(false);
+		selected.SetActive(false);
 	}
 
 	public void RemoveTree(p2Player choper) {

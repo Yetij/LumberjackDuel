@@ -31,7 +31,6 @@ public class p2Scene : Photon.MonoBehaviour
 			k += treeWeightList[i].weight;
 			probability[i+1] = k;
 		}
-		Debug.Log("p2Server Start ");
 		if ( !PhotonNetwork.isMasterClient) photonView.RPC("SceneLoaded",PhotonTargets.MasterClient);
 	}
 	
@@ -47,19 +46,28 @@ public class p2Scene : Photon.MonoBehaviour
 
 	bool masterReady, nonMasterReady;
 
+	int player_verf_count = 0;
 	public void OnPlayerReady (p2Player p) {
-		players.Add(p);
+		if ( !players.Contains(p) ) players.Add(p);
 
-		if ( !PhotonNetwork.isMasterClient &  players.Count >= PhotonNetwork.room.maxPlayers ) {
+		player_verf_count ++;
+		Debug.Log("OnPlayerReady : " + player_verf_count + " PhotonNetwork.room.maxPlayers");
+
+		if ( !PhotonNetwork.isMasterClient &  player_verf_count >= PhotonNetwork.room.maxPlayers ) {
+			Debug.Log("!PhotonNetwork.isMasterClient  ");
 			photonView.RPC("NonMasterClientReady", PhotonTargets.MasterClient);
 		}
-		if ( PhotonNetwork.isMasterClient &  players.Count >= PhotonNetwork.room.maxPlayers ) {
+
+		if ( PhotonNetwork.isMasterClient &  player_verf_count >= PhotonNetwork.room.maxPlayers ) {
+			Debug.Log("PhotonNetwork.isMasterClient ");
 			masterReady = true;
 			if ( nonMasterReady & !_run ) {
+				Debug.Log("OnGameStart ");
 				photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
 			}
 		}
 	}
+
 
 	[RPC] void NonMasterClientReady () {
 		nonMasterReady = true;
@@ -74,15 +82,15 @@ public class p2Scene : Photon.MonoBehaviour
 		}
 	}
 
-	[RPC] void OnGameEnd () {
+	[RPC] void OnGameEnd (int winner) {
 		_run = false;
 		foreach ( var p in players ) {
-			p.OnGameEnd ();
+			p.OnGameEnd (winner);
 		}
 	}
 	
-	public void OnVictoryConditionsReached () {
-		photonView.RPC("OnGameEnd",PhotonTargets.All);
+	public void OnVictoryConditionsReached (int winner_id) {
+		photonView.RPC("OnGameEnd",PhotonTargets.All,winner_id);
 	}
 
 	public void OnBackgroundStart (p2Player invoker) {
@@ -155,6 +163,20 @@ public class p2Scene : Photon.MonoBehaviour
 			if ( r >= probability[i] & r < probability[i+1] ) return treeWeightList[i].type;
 		}
 		throw new UnityException("code should not reach here: r="+ r);
+	}
+
+	public void OnRematch () {
+		localMap.OnRematch();
+		player_verf_count = 0;
+		turnToGen=0;
+		masterReady = false;
+		nonMasterReady = false;
+		background_end_counter = 0;
+		treesInScene.Clear();
+
+		foreach ( var p in players ) {
+			p.OnRematch();
+		}
 	}
 
 	#region hide
