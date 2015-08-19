@@ -24,6 +24,7 @@ public class p2Scene : Photon.MonoBehaviour
 		GameObject g = new GameObject("Touch Input2", typeof(TouchInput));
 		g.GetComponent<TouchInput>().minSwipeDistance = 20;
 
+
 		probability = new int[treeWeightList.Length+1];
 		probability[0] = 0;
 		int k = 0;
@@ -62,7 +63,6 @@ public class p2Scene : Photon.MonoBehaviour
 			Debug.Log("PhotonNetwork.isMasterClient ");
 			masterReady = true;
 			if ( nonMasterReady & !_run ) {
-				Debug.Log("OnGameStart ");
 				photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
 			}
 		}
@@ -71,10 +71,14 @@ public class p2Scene : Photon.MonoBehaviour
 
 	[RPC] void NonMasterClientReady () {
 		nonMasterReady = true;
-		if ( masterReady & !_run ) photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
+		if ( masterReady & !_run ) {
+			photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
+		}
 	}
 
 	[RPC] void OnGameStart (int start_turn) {
+		nonMasterReady = false;
+		masterReady = false;
 		_run = true;
 		currentTurnNb = start_turn ;
 		foreach ( var p in players ) {
@@ -169,8 +173,6 @@ public class p2Scene : Photon.MonoBehaviour
 		localMap.OnRematch();
 		player_verf_count = 0;
 		turnToGen=0;
-		masterReady = false;
-		nonMasterReady = false;
 		background_end_counter = 0;
 		treesInScene.Clear();
 

@@ -52,7 +52,7 @@ public abstract class AbsTree : MonoBehaviour
 
 				var c = cell.Get(fx,fz);
 				if ( c != null ) {
-					if ( c.player != null ) c.player.OnBeingChoped();
+					if ( c.player != null ) c.player.OnBeingChoped(choper,0);
 				}
 				break;
 			}
@@ -95,8 +95,9 @@ public abstract class AbsTree : MonoBehaviour
 	}
 
 	p2Player choper;
+
 	int fx,fz;
-	virtual public void OnBeingChoped (  p2Player player, p2Cell sourceCell , int tier ) {
+	virtual public void OnBeingChoped (  p2Player player, p2Cell sourceCell , int tier, int acCost=0) {
 		if ( state == TreeState.Falling | state == TreeState.WaitDomino ) {
 			return;
 		}
@@ -107,6 +108,7 @@ public abstract class AbsTree : MonoBehaviour
 		ActivateOnChop(player, ref fx, ref fz);
 
 		if ( !(fx == 0 & fz == 0 ) ) {
+			if ( tier == 0 ) player.OnChopDone(acCost);
 			fallingQuat = Angle.Convert(fx,fz);
 			dominoDelayTime = tier * p2Scene.Instance.globalDominoDelay;
 			state = TreeState.WaitDomino;

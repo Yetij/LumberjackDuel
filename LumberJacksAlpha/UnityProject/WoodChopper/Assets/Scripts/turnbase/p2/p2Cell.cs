@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -17,7 +17,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 		}
 		private set {
 			if ( value == null & _player == null) { 
-				free.Add(this);
+				if ( !free.Contains(this) ) free.Add(this);
 			} else if ( free.Contains(this) ) free.Remove(this);
 			_tree = value;
 		}
@@ -29,7 +29,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 		}
 		private set {
 			if ( value == null & tree == null) { 
-				free.Add(this);
+				if ( !free.Contains(this) ) free.Add(this);
 			} else if ( free.Contains(this) ) free.Remove(this);
 			_player = value;
 		}
@@ -71,7 +71,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 		t.cell = this;
 	}
 
-	public void OnRematch () {
+	public void Reset () {
 		if ( tree != null ) tree.gameObject.SetActive(false);
 		tree = null;
 		player = null;

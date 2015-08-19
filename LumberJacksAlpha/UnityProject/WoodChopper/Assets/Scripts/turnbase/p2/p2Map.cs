@@ -25,7 +25,7 @@ public class p2Map : MonoBehaviour {
 
 	public void OnRematch () {
 		foreach(var c in cells ) {
-			c.OnRematch();
+			c.Reset();
 		}
 	}
 
@@ -46,12 +46,12 @@ public class p2Map : MonoBehaviour {
 	//List<p2FallRecord > markedToFallList = new List<p2FallRecord>();
 //	bool hasJobInThisTurn = false;
 	
-	public void OnPlayerChop ( p2Player p, p2Cell chopedCell ) {
+	public void OnPlayerChop ( p2Player p, p2Cell chopedCell, int acCost ) {
 		if ( chopedCell.tree == null ? false: chopedCell.tree.CanBeChopedDirectly() ) {
-			chopedCell.tree.OnBeingChoped( p, p.currentCell, 0);
+			chopedCell.tree.OnBeingChoped( p, p.currentCell, 0, acCost);
 		}
 		if ( chopedCell.player != null &  chopedCell.player != p ) {
-			chopedCell.player.OnBeingChoped();
+			chopedCell.player.OnBeingChoped(p,acCost);
 		}
 	}
 //--------------------------------------------------------------------------------------------------------------
@@ -79,7 +79,8 @@ public class p2Map : MonoBehaviour {
 				c.x = _x;
 				c.z = _z;
 				c.transform.position = Locate(_x,_z);
-				
+				c.Reset();
+
 				cells[_x,_z] = c;
 				
 				g.transform.position = c.transform.position;
