@@ -28,6 +28,24 @@ public class p2TreePool : MonoBehaviour
 		}
 	}	
 
+	public string GetTreePlantLog (TreeType type  ) {
+		foreach ( var s in seeds ) {
+			if ( type == s.type ) {
+				return s.prefab.plantLog;
+			}
+		}
+		throw new UnityException("Invalid tree type");
+	}
+
+	public int GetTreePlantCost (TreeType type ) {
+		foreach ( var s in seeds ) {
+			if ( type == s.type ) {
+				return s.prefab.plantCost;
+			}
+		}
+		throw new UnityException("Invalid tree type");
+	}
+
 	public AbsTree Get(TreeType type) {
 		List<AbsTree> subPool = null;
 		pool.TryGetValue(type, out subPool);

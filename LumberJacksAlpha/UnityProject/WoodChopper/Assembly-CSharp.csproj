@@ -194,7 +194,6 @@
      <Compile Include="Assets\Scripts\turnbase\p2\AbsTree.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\StaticStructure.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\TouchInput.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p2\TreeActivateTime.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Basic.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2BonusAc.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\Trees\p2Ethereal.cs" />
@@ -205,6 +204,7 @@
      <Compile Include="Assets\Scripts\turnbase\p2\UI\p2GuiTree.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Cell.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Connector.cs" />
+     <Compile Include="Assets\Scripts\turnbase\p2\p2Dialog.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2EndGamePanel.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2FallRecord.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Map.cs" />

@@ -7,9 +7,27 @@ public abstract class AbsTree : MonoBehaviour
 {
 	[HideInInspector] public p2Cell cell;
 	public TreeType type;
+	[SerializeField] string[] plantDialogs;
+	[SerializeField] string[] displayDialogs;
+
+	public string plantLog {
+		get {
+			var k = Random.Range(0,plantDialogs.Length);
+			Debug.Log("rand = "+k );
+			Debug.Log("dialog = "+plantDialogs[k] );
+			return plantDialogs[k];
+		}
+	}
+
+	public string displayLog {
+		get {
+			return displayDialogs[Random.Range(0,displayDialogs.Length)];
+		}
+	}
+
 	public TreeActivateTime activateTime;
 	AbsBuff[] buffs;
-	public int basicPointCredit;
+	public int plantCost=1;
 
 	public int defaultTurnToLife = 2;
 	int turnToLifeCounter;
@@ -48,7 +66,9 @@ public abstract class AbsTree : MonoBehaviour
 				gameObject.SetActive(false);
 				transform.rotation = Quaternion.identity;
 				p2Scene.Instance.treesInScene.Remove(this);
-				cell.RemoveTree(choper);
+				cell.RemoveTree();
+
+				ActivateOnFall(choper);
 
 				var c = cell.Get(fx,fz);
 				if ( c != null ) {
@@ -63,18 +83,16 @@ public abstract class AbsTree : MonoBehaviour
 		}
 	}
 
+	virtual public void OnTurnStart (int turn_nb ) {
+	}
 
 	//---------------------------------- state query -----------------------------------------
 	virtual public bool IsPassable () {
 		return false;
 	}
-
-	virtual public bool CanBeChopedDirectly () {
-		return true;
-	}
-
+	
 	virtual public bool CanBeAffectedByDomino () {
-		return true;
+		return state == TreeState.Grown;
 	}
 
 	protected int[] dominoPass;
@@ -127,7 +145,8 @@ public abstract class AbsTree : MonoBehaviour
 	virtual protected void ActivateOnFall (p2Player player ) {
 	}
 
-	virtual public void Activate () { }
+	virtual public void Activate () { 
+	}
 
 
 	//------------------------------ update per turn ----------------------------------------

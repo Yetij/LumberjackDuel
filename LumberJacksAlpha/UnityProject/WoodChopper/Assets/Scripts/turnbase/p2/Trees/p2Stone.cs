@@ -6,9 +6,10 @@ public class p2Stone : AbsTree
 		return false;
 	} 
 
-	public override bool CanBeChopedDirectly ()
+	protected override void ActivateOnChop (p2Player player, ref int fx, ref int fz)
 	{
-		return false;
+		fx = 0;
+		fz = 0;
 	}
 
 	public override bool IsPassable ()

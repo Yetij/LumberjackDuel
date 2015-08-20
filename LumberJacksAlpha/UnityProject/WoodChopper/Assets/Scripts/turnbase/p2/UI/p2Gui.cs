@@ -14,6 +14,7 @@ public class p2Gui : MonoBehaviour
 	}
 
 	public p2EndGamePanel endGamePanel;
+	[SerializeField] p2Dialog visualLog;
 
 	public Text timer;
 	public Text ac;
@@ -26,7 +27,7 @@ public class p2Gui : MonoBehaviour
 	
 	AbsGuiListener listener;
 
-	public Toggle[] treeButtons;
+	[SerializeField] Toggle[] treeButtons;
 	public Toggle currentSelected { get; private set; }
 	  
 	void Awake () {
@@ -55,13 +56,17 @@ public class p2Gui : MonoBehaviour
 		if( value ) {
 			currentSelected = source;
 			selected = source.GetComponent<p2GuiTree>();
-			Debug.Log("Selected tree = " + source);
+			DisplayDialog(p2TreePool.Instance.GetTreePlantLog(selected.type));
 		} else {
 			currentSelected = null;
 			selected = null;
 		}
 
 		listener.OnTreeSelected(selected);
+	}
+
+	public void DisplayDialog (string s ) {
+		visualLog.PopUp(s);
 	}
 
 	bool _isInControlZone;

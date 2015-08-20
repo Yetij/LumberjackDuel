@@ -17,7 +17,6 @@ public class TouchInput : MonoBehaviour
 		localMap = p2Map.Instance;
 		gui = p2Gui.Instance;
 		globalScene = p2Scene.Instance;
-		Debug.Log("TouchInput created ");
 	}
 	
 	public void AddListener (AbsInputListener _listener ) {

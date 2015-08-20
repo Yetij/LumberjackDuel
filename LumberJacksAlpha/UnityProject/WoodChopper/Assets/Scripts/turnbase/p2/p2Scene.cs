@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using StaticStructure;
 
-delegate void _OnTurnStart (int turn_nb );
-delegate void _OnBackgroundStart ();
-
 [RequireComponent(typeof(PhotonView))]
 public class p2Scene : Photon.MonoBehaviour
 {
@@ -13,6 +10,8 @@ public class p2Scene : Photon.MonoBehaviour
 
 	public bool _run { get; private set; } 
 	public int currentTurnNb { get; private set; }
+	public int startTreeNumber=10;
+
 	p2Map localMap;
 	p2TreePool localPool;
 
@@ -68,6 +67,13 @@ public class p2Scene : Photon.MonoBehaviour
 		}
 	}
 
+	public void ActivateTrees (TreeActivateTime time ) {
+		foreach ( var t in treesInScene ) {
+			if ( t.isActiveAndEnabled & t.activateTime == time ) {
+				t.Activate();
+			}
+		}
+	}
 
 	[RPC] void NonMasterClientReady () {
 		nonMasterReady = true;
@@ -81,6 +87,7 @@ public class p2Scene : Photon.MonoBehaviour
 		masterReady = false;
 		_run = true;
 		currentTurnNb = start_turn ;
+
 		foreach ( var p in players ) {
 			p.OnGameStart (start_turn);
 		}
@@ -96,16 +103,20 @@ public class p2Scene : Photon.MonoBehaviour
 	public void OnVictoryConditionsReached (int winner_id) {
 		photonView.RPC("OnGameEnd",PhotonTargets.All,winner_id);
 	}
-
-	public void OnBackgroundStart (p2Player invoker) {
-		var t = RandomTree();
-		var l = localMap.FreeCells();
-		if ( l.Count > 0 ) { 
-			var c = l[Random.Range(0,l.Count)];
-			photonView.RPC("_OnBackgroundStart", PhotonTargets.All, (byte) t, c.x, c.z);
-		} else {
-			photonView.RPC("_OnBackgroundStart", PhotonTargets.All,  (byte) t, -1, -1);
+	public void GenTree(int number) {
+		for(int k=0;  k < number ; k ++ ) {
+			var t = RandomTree();
+			var l = localMap.FreeCells();
+			if ( l.Count > 0 ) { 
+				var c = l[Random.Range(0,l.Count)];
+				photonView.RPC("_OnBackgroundStart", PhotonTargets.All, (byte) t, c.x, c.z);
+			} else {
+				photonView.RPC("_OnBackgroundStart", PhotonTargets.All,  (byte) t, -1, -1);
+			}
 		}
+	}
+	public void OnBackgroundStart (p2Player invoker,int treenb) {
+		GenTree(treenb);
 	}
 
 	[HideInInspector] public List<AbsTree> treesInScene = new List<AbsTree>();
@@ -145,6 +156,9 @@ public class p2Scene : Photon.MonoBehaviour
 	[RPC] void _OnTurnStart ( int turn_nb ) {
 		background_end_counter = 0;
 		currentTurnNb = turn_nb;
+		foreach ( var t in treesInScene ) {
+			t.OnTurnStart(turn_nb);
+		}
 		foreach ( var p in players ) {
 			p.OnTurnStart (turn_nb);
 		}

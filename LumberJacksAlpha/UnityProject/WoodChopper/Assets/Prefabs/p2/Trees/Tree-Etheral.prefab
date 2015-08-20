@@ -101,11 +101,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
-  auraColor: {r: 0, g: 0, b: 0, a: 0}
   type: 1
+  plantDialogs:
+  - Etheral tree, I summon you!
+  - An etheral tree? You have my faWell, should I put this etheral tree some where?
+  - Etheral tree, I can feel the bonds between us
+  displayDialogs:
+  - An etheral tree? How strange!
+  - 'An etheral tree? Is it mine? '
+  - An etheral tree? So the rumors of outer world were true !
   activateTime: 0
-  basicPointCredit: 0
-  defaultTurnToLife: 2
+  plantCost: 1
+  defaultTurnToLife: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -161,10 +161,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
-  auraColor: {r: .713235259, g: .713235259, b: .713235259, a: 0}
   type: 3
+  plantDialogs:
+  - '[error]'
+  displayDialogs:
+  - There lies .. a stone!
+  - Oops, a stone! Im not gonna pass it
+  - Crap, a stone! I dont like them
+  - I wonder if stone can speak, lets make a try
   activateTime: 0
-  basicPointCredit: 0
+  plantCost: 1
   defaultTurnToLife: 1
 --- !u!198 &19832234
 ParticleSystem:

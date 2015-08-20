@@ -257,11 +257,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
-  auraColor: {r: 0, g: 0, b: 0, a: 0}
   type: 5
+  plantDialogs:
+  - '[error]'
+  displayDialogs:
+  - How old is this tree? It must have been living for ages
+  - Smell of ages ! A monument ! A tree !
+  - Damn this tree is huge.. a monumental tree?
   activateTime: 0
-  basicPointCredit: 0
-  defaultTurnToLife: 2
+  plantCost: 1
+  defaultTurnToLife: 1
 --- !u!198 &19844004
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -47,7 +47,7 @@ public class p2Map : MonoBehaviour {
 //	bool hasJobInThisTurn = false;
 	
 	public void OnPlayerChop ( p2Player p, p2Cell chopedCell, int acCost ) {
-		if ( chopedCell.tree == null ? false: chopedCell.tree.CanBeChopedDirectly() ) {
+		if ( chopedCell.tree != null ) {
 			chopedCell.tree.OnBeingChoped( p, p.currentCell, 0, acCost);
 		}
 		if ( chopedCell.player != null &  chopedCell.player != p ) {

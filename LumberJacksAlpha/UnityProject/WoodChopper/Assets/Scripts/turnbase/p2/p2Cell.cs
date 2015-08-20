@@ -79,7 +79,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 		selected.SetActive(false);
 	}
 
-	public void RemoveTree(p2Player choper) {
+	public void RemoveTree() {
 		tree = null;
 	}
 

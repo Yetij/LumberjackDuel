@@ -119,21 +119,22 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 					_timer = 0;
 					gui.timer.text = _timer.ToString("0.00");
 					state = TurnState.NetWait;
-					p2Scene.Instance.OnBackgroundStart (this);
+					globalScene.OnBackgroundStart (this,1);
+
 					gui.Reset();
 					if ( lastPointedCell != null ) {
 						lastPointedCell.SelectedOn(false);
 						lastPointedCell = null;
 					}
 					PlantHighlight(false);
-					ActivateTrees(TreeActivateTime.AfterTurn);
+					globalScene.ActivateTrees(TreeActivateTime.AfterTurn);
 				}
 				break;
 			case TurnState.NetWait:
 				break;
 			case TurnState.Background:
 				state = TurnState.NetWait;
-				p2Scene.Instance.OnBackgroundEnd();
+				globalScene.OnBackgroundEnd();
 				break;
 			case TurnState.OpponentsTurn:
 				break;
@@ -148,7 +149,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			_timer = 0;
 			gui.timer.text = _timer.ToString("0.00");
 			state = TurnState.NetWait;
-			p2Scene.Instance.OnBackgroundStart (this);
+			if ( start_turn % 2 == turn_identity ) globalScene.OnBackgroundStart (this,globalScene.startTreeNumber);
 			gui.Reset();
 			if ( lastPointedCell != null ) {
 				lastPointedCell.SelectedOn(false);
@@ -193,7 +194,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				bonus.actionPoints = 0;
 				MoveHighlight(true);
 
-				ActivateTrees(TreeActivateTime.BeforeTurn);
+				globalScene.ActivateTrees(TreeActivateTime.BeforeTurn);
 
 				gui.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints);
 				gui.myHp.text = "HP: "+(basic.hp + bonus.hp);
@@ -219,18 +220,13 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 
 
-	//----------------------- player core behaviors -------------------------------
-	void ActivateTrees ( TreeActivateTime time ) {
-		var l = globalScene.treesInScene;
-		foreach ( var t in l ) {
-			if ( t.isActiveAndEnabled & t.activateTime == time ) {
-				t.Activate();
-			}
-		}
-	}
+	//----------------------- player core behaviors ------------------------------
 
 	void PreMove ( int x, int z, bool teleport ) {
 		if ( !teleport & !ValidateSquareRange(x,z) ) return;
+
+		globalScene.ActivateTrees(TreeActivateTime.BeforeMove);
+
 		var acLeft = ( basic.actionPoints + bonus.actionPoints ) - (basic.moveCost + bonus.moveCost ); 
 		if ( acLeft >= 0 ) {
 			photonView.RPC("MoveTo", PhotonTargets.All, x,z, basic.moveCost + bonus.moveCost);
@@ -238,11 +234,14 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 
 	[RPC] void MoveTo ( int x, int z, int acCost ) {
+
 		var cell = localMap[x,z];
 
 		if ( photonView.isMine ) MoveHighlight(false);
+
 		currentCell.OnPlayerMoveOut();
 		cell.OnPlayerMoveIn(this);
+
 		if ( photonView.isMine ) {
 			MoveHighlight(true);
 			while ( acCost > 0 ) {
@@ -251,6 +250,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				acCost --;
 			}
 			gui.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
+			globalScene.ActivateTrees(TreeActivateTime.AfterMove);
 		}
 	}
 
@@ -262,9 +262,11 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 	void PrePlant ( int x, int z, byte treeType ) {
 		if ( !ValidateRange(x,z) ) return;
-		var acLeft = ( basic.actionPoints + bonus.actionPoints ) - (basic.plantCost + bonus.plantCost ); 
+		globalScene.ActivateTrees(TreeActivateTime.BeforePlant);
+		var cost = p2TreePool.Instance.GetTreePlantCost((TreeType) treeType);
+		var acLeft = ( basic.actionPoints + bonus.actionPoints ) - ( cost+ bonus.plantCost ); 
 		if ( acLeft >= 0 ) {
-			photonView.RPC("Plant", PhotonTargets.All, x,z,treeType, basic.plantCost + bonus.plantCost);
+			photonView.RPC("Plant", PhotonTargets.All, x,z,treeType, cost + bonus.plantCost);
 		}
 	}
 
@@ -281,11 +283,15 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				acCost --;
 			}
 			gui.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
+			globalScene.ActivateTrees(TreeActivateTime.AfterPlant);
 		}
 	}
 
 	void PreChop ( int x, int z ) {
 		if ( !ValidateRange(x,z) ) return;
+		
+		globalScene.ActivateTrees(TreeActivateTime.BeforeChop);
+
 		var acLeft = ( basic.actionPoints + bonus.actionPoints ) - (basic.chopCost + bonus.chopCost ); 
 		if ( acLeft >= 0 ) {
 			photonView.RPC("Chop", PhotonTargets.All, x,z, basic.chopCost + bonus.chopCost);
@@ -295,6 +301,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	[RPC] void Chop ( int x, int z,int acCost ) {
 		var cell = localMap[x,z];
 		localMap.OnPlayerChop(this,cell,acCost);
+		if ( photonView.isMine ) globalScene.ActivateTrees(TreeActivateTime.AfterChop);
 	}
 
 	public bool IsPassable () {
@@ -333,7 +340,6 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 	public void OnMapZoneTouchMove (Vector2 pos)
 	{
-		if ( state != TurnState.MyTurn ) return;
 		var cell = localMap.GetPointedCell(pos);
 
 		if ( cell == null ) {
@@ -346,12 +352,14 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		//if ( Mathf.Abs(cell.x - currentCell.x ) > 1 | Mathf.Abs(cell.z - currentCell.z) > 1 ) return;
 
 		if ( lastPointedCell != null & lastPointedCell != cell ) {
-			// turn off highlight
+			// turn off highlight last cell
 			lastPointedCell.SelectedOn(false);
+			if ( cell.tree != null ) gui.DisplayDialog(cell.tree.displayLog);
 		}
 		lastPointedCell = cell;
 		// turn on highlight
 		lastPointedCell.SelectedOn(true);
+
 
 	}
 	p2GuiTree guiSelectedTree;
@@ -383,7 +391,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			else basic.hp --;
 			gui.myHp.text = "HP: "+(basic.hp + bonus.hp).ToString();
 			if ( basic.hp == 0 ) {
-				p2Scene.Instance.OnVictoryConditionsReached (chopper.photonView.owner.ID);
+				globalScene.OnVictoryConditionsReached (chopper.photonView.owner.ID);
 			}
 		}
 	}
@@ -399,6 +407,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 	public void OnRematch () {
 		ResetBasic();
+		points = 0;
 		gui.timer.color = Color.black;
 		gui.timer.text = "0.00";
 		gui.ac.color = Color.black;

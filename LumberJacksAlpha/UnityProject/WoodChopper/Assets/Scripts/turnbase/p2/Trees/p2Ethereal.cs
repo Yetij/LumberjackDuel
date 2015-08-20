@@ -14,7 +14,7 @@ public class p2Ethereal : AbsTree
 
 	public override void OnBeingChoped ( p2Player player, p2Cell sourceCell, int tier,int ac)
 	{
-		if ( player != source ) return;
+		if ( player != source & tier == 0 ) return;
 		base.OnBeingChoped (player,sourceCell, tier, ac);
 	}
 }

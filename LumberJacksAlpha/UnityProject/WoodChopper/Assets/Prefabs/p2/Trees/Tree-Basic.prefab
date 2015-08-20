@@ -101,11 +101,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
-  auraColor: {r: 0, g: 0, b: 0, a: 0}
   type: 0
+  plantDialogs:
+  - A normal tree, thats what Ive got in my hands
+  - Normal tree, my friend, I'm really sorry *chop* *chop*
+  - Where am I going to plant this normal tree?
+  displayDialogs:
+  - What a lovely normal tree
+  - A normal tree? now can chop with no worry..
+  - Nothing fancy, just a normal tree
   activateTime: 0
-  basicPointCredit: 0
-  defaultTurnToLife: 2
+  plantCost: 1
+  defaultTurnToLife: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
