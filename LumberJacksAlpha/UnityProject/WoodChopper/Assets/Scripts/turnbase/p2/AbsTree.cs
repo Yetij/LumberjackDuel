@@ -92,12 +92,11 @@ public abstract class AbsTree : MonoBehaviour
 	}
 	
 	virtual public bool CanBeAffectedByDomino () {
-		return state == TreeState.Grown;
+		return true;
 	}
 
-	protected int[] dominoPass;
-	virtual public int[] PassDominoFuther () {
-		return dominoPass;
+	virtual public bool PassDominoFuther () {
+		return state == TreeState.Grown;
 	}
 
 	//------------------------------- player messages --------------------------------------------------
@@ -130,12 +129,14 @@ public abstract class AbsTree : MonoBehaviour
 			fallingQuat = Angle.Convert(fx,fz);
 			dominoDelayTime = tier * p2Scene.Instance.globalDominoDelay;
 			state = TreeState.WaitDomino;
-			p2Cell c;
-			if ( (c= cell.Get(fx,fz) ) != null ) {
-				if ( c.tree == null ? false : c.tree.CanBeAffectedByDomino()  ) {
-					c.tree.OnBeingChoped(player, cell,tier+1);
+			if ( PassDominoFuther() ) {
+				p2Cell c;
+				if ( (c= cell.Get(fx,fz) ) != null ) {
+					if ( c.tree == null ? false : c.tree.CanBeAffectedByDomino()  ) {
+						c.tree.OnBeingChoped(player, cell,tier+1);
+					} else player.OnCredit(tier);
 				} else player.OnCredit(tier);
-			} else player.OnCredit(tier);
+			}
 		}
 	}
 
