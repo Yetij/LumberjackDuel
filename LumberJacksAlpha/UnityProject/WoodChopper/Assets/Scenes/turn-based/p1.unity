@@ -244,8 +244,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df0eca6967ef00f48bcfef8d1f9bf750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
-  animator: {fileID: 0}
+  text: {fileID: 1491338440}
+  animator: {fileID: 36213785}
 --- !u!114 &36213787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -844,8 +844,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellPrefab: {fileID: 11482602, guid: b5e57a45e7251d14381bb59727b93de7, type: 2}
-  localTotalX: 10
-  localTotalY: 8
+  localTotalX: 7
+  localTotalY: 5
   localOffsetX: 1
   localOffsetY: 1
 --- !u!1 &751824795
@@ -962,9 +962,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66682a6087b4a434da312a1f0f63880e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winImages: []
-  loseImages: []
-  message: {fileID: 0}
+  winImages:
+  - {fileID: 21300000, guid: 0bbe2717519769a4ab317dfd2ff8df27, type: 3}
+  - {fileID: 21300000, guid: 7fe45b29101ce1145b1f62c9756e71ea, type: 3}
+  - {fileID: 21300000, guid: 91d68f668c40436499fa3250d901b235, type: 3}
+  - {fileID: 21300000, guid: cc458c535ca34c44694207cfd17932cd, type: 3}
+  - {fileID: 21300000, guid: b7c8c14d8b469054ab63b1a9e2e55dc9, type: 3}
+  - {fileID: 21300000, guid: e1a87741ffde97944922aa12de499603, type: 3}
+  - {fileID: 21300000, guid: f82058baacaaa494aba9efdbe97cddcc, type: 3}
+  loseImages:
+  - {fileID: 21300000, guid: e8496f6c80fd1114a901900114249d2d, type: 3}
+  - {fileID: 21300000, guid: 1002cd333fa04e74a8984dbe4cc4036f, type: 3}
+  - {fileID: 21300000, guid: 04bc397ac8c729448a9d0ef6c7b6eabd, type: 3}
+  - {fileID: 21300000, guid: 63813c12adc86874eb8a9450c54278fe, type: 3}
+  - {fileID: 21300000, guid: be9dbdbc2725a214b98a542f65ff60c4, type: 3}
+  - {fileID: 21300000, guid: 12b276b251fda4142a0a19e1358d637e, type: 3}
+  - {fileID: 21300000, guid: 56c3ddce882cbf24aa1b643749d3d0b2, type: 3}
+  - {fileID: 21300000, guid: 037f772077e0dae43b52c6e9bf1fb648, type: 3}
+  - {fileID: 21300000, guid: 604cecde6926cee49be50192a7b818a1, type: 3}
+  - {fileID: 21300000, guid: ecf8a9ab1d67faf40ad62d5cee88b754, type: 3}
+  message: {fileID: 1374816690}
 --- !u!1 &857492954
 GameObject:
   m_ObjectHideFlags: 0

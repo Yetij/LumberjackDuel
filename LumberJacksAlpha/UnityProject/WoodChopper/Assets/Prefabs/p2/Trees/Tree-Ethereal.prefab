@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 462236}
   - 114: {fileID: 11408606}
   m_Layer: 0
-  m_Name: Tree-Etheral
+  m_Name: Tree-Ethereal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -103,9 +103,9 @@ MonoBehaviour:
   cell: {fileID: 0}
   type: 1
   plantDialogs:
-  - Etheral tree, I summon you!
-  - An etheral tree? Well, should I put this etheral tree some where?
-  - Etheral tree, I can feel the bonds between us
+  - Ethereal tree, I summon you!
+  - An ethereal tree? Well, should I put this etheral tree some where?
+  - Ethereal tree, I can feel the bonds between us
   displayDialogs:
   - An ethereal tree? How strange!
   - 'An ethereal tree? Is it mine? '
