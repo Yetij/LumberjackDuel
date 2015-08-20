@@ -129,6 +129,7 @@ public abstract class AbsTree : MonoBehaviour
 			fallingQuat = Angle.Convert(fx,fz);
 			dominoDelayTime = tier * p2Scene.Instance.globalDominoDelay;
 			state = TreeState.WaitDomino;
+
 			if ( PassDominoFuther() ) {
 				p2Cell c;
 				if ( (c= cell.Get(fx,fz) ) != null ) {
@@ -136,7 +137,7 @@ public abstract class AbsTree : MonoBehaviour
 						c.tree.OnBeingChoped(player, cell,tier+1);
 					} else player.OnCredit(tier);
 				} else player.OnCredit(tier);
-			}
+			}else player.OnCredit(tier);
 		}
 	}
 
