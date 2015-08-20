@@ -12,10 +12,7 @@ public abstract class AbsTree : MonoBehaviour
 
 	public string plantLog {
 		get {
-			var k = Random.Range(0,plantDialogs.Length);
-			Debug.Log("rand = "+k );
-			Debug.Log("dialog = "+plantDialogs[k] );
-			return plantDialogs[k];
+			return plantDialogs[Random.Range(0,plantDialogs.Length)];
 		}
 	}
 
@@ -96,7 +93,7 @@ public abstract class AbsTree : MonoBehaviour
 	}
 
 	virtual public bool PassDominoFuther () {
-		return state == TreeState.Grown;
+		return state == TreeState.Grown | state == TreeState.Growing;
 	}
 
 	//------------------------------- player messages --------------------------------------------------
@@ -128,7 +125,6 @@ public abstract class AbsTree : MonoBehaviour
 			if ( tier == 0 ) player.OnChopDone(acCost);
 			fallingQuat = Angle.Convert(fx,fz);
 			dominoDelayTime = tier * p2Scene.Instance.globalDominoDelay;
-			state = TreeState.WaitDomino;
 
 			if ( PassDominoFuther() ) {
 				p2Cell c;
@@ -137,7 +133,10 @@ public abstract class AbsTree : MonoBehaviour
 						c.tree.OnBeingChoped(player, cell,tier+1);
 					} else player.OnCredit(tier);
 				} else player.OnCredit(tier);
-			}else player.OnCredit(tier);
+			} else player.OnCredit(tier);
+
+			
+			state = TreeState.WaitDomino;
 		}
 	}
 

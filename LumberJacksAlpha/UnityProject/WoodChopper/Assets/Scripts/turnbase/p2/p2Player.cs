@@ -423,7 +423,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
 	{
-		if ( globalScene == null ? false : (!globalScene._run | gui == null ) ) return;
+		if ( globalScene == null ? true : (!globalScene._run | gui == null ) ) return;
 		if (stream.isWriting)
 		{
 			stream.SendNext(_timer);

@@ -103,7 +103,7 @@ public class p2Scene : Photon.MonoBehaviour
 	public void OnVictoryConditionsReached (int winner_id) {
 		photonView.RPC("OnGameEnd",PhotonTargets.All,winner_id);
 	}
-	public void GenTree(int number) {
+	public void SceneGenTree(int number) {
 		for(int k=0;  k < number ; k ++ ) {
 			var t = RandomTree();
 			var l = localMap.FreeCells();
@@ -116,7 +116,7 @@ public class p2Scene : Photon.MonoBehaviour
 		}
 	}
 	public void OnBackgroundStart (p2Player invoker,int treenb) {
-		GenTree(treenb);
+		SceneGenTree(treenb);
 	}
 
 	[HideInInspector] public List<AbsTree> treesInScene = new List<AbsTree>();
