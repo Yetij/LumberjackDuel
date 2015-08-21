@@ -99,6 +99,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	public int pointsToWin = 20;
 	int points = 0;
 	public void OnCredit (int tree_nb ) {
+		if( tree_nb < 0 ) return;
 		if ( photonView.isMine ) {
 			points += (int)Mathf.Pow(tree_nb+1,2);
 			gui.myPoints.text = "Points: " + points;

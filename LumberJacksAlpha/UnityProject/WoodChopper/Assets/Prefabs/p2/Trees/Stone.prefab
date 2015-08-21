@@ -171,7 +171,7 @@ MonoBehaviour:
   - I wonder if stone can speak, lets make a try
   activateTime: 0
   plantCost: 1
-  defaultTurnToLife: 1
+  defaultTurnToLife: 0
 --- !u!198 &19832234
 ParticleSystem:
   m_ObjectHideFlags: 1

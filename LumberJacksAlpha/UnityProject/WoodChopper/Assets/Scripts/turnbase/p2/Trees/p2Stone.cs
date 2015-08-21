@@ -1,3 +1,4 @@
+using UnityEngine;
 
 public class p2Stone : AbsTree
 {
@@ -17,5 +18,12 @@ public class p2Stone : AbsTree
 		return false;
 	}
 
+	public override void OnBeingPlant (p2Player p , int deltaTurn ) {
+		base.OnBeingPlant(p,deltaTurn);
+		turnToLifeCounter = -1;
+
+		state = StaticStructure.TreeState.Grown;
+		transform.localScale = Vector3.one;
+	}
 }
 

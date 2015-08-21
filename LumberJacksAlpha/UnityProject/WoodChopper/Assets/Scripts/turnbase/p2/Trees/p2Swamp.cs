@@ -32,24 +32,27 @@ public class p2Swamp : AbsTree
 		}
 		affected.Clear();
 	}
-	public override void Activate ()
+	public override bool Activate ()
 	{
-		var aoex = (area_x - 1 )/2;
-		var aoez = (area_z - 1 )/2;
-		foreach ( var p in p2Scene.Instance.players ) {
-			var c = p.currentCell;
-			if ( Mathf.Abs( c.x - cell.x ) <= aoex & Mathf.Abs ( c.z - cell.z ) <= aoez ) {
-				if ( !affected.Contains(p ) ) {
-					affected.Add(p);
-					p.bonus.moveCost += moveAdditionalCost;
-				}
-			} else {
-				if ( affected.Contains(p ) ) {
-					affected.Remove(p);
-					p.bonus.moveCost -= moveAdditionalCost;
+		if ( base.Activate() ) {
+			var aoex = (area_x - 1 )/2;
+			var aoez = (area_z - 1 )/2;
+			foreach ( var p in p2Scene.Instance.players ) {
+				var c = p.currentCell;
+				if ( Mathf.Abs( c.x - cell.x ) <= aoex & Mathf.Abs ( c.z - cell.z ) <= aoez ) {
+					if ( !affected.Contains(p ) ) {
+						affected.Add(p);
+						p.bonus.moveCost += moveAdditionalCost;
+					}
+				} else {
+					if ( affected.Contains(p ) ) {
+						affected.Remove(p);
+						p.bonus.moveCost -= moveAdditionalCost;
+					}
 				}
 			}
+			return true;
 		}
-
+		return false;
 	}
 }

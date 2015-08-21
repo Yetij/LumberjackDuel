@@ -5,7 +5,7 @@ public class p2Monumental : AbsTree
 {
 	public override bool CanBeAffectedByDomino ()
 	{
-		return false;
+		return state == StaticStructure.TreeState.InSeed;
 	}
 }
 

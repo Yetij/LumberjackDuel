@@ -27,7 +27,7 @@ public abstract class AbsTree : MonoBehaviour
 	public int plantCost=1;
 
 	public int defaultTurnToLife = 2;
-	int turnToLifeCounter;
+	protected int turnToLifeCounter;
 	protected TreeState state;
 
 	virtual protected void Start () {
@@ -133,7 +133,7 @@ public abstract class AbsTree : MonoBehaviour
 						c.tree.OnBeingChoped(player, cell,tier+1);
 					} else player.OnCredit(tier);
 				} else player.OnCredit(tier);
-			} else player.OnCredit(tier);
+			} else player.OnCredit(state == TreeState.InSeed? tier-1 : tier);
 
 			
 			state = TreeState.WaitDomino;
@@ -146,7 +146,9 @@ public abstract class AbsTree : MonoBehaviour
 	virtual protected void ActivateOnFall (p2Player player ) {
 	}
 
-	virtual public void Activate () { 
+	virtual public bool Activate () {
+		if ( state == TreeState.InSeed ) return false;
+		return true;
 	}
 
 
