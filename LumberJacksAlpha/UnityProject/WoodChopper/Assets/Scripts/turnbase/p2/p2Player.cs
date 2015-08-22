@@ -108,6 +108,23 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		}
 	}
 
+	public void SkipTurn () {
+		if ( state == TurnState.MyTurn ) {
+			_timer = 0;
+			gui.timer.text = _timer.ToString("0.00");
+			state = TurnState.NetWait;
+			globalScene.OnBackgroundStart (this,1);
+			
+			gui.Reset();
+			if ( lastPointedCell != null ) {
+				lastPointedCell.SelectedOn(false);
+				lastPointedCell = null;
+			}
+			PlantHighlight(false);
+			globalScene.ActivateTrees(TreeActivateTime.AfterTurn);
+		}
+	}
+
 	void Update () {
 		if ( photonView.isMine & globalScene._run ) {
 			switch ( state ) {
@@ -117,18 +134,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				if ( _timer < basic.turnTime ) {
 					gui.timer.text = _timer.ToString("0.00");
 				} else {
-					_timer = 0;
-					gui.timer.text = _timer.ToString("0.00");
-					state = TurnState.NetWait;
-					globalScene.OnBackgroundStart (this,1);
-
-					gui.Reset();
-					if ( lastPointedCell != null ) {
-						lastPointedCell.SelectedOn(false);
-						lastPointedCell = null;
-					}
-					PlantHighlight(false);
-					globalScene.ActivateTrees(TreeActivateTime.AfterTurn);
+					SkipTurn();
 				}
 				break;
 			case TurnState.NetWait:
@@ -220,6 +226,10 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		}
 	}
 
+	public p2Player Owner () {
+		return this;
+	}
+
 
 	//----------------------- player core behaviors ------------------------------
 
@@ -308,7 +318,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	public bool IsPassable () {
 		return false;
 	}
-	
+
 	public void OnChopDone (int acCost) {
 		if ( photonView.isMine & acCost > 0 ) {
 			while ( acCost > 0 ) {

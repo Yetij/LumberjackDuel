@@ -67,9 +67,11 @@ public abstract class AbsTree : MonoBehaviour
 
 				ActivateOnFall(choper);
 
-				var c = cell.Get(fx,fz);
-				if ( c != null ) {
-					if ( c.player != null ) c.player.OnBeingChoped(choper,0);
+				if ( dealDmg ) {
+					var c = cell.Get(fx,fz);
+					if ( c != null ) {
+						if ( c.player != null ) c.player.OnBeingChoped(choper,0);
+					}
 				}
 				break;
 			}
@@ -80,6 +82,7 @@ public abstract class AbsTree : MonoBehaviour
 		}
 	}
 
+	bool dealDmg = false;
 	virtual public void OnTurnStart (int turn_nb ) {
 	}
 
@@ -104,6 +107,7 @@ public abstract class AbsTree : MonoBehaviour
 
 		fx = 0; 
 		fz = 0;
+		dealDmg = false;
 		state = TreeState.InSeed;
 		transform.localScale = Vector3.one*startScale;
 	}
@@ -135,7 +139,7 @@ public abstract class AbsTree : MonoBehaviour
 				} else player.OnCredit(tier);
 			} else player.OnCredit(state == TreeState.InSeed? tier-1 : tier);
 
-			
+			dealDmg = state != TreeState.InSeed;
 			state = TreeState.WaitDomino;
 		}
 	}

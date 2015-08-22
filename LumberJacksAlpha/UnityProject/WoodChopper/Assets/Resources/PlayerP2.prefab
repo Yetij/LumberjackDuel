@@ -2109,7 +2109,7 @@ MonoBehaviour:
     chopCost: 1
     moveCost: 1
     hp: 3
-    turnTime: 5
+    turnTime: 10
   pointsToWin: 20
 --- !u!137 &13773740
 SkinnedMeshRenderer:

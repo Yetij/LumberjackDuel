@@ -15,6 +15,7 @@ public class p2Gui : MonoBehaviour
 
 	public p2EndGamePanel endGamePanel;
 	[SerializeField] p2Dialog visualLog;
+	public Button skip;
 
 	public Text timer;
 	public Text ac;
@@ -82,6 +83,10 @@ public class p2Gui : MonoBehaviour
 	public void SetColor (Color r ) {
 		timer.color = r;
 		ac.color = r;
+	}
+
+	public void OnSkipButtonClicked () {
+		listener.Owner().SkipTurn();
 	}
 }
 
