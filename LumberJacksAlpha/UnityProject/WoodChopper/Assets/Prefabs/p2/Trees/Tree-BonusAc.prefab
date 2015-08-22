@@ -111,7 +111,7 @@ MonoBehaviour:
   activateTime: 9
   plantCost: 1
   defaultTurnToLife: 1
-  bonusAc: 1
+  bonusAc: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -42,6 +42,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefabName: PlayerP2
   globalDominoDelay: .75
+  startTreeNumber: 6
   treesInScene: []
   treeWeightList:
   - type: 0

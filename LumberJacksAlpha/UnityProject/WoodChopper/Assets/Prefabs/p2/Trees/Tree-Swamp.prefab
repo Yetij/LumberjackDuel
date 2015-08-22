@@ -200,7 +200,7 @@ MonoBehaviour:
   - A swamp tree? Lets play hide and seek there
   - A swamp tree? Dont slow me or I cut u down!
   activateTime: 3
-  plantCost: 2
+  plantCost: 1
   defaultTurnToLife: 1
   moveAdditionalCost: 1
   area_x: 3

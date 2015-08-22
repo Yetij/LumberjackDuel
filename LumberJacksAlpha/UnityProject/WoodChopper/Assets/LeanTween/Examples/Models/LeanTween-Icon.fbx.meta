@@ -3,8 +3,19 @@ guid: 6fc4240da91ab4747a411a8313faed53
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
+    100000: eanTween
+    100002: LCharacter
+    100004: //RootNode
+    400000: eanTween
+    400002: LCharacter
+    400004: //RootNode
+    2300000: eanTween
+    2300002: LCharacter
+    3300000: eanTween
+    3300002: LCharacter
     4300000: LCharacter
     4300002: eanTween
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0

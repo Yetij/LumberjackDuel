@@ -8,7 +8,7 @@ public class p2BonusAc : AbsTree
 	{
 		if ( base.Activate() ) {
 			foreach( var p in p2Scene.Instance.players ) {
-				p.bonus.actionPoints += 1;
+				p.bonus.actionPoints += bonusAc;
 			}
 			return true;
 		}

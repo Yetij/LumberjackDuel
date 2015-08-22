@@ -3,6 +3,16 @@ guid: 7d6f6aee277594029851a7cc81d550d5
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
+    100000: Lean
+    100002: //RootNode
+    100004: Tween
+    400000: Lean
+    400002: //RootNode
+    400004: Tween
+    2300000: Lean
+    2300002: Tween
+    3300000: Lean
+    3300002: Tween
     4300000: Plane.003
     4300002: Plane.002
     4300004: Circle.010
@@ -19,6 +29,7 @@ ModelImporter:
     4300026: Plane
     4300028: Lean
     4300030: Tween
+    11100000: //RootNode
   materials:
     importMaterials: 0
     materialName: 0

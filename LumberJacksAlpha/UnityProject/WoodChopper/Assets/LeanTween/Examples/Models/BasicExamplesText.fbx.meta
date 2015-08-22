@@ -3,10 +3,29 @@ guid: 803bfbdea65eb4ebe96e481875403860
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
+    100000: //RootNode
+    100002: TextAndMore
+    100004: TextMove
+    100006: TextRotate
+    100008: TextScale
+    400000: //RootNode
+    400002: TextAndMore
+    400004: TextMove
+    400006: TextRotate
+    400008: TextScale
+    2300000: TextAndMore
+    2300002: TextMove
+    2300004: TextRotate
+    2300006: TextScale
+    3300000: TextAndMore
+    3300002: TextMove
+    3300004: TextRotate
+    3300006: TextScale
     4300000: TextAndMore
     4300002: TextMove
     4300004: TextRotate
     4300006: TextScale
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0

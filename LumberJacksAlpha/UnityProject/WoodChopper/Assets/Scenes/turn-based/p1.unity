@@ -960,8 +960,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellPrefab: {fileID: 11482602, guid: b5e57a45e7251d14381bb59727b93de7, type: 2}
-  localTotalX: 7
-  localTotalY: 5
+  localTotalX: 6
+  localTotalY: 6
   localOffsetX: 1
   localOffsetY: 1
 --- !u!1 &751824795
@@ -1661,7 +1661,24 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 11488308, guid: 920a22e2464741f448973c91de4588b4, type: 2}
+      propertyPath: init_cap
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11439206, guid: 920a22e2464741f448973c91de4588b4, type: 2}
+      propertyPath: init_cap
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11406972, guid: 920a22e2464741f448973c91de4588b4, type: 2}
+      propertyPath: init_cap
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 11474922, guid: 920a22e2464741f448973c91de4588b4, type: 2}
+      propertyPath: init_cap
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 11488308, guid: 920a22e2464741f448973c91de4588b4, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 920a22e2464741f448973c91de4588b4, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1374816688
@@ -2598,6 +2615,24 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1822190013}
+--- !u!1 &1948626220 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 130854, guid: 920a22e2464741f448973c91de4588b4, type: 2}
+  m_PrefabInternal: {fileID: 1347810813}
+--- !u!114 &1948626222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1948626220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62022c9460f45c14da22d6c9eaa1e32e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 4
+  prefab: {fileID: 11426930, guid: 64d7c1bd8cb28dc45814feb99d4702fc, type: 2}
+  init_cap: 3
 --- !u!1 &1963286175
 GameObject:
   m_ObjectHideFlags: 0

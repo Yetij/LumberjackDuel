@@ -2087,7 +2087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4abcf55304cfdd4f95864d62fdfdf4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPointsPerTurn: 4
+  ActionPointsPerTurn: 3
   currentCell: {fileID: 0}
   bonus:
     actionPoints: 0
@@ -2104,12 +2104,12 @@ MonoBehaviour:
     hp: 4
     turnTime: 10
   predef:
-    actionPoints: 4
+    actionPoints: 3
     plantCost: 1
     chopCost: 1
     moveCost: 1
-    hp: 3
-    turnTime: 10
+    hp: 1
+    turnTime: 30
   pointsToWin: 20
 --- !u!137 &13773740
 SkinnedMeshRenderer:
