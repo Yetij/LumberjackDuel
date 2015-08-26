@@ -1677,6 +1677,31 @@ Prefab:
       propertyPath: init_cap
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 11478296, guid: 920a22e2464741f448973c91de4588b4, type: 2}
+      propertyPath: prefab
+      value: 
+      objectReference: {fileID: 11436244, guid: 8414dc77799dd3346ae47a5d6f9bd744,
+        type: 2}
+    - target: {fileID: 11474922, guid: 920a22e2464741f448973c91de4588b4, type: 2}
+      propertyPath: prefab
+      value: 
+      objectReference: {fileID: 11453000, guid: 8fbb67f8a066d0a43ac155b11e610726,
+        type: 2}
+    - target: {fileID: 11406972, guid: 920a22e2464741f448973c91de4588b4, type: 2}
+      propertyPath: prefab
+      value: 
+      objectReference: {fileID: 11405544, guid: b793625dd159b244e996d20423370b02,
+        type: 2}
+    - target: {fileID: 11407840, guid: 920a22e2464741f448973c91de4588b4, type: 2}
+      propertyPath: prefab
+      value: 
+      objectReference: {fileID: 11443870, guid: 5f7b0c1ebafdf8f4088bae1e4714f587,
+        type: 2}
+    - target: {fileID: 11439206, guid: 920a22e2464741f448973c91de4588b4, type: 2}
+      propertyPath: prefab
+      value: 
+      objectReference: {fileID: 11439940, guid: 30d46e5eacc01364ab843ab7cb8066d2,
+        type: 2}
     m_RemovedComponents:
     - {fileID: 11488308, guid: 920a22e2464741f448973c91de4588b4, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 920a22e2464741f448973c91de4588b4, type: 2}
@@ -2631,7 +2656,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
-  prefab: {fileID: 11426930, guid: 64d7c1bd8cb28dc45814feb99d4702fc, type: 2}
+  prefab: {fileID: 11437538, guid: 2b824577de3e3c647b1f5314d4809e83, type: 2}
   init_cap: 3
 --- !u!1 &1963286175
 GameObject:
