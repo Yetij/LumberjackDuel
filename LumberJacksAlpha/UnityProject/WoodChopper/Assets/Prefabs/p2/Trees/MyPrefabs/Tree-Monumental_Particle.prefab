@@ -36,7 +36,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &161126
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -76,10 +76,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: .430338025, y: .430338085, z: .430338085}
-  m_Children:
-  - {fileID: 493640}
+  m_Children: []
   m_Father: {fileID: 451742}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!4 &451742
 Transform:
   m_ObjectHideFlags: 1
@@ -90,6 +89,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 493640}
   - {fileID: 402218}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -113,10 +113,10 @@ Transform:
   m_GameObject: {fileID: 161126}
   m_LocalRotation: {x: .707106829, y: 0, z: 0, w: .707106829}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .697126448, y: .697126329, z: .697126329}
+  m_LocalScale: {x: .300000012, y: .300000012, z: .300000012}
   m_Children:
   - {fileID: 476940}
-  m_Father: {fileID: 402218}
+  m_Father: {fileID: 451742}
   m_RootOrder: 0
 --- !u!23 &2353308
 MeshRenderer:
@@ -161,6 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
+  graficalModel: {fileID: 402218}
   type: 5
   plantDialogs:
   - '[error]'
@@ -1182,7 +1183,7 @@ ParticleSystem:
   looping: 1
   prewarm: 0
   playOnAwake: 1
-  moveWithTransform: 1
+  moveWithTransform: 0
   InitialModule:
     enabled: 1
     startLifetime:

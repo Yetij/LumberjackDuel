@@ -1,17 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\turnbase\p2\Trees\p2BonusAc.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\turnbase\p2\Trees\p2Stone.cs">
     <Files>
-      <File FileName="Assets\Scripts\turnbase\p2\p2PoolInfo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\turnbase\p2\Trees\p2Stone.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\turnbase\p2\p2Player.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\turnbase\p2\AbsTree.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\turnbase\p2\Trees\p2Ethereal.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\turnbase\p2\p2Scene.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\turnbase\p2\p2Dialog.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\turnbase\p2\p2EndGamePanel.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\turnbase\p2\Trees\p2Monumental.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\turnbase\p2\Trees\p2BonusAc.cs" Line="17" Column="2" />
+      <File FileName="Assets\Scripts\turnbase\p2\Trees\p2Basic.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\turnbase\p2\Trees\p2BonusAc.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\turnbase\p2\Trees\p2Ethereal.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\turnbase\p2\Trees\p2Stone.cs" Line="8" Column="4" />
+      <File FileName="Assets\Scripts\turnbase\p2\AbsTree.cs" Line="116" Column="42" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

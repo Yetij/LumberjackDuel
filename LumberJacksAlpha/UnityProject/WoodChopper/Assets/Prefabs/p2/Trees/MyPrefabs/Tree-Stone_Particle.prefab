@@ -18,7 +18,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &114352
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -76,8 +76,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: .641518116, y: .641518116, z: .641518116}
-  m_Children:
-  - {fileID: 469080}
+  m_Children: []
   m_Father: {fileID: 463180}
   m_RootOrder: 0
 --- !u!4 &460522
@@ -103,6 +102,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 419718}
+  - {fileID: 469080}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &469080
@@ -113,11 +113,11 @@ Transform:
   m_GameObject: {fileID: 114352}
   m_LocalRotation: {x: .707106829, y: 0, z: 0, w: .707106829}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .300000012, y: .299999982, z: .299999982}
+  m_LocalScale: {x: .192455441, y: .192455411, z: .192455411}
   m_Children:
   - {fileID: 460522}
-  m_Father: {fileID: 419718}
-  m_RootOrder: 0
+  m_Father: {fileID: 463180}
+  m_RootOrder: 1
 --- !u!23 &2313616
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -161,6 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
+  graficalModel: {fileID: 419718}
   type: 3
   plantDialogs:
   - '[error]'

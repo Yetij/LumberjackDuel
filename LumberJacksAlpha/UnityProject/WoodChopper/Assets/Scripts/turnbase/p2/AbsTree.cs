@@ -6,6 +6,7 @@ using StaticStructure;
 public abstract class AbsTree : MonoBehaviour
 {
 	[HideInInspector] public p2Cell cell;
+	[SerializeField] protected Transform graphicalModel;
 	public TreeType type;
 	[SerializeField] string[] plantDialogs;
 	[SerializeField] string[] displayDialogs;
@@ -30,8 +31,11 @@ public abstract class AbsTree : MonoBehaviour
 	protected int turnToLifeCounter;
 	protected TreeState state;
 
+	protected Vector3 originScale;
+
 	virtual protected void Start () {
 		buffs = GetComponents<AbsBuff>();
+		originScale = graphicalModel.localScale;
 	}
 
 	float _timer;
@@ -45,8 +49,8 @@ public abstract class AbsTree : MonoBehaviour
 			break;
 		case TreeState.Growing:
 			_timer += Time.deltaTime;
-			transform.localScale = Vector3.Lerp(Vector3.one*startScale, Vector3.one,_timer);
-			if ( transform.localScale == Vector3.one ) { 
+			graphicalModel.localScale = Vector3.Lerp(Vector3.one*startScale, originScale,_timer);
+			if ( graphicalModel.localScale == originScale ) { 
 				state = TreeState.Grown;
 			}
 			break;
@@ -59,9 +63,9 @@ public abstract class AbsTree : MonoBehaviour
 			} else dominoDelayTime -= Time.deltaTime;
 			break;
 		case TreeState.Falling:
-			if (Quaternion.Angle ( transform.rotation,fallingQuat ) < 1f ) {
+			if (Quaternion.Angle ( graphicalModel.rotation,fallingQuat ) < 1f ) {
 				gameObject.SetActive(false);
-				transform.rotation = Quaternion.identity;
+				graphicalModel.rotation = Quaternion.identity;
 				p2Scene.Instance.treesInScene.Remove(this);
 				cell.RemoveTree();
 
@@ -76,7 +80,7 @@ public abstract class AbsTree : MonoBehaviour
 				break;
 			}
 			_timer += Time.deltaTime;
-			transform.rotation = Quaternion.Lerp(Quaternion.identity, fallingQuat,_timer);
+			graphicalModel.rotation = Quaternion.Lerp(Quaternion.identity, fallingQuat,_timer);
 		
 			break;
 		}
@@ -109,7 +113,7 @@ public abstract class AbsTree : MonoBehaviour
 		fz = 0;
 		dealDmg = false;
 		state = TreeState.InSeed;
-		transform.localScale = Vector3.one*startScale;
+		graphicalModel.localScale = Vector3.one*startScale;
 	}
 
 	p2Player choper;

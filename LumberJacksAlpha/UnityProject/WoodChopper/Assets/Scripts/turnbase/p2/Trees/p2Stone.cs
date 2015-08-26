@@ -23,7 +23,7 @@ public class p2Stone : AbsTree
 		turnToLifeCounter = -1;
 
 		state = StaticStructure.TreeState.Grown;
-		transform.localScale = Vector3.one;
+		graphicalModel.localScale = originScale;
 	}
 }
 
