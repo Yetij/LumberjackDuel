@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
-  graficalModel: {fileID: 459662}
+  graphicalModel: {fileID: 459662}
   type: 0
   plantDialogs:
   - A normal tree, thats what Ive got in my hands

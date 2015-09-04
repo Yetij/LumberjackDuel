@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
-  graficalModel: {fileID: 442808}
+  graphicalModel: {fileID: 442808}
   type: 2
   plantDialogs:
   - A tree that slows things down? Ive got one!

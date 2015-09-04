@@ -240,7 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
-  graficalModel: {fileID: 413514}
+  graphicalModel: {fileID: 413514}
   type: 1
   plantDialogs:
   - Ethereal tree, I summon you!

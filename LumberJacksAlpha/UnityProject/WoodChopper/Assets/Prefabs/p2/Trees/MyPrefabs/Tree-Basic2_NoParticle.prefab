@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cell: {fileID: 0}
-  graficalModel: {fileID: 448138}
+  graphicalModel: {fileID: 448138}
   type: 4
   plantDialogs:
   - '[error]'
