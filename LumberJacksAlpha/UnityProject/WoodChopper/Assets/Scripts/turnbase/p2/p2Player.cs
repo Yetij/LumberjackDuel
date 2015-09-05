@@ -140,11 +140,13 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 	//------------------------ server messages ----------------------------------
 	public void OnGameStart (int start_turn) {
+		Debug.Log(photonView.owner.name + ": OnGameStart");
 		_timer = 0;
 		if ( photonView.isMine ) {
 			_timer = 0;
 			gui.timer.text = _timer.ToString("0.00");
 			state = TurnState.NetWait;
+			if ( start_turn % 2 == turn_identity ) globalScene.OnBackgroundStart (this,globalScene.startTreeNumber);
 			gui.Reset();
 			if ( lastPointedCell != null ) {
 				lastPointedCell.SelectedOn(false);

@@ -54,12 +54,10 @@ public class p2Scene : Photon.MonoBehaviour
 		Debug.Log("OnPlayerReady : " + player_verf_count + " PhotonNetwork.room.maxPlayers");
 
 		if ( !PhotonNetwork.isMasterClient &  player_verf_count >= PhotonNetwork.room.maxPlayers ) {
-			Debug.Log("!PhotonNetwork.isMasterClient  ");
 			photonView.RPC("NonMasterClientReady", PhotonTargets.MasterClient);
 		}
 
 		if ( PhotonNetwork.isMasterClient &  player_verf_count >= PhotonNetwork.room.maxPlayers ) {
-			Debug.Log("PhotonNetwork.isMasterClient ");
 			masterReady = true;
 			if ( nonMasterReady & !_run ) {
 				photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
@@ -83,11 +81,11 @@ public class p2Scene : Photon.MonoBehaviour
 	}
 
 	[RPC] void OnGameStart (int start_turn) {
+		Debug.Log("OnGameStart");
 		nonMasterReady = false;
 		masterReady = false;
 		_run = true;
 		currentTurnNb = start_turn ;
-		if ( PhotonNetwork.isMasterClient ) SceneGenTree(startTreeNumber);
 
 		foreach ( var p in players ) {
 			p.OnGameStart (start_turn);
@@ -137,7 +135,9 @@ public class p2Scene : Photon.MonoBehaviour
 			localMap[x,z].AddTree(tree,null, 1);
 		}
 	}
+
 	[RPC] void _OnBackgroundStart () {
+		Debug.Log("_OnBackgroundStart");
 		foreach ( var tree in treesInScene ) {
 			tree.OnBackgroundUpdate (players);
 		}
