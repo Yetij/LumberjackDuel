@@ -69,20 +69,9 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	float _timer;
 
 	public void MoveHighlight (bool on) {
-		p2Cell c;
-		if ( (c = currentCell.Get(0,1 )) != null ) {
-			if ( c.CanMoveTo() ) c.HighLightOn(on);
-			else c.HighLightOn(false);
-		}
-		if ( (c = currentCell.Get(0,-1 )) != null ) {
-			if ( c.CanMoveTo() ) c.HighLightOn(on);
-			else c.HighLightOn(false);
-		}
-		if ( (c = currentCell.Get(1,0 )) != null ) {
-			if ( c.CanMoveTo() ) c.HighLightOn(on);
-			else c.HighLightOn(false);
-		}
-		if ( (c = currentCell.Get(-1,0 )) != null ) {
+		var m = currentCell.map;
+		foreach( var c in m ) {
+			if ( c == currentCell | c == null ) continue;
 			if ( c.CanMoveTo() ) c.HighLightOn(on);
 			else c.HighLightOn(false);
 		}
@@ -156,7 +145,6 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			_timer = 0;
 			gui.timer.text = _timer.ToString("0.00");
 			state = TurnState.NetWait;
-			if ( start_turn % 2 == turn_identity ) globalScene.OnBackgroundStart (this,globalScene.startTreeNumber);
 			gui.Reset();
 			if ( lastPointedCell != null ) {
 				lastPointedCell.SelectedOn(false);
@@ -169,11 +157,16 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	public void OnGameEnd (int winner) {
 		if ( photonView.isMine ) {
 			bool i_won = winner == photonView.owner.ID;
-			gui.endGamePanel.ShowResult(i_won);
+			StartCoroutine(_EndGame(i_won));
 			if ( i_won ) gui.opponentHp.text = "HP: 0";
 		}
 	}
-	
+
+	IEnumerator _EndGame (bool k) {
+		yield return new WaitForSeconds(1f);
+		gui.endGamePanel.ShowResult(k);
+	}
+
 	public void OnBackgroundStart ()
 	{
 		state = TurnState.Background;
@@ -234,7 +227,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	//----------------------- player core behaviors ------------------------------
 
 	void PreMove ( int x, int z, bool teleport ) {
-		if ( !teleport & !ValidateSquareRange(x,z) ) return;
+		if ( !teleport & !ValidateRange(x,z) ) return;
 
 		globalScene.ActivateTrees(TreeActivateTime.BeforeMove);
 
@@ -294,6 +287,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 				acCost --;
 			}
 			gui.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
+			gui.Reset();
 			globalScene.ActivateTrees(TreeActivateTime.AfterPlant);
 		}
 	}

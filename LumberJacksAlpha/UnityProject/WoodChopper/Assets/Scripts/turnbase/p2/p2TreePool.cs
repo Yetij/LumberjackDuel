@@ -7,11 +7,11 @@ public class p2TreePool : MonoBehaviour
 {
 	Dictionary<TreeType,List<AbsTree>> pool;
 
-	p2PoolInfo[] seeds;
+	[SerializeField] p2PoolInfo[] seeds;
+
 	void Awake () {
 		pool = new Dictionary<TreeType,List<AbsTree>>();
 
-		seeds = GetComponents<p2PoolInfo>();
 		for ( int i = 0; i < seeds.Length; i ++ ) {
 			GameObject g = new GameObject(seeds[i].type.ToString());
 			g.transform.parent = gameObject.transform;

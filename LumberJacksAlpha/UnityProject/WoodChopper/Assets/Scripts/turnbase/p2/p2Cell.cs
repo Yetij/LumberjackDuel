@@ -65,7 +65,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 	
 	public void AddTree (AbsTree t, p2Player p,  int deltaTurn) {
 		tree = t;
-		tree.OnBeingPlant(p, 0);
+		tree.OnBeingPlant(p, deltaTurn);
 
 		t.transform.position = transform.position;
 		t.cell = this;

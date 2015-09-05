@@ -1,5 +1,15 @@
 
 namespace StaticStructure {
+	
+	[System.Serializable]
+	public class p2PoolInfo 
+	{
+		public TreeType type;
+		public AbsTree prefab;
+		public int init_cap;
+	}
+
+
 	public enum TreeActivateTime { 
 		None, 
 		BeforeChop, 

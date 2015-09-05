@@ -71,7 +71,8 @@ public abstract class AbsTree : MonoBehaviour
 				graphicalModel.rotation = Quaternion.identity;
 				p2Scene.Instance.treesInScene.Remove(this);
 				cell.RemoveTree();
-				
+				cell.HighLightOn(false);
+				cell.SelectedOn(false);
 				ActivateOnFall(choper);
 				
 				if ( dealDmg ) {
@@ -171,6 +172,11 @@ public abstract class AbsTree : MonoBehaviour
 		if ( turnToLifeCounter == 0 ) {
 			_timer = 0;
 			state = TreeState.Growing;
+			cell.HighLightOn(false);
+		}
+		
+		if ( turnToLifeCounter == 1 ) {
+			cell.HighLightOn(true);
 		}
 		turnToLifeCounter --;
 	}

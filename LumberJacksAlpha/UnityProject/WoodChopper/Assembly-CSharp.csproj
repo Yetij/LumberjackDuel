@@ -39,10 +39,10 @@
 	<Reference Include="System.Core" />
 	<Reference Include="System.Xml.Linq" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files/Unity/Unity5.0.2f1/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files/Unity/Unity5.0.2f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
@@ -54,24 +54,6 @@
      <Compile Include="Assets\Fonts\Script\scriptTexttest.cs" />
      <Compile Include="Assets\JMO Assets\MatCap Shaders\Demo\Assets\MC_AutoRotate.cs" />
      <Compile Include="Assets\JMO Assets\MatCap Shaders\Demo\Assets\MC_SwitchTexture.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\GUIExamplesCS.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\GeneralBasicCS.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\GeneralBasics2dCS.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\GeneralCameraShake.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\GeneralEventsListenersCS.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\LogoCinematic.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\PathSpline.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\PathSpline2d.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\PathSplines.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\PathSplinesBezier.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\TestingAllCS.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\TestingAlphaFade.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\TestingEverything.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\TestingPunch.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\TestingRigidbodyCS.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\TestingUniqueId.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\TutorialPresentationFinished.cs" />
-     <Compile Include="Assets\LeanTween\Examples\Scripts\UIExampleCS.cs" />
      <Compile Include="Assets\Photon Unity Networking\Demos\Demo2DJumpAndRunWithPhysics\Scripts\Demo2DJumpAndRun.cs" />
      <Compile Include="Assets\Photon Unity Networking\Demos\Demo2DJumpAndRunWithPhysics\Scripts\JumpAndRunMovement.cs" />
      <Compile Include="Assets\Photon Unity Networking\Demos\DemoBoxes\DemoBoxesGui.cs" />
@@ -181,12 +163,6 @@
      <Compile Include="Assets\Photon Unity Networking\UtilityScripts\SmoothSyncMovement.cs" />
      <Compile Include="Assets\Photon Unity Networking\UtilityScripts\SupportLogger.cs" />
      <Compile Include="Assets\Photon Unity Networking\UtilityScripts\TimeKeeper.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p0\p0Cell.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p0\p0CellController.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p0\p0Connector.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p0\p0Const.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p0\p0Grid.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p0\p0Player.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\AbsBuff.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\AbsGuiListener.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\AbsInputListener.cs" />
@@ -209,7 +185,6 @@
      <Compile Include="Assets\Scripts\turnbase\p2\p2FallRecord.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Map.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Player.cs" />
-     <Compile Include="Assets\Scripts\turnbase\p2\p2PoolInfo.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2Scene.cs" />
      <Compile Include="Assets\Scripts\turnbase\p2\p2TreePool.cs" />
      <Compile Include="Assets\SimpleAds.cs" />
@@ -223,10 +198,8 @@
      <None Include="Assets\ToonMaidCool\Resources\Texts\ToonMaidCool_MotionList.txt" />
      <None Include="Assets\Photon Unity Networking\Demos\MarcoPolo-Tutorial\marcopolo-readme.txt" />
      <None Include="Assets\Plugins\Photon3Unity3D.xml" />
-     <None Include="Assets\LeanTween\Examples\Shader\2dUnlitWithFade.shader" />
      <None Include="Assets\Fonts\Documentation\JazzCreateBubble_VersionHistory_1.1.txt" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_TextureMult_Bumped.shader" />
-     <None Include="Assets\LeanTween\ReadMe.txt" />
      <None Include="Assets\ToonMaidCool\Documents\Readme_EN.txt" />
      <None Include="Assets\DAX\Shields Collection\Shaders\DAX_AlphaBlend+Add.shader" />
      <None Include="Assets\Plugins\release_history.txt" />
@@ -253,16 +226,16 @@
      <None Include="Assets\Plugins\Android\unityads\AndroidManifest.xml" />
      <None Include="Assets\JMO Assets\MatCap Shaders\_MatCap Shaders Readme.txt" />
  <Reference Include="UnityEngine.UI">
- <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ <HintPath>C:/Program Files/Unity/Unity5.0.2f1/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Photon3Unity3D">
- <HintPath>G:/Ważne/Repozytoria/Drwale2/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/Photon3Unity3D.dll</HintPath>
+ <HintPath>D:/Projects/Git-Repo/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/Photon3Unity3D.dll</HintPath>
  </Reference>
  <Reference Include="websocket-sharp">
- <HintPath>G:/Ważne/Repozytoria/Drwale2/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
+ <HintPath>D:/Projects/Git-Repo/LumberjackDuel/LumberJacksAlpha/UnityProject/WoodChopper/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
- <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+ <HintPath>C:/Program Files/Unity/Unity5.0.2f1/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -87,6 +87,7 @@ public class p2Scene : Photon.MonoBehaviour
 		masterReady = false;
 		_run = true;
 		currentTurnNb = start_turn ;
+		if ( PhotonNetwork.isMasterClient ) SceneGenTree(startTreeNumber);
 
 		foreach ( var p in players ) {
 			p.OnGameStart (start_turn);
@@ -103,20 +104,22 @@ public class p2Scene : Photon.MonoBehaviour
 	public void OnVictoryConditionsReached (int winner_id) {
 		photonView.RPC("OnGameEnd",PhotonTargets.All,winner_id);
 	}
+
 	public void SceneGenTree(int number) {
 		for(int k=0;  k < number ; k ++ ) {
 			var t = RandomTree();
 			var l = localMap.FreeCells();
 			if ( l.Count > 0 ) { 
 				var c = l[Random.Range(0,l.Count)];
-				photonView.RPC("_OnBackgroundStart", PhotonTargets.All, (byte) t, c.x, c.z);
+				photonView.RPC("_BackGroundAddTree", PhotonTargets.All, (byte) t, c.x, c.z);
 			} else {
-				photonView.RPC("_OnBackgroundStart", PhotonTargets.All,  (byte) t, -1, -1);
+				photonView.RPC("_BackGroundAddTree", PhotonTargets.All,  (byte) t, -1, -1);
 			}
 		}
 	}
 	public void OnBackgroundStart (p2Player invoker,int treenb) {
 		SceneGenTree(treenb);
+		photonView.RPC("_OnBackgroundStart", PhotonTargets.All);
 	}
 
 	[HideInInspector] public List<AbsTree> treesInScene = new List<AbsTree>();
@@ -127,11 +130,14 @@ public class p2Scene : Photon.MonoBehaviour
 		}
 		throw new UnityException("Invalid owner id: "+ owner_id);
 	}
-	[RPC] void _OnBackgroundStart (byte t , int x, int z) {
+
+	[RPC] void _BackGroundAddTree (byte t , int x, int z) {
 		if( localMap[x,z] != null ) {
 			var tree = localPool.Get((TreeType)t);
-			localMap[x,z].AddTree(tree,null, 0);
+			localMap[x,z].AddTree(tree,null, 1);
 		}
+	}
+	[RPC] void _OnBackgroundStart () {
 		foreach ( var tree in treesInScene ) {
 			tree.OnBackgroundUpdate (players);
 		}
