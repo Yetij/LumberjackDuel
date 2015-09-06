@@ -9,6 +9,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 
 	public GameObject highlight;
 	public GameObject selected;
+	public GameObject aura;
 
 	AbsTree _tree;
 	public AbsTree tree { 
@@ -63,7 +64,7 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 		return player != null | ( tree == null ? false: !tree.IsPassable() );
 	}
 	
-	public void AddTree (AbsTree t, p2Player p,  int deltaTurn) {
+	public void OnPlayerPlantTree (AbsTree t, p2Player p,  int deltaTurn) {
 		tree = t;
 		tree.OnBeingPlant(p, deltaTurn);
 
@@ -86,7 +87,10 @@ public class p2Cell : MonoBehaviour, AbsServerObserver {
 	public void HighLightOn (bool t) {
 		highlight.SetActive(t);
 	}
-	
+
+	public void AuraOn (bool t ) {
+		aura.SetActive(t);
+	}
 	public void SelectedOn (bool t) {
 		selected.SetActive(t);
 	}

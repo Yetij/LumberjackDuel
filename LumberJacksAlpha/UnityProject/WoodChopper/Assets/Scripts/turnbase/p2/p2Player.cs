@@ -281,7 +281,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		if ( !ValidateRange(x,z) ) return;
 		var cell = localMap[x,z];
 		var t = p2TreePool.Instance.Get((TreeType) treeType);
-		cell.AddTree(t,this,0);
+		cell.OnPlayerPlantTree(t,this,0);
 		if ( photonView.isMine ) {
 			while ( acCost > 0 ) {
 				if( bonus.actionPoints > 0 ) bonus.actionPoints--;
@@ -361,7 +361,12 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		if ( lastPointedCell != null & lastPointedCell != cell ) {
 			// turn off highlight last cell
 			lastPointedCell.SelectedOn(false);
-			if ( cell.tree != null ) gui.DisplayDialog(cell.tree.displayLog);
+			if ( lastPointedCell.tree != null ) {
+				lastPointedCell.tree.OnTouchExit();
+			}
+			if ( cell.tree != null ) {
+				cell.tree.OnTouchEnter();
+			}
 		}
 		lastPointedCell = cell;
 		// turn on highlight
@@ -382,9 +387,6 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		if ( cell.CanChop () ) {
 			PreChop(cell.x,cell.z);
 		} else if ( cell.CanPlant () & guiSelectedTree != null ) {
-			/******
-			 * need to add tree type 
-			 */
 			PrePlant(cell.x,cell.z,(byte)guiSelectedTree.type);
 		} else if ( cell.CanMoveTo() ) {
 			PreMove(cell.x,cell.z,false);

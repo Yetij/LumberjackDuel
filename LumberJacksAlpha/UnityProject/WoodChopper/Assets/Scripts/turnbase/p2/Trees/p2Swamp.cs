@@ -12,12 +12,14 @@ public class p2Swamp : AbsTree
 
 	List<p2Player > affected = new List<p2Player>(2);
 
+	p2Map localMap;
 
 	protected override void Start ()
 	{
 		base.Start ();
 		if ( area_x % 2 == 0 ) throw new UnityException("Invalid area_x="+area_x + ", must be an odd number");
 		if ( area_z % 2 == 0 ) throw new UnityException("Invalid area_z="+area_z + ", must be an odd number");
+		localMap = p2Map.Instance;
 	}
 
 	public override void OnTurnStart (int turn_nb)
@@ -32,6 +34,45 @@ public class p2Swamp : AbsTree
 		}
 		affected.Clear();
 	}
+
+	public override void OnTouchEnter ()
+	{
+		Debug.Log("swamp: OnTouchEnter");
+		base.OnTouchEnter ();
+		var aoex = (area_x - 1 )/2;
+		var aoez = (area_z - 1 )/2;
+		p2Cell c;
+
+		for(int x=-aoex; x <= aoex; x ++ ) {
+			for (int z=-aoez; z <= aoez; z++ ) {
+				if( x == 0 & z == 0 ) continue;
+				c = localMap[cell.x + x,cell.z +z];
+				if ( c != null ) {
+					c.AuraOn(true);
+				}
+			}
+		}
+	}
+
+	public override void OnTouchExit ()
+	{
+		Debug.Log("swamp: OnTouchExit");
+		base.OnTouchExit ();
+		var aoex = (area_x - 1 )/2;
+		var aoez = (area_z - 1 )/2;
+		p2Cell c;
+		
+		for(int x=-aoex; x <= aoex; x ++ ) {
+			for (int z=-aoez; z <= aoez; z++ ) {
+				if( x == 0 & z == 0 ) continue;
+				c = localMap[cell.x + x,cell.z +z];
+				if ( c != null ) {
+					c.AuraOn(false);
+				}
+			}
+		}
+	}
+
 	public override bool Activate ()
 	{
 		if ( base.Activate() ) {

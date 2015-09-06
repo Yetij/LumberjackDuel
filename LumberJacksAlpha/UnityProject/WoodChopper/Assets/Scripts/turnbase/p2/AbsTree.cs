@@ -108,7 +108,15 @@ public abstract class AbsTree : MonoBehaviour
 	}
 	
 	//------------------------------- player messages --------------------------------------------------
-	
+
+	virtual public void OnTouchEnter () {
+		p2Gui.Instance.DisplayDialog(displayLog);
+
+	}
+
+	virtual public void OnTouchExit () {
+	}
+
 	virtual public void OnBeingPlant (p2Player p , int deltaTurn ) {
 		turnToLifeCounter = defaultTurnToLife + deltaTurn;
 		p2Scene.Instance.treesInScene.Add(this);
@@ -172,11 +180,11 @@ public abstract class AbsTree : MonoBehaviour
 		if ( turnToLifeCounter == 0 ) {
 			_timer = 0;
 			state = TreeState.Growing;
-			cell.HighLightOn(false);
+			cell.AuraOn(false);
 		}
 		
 		if ( turnToLifeCounter == 1 ) {
-			cell.HighLightOn(true);
+			cell.AuraOn(true);
 		}
 		turnToLifeCounter --;
 	}

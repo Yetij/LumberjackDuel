@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using StaticStructure;
 
@@ -132,7 +132,7 @@ public class p2Scene : Photon.MonoBehaviour
 	[RPC] void _BackGroundAddTree (byte t , int x, int z) {
 		if( localMap[x,z] != null ) {
 			var tree = localPool.Get((TreeType)t);
-			localMap[x,z].AddTree(tree,null, 1);
+			localMap[x,z].OnPlayerPlantTree(tree,null, 1);
 		}
 	}
 
