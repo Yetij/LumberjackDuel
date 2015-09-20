@@ -2108,7 +2108,7 @@ MonoBehaviour:
     plantCost: 1
     chopCost: 1
     moveCost: 1
-    hp: 1
+    hp: 3
     turnTime: 30
   pointsToWin: 20
 --- !u!137 &13773740

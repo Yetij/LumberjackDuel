@@ -65,11 +65,11 @@ public class TouchInput : MonoBehaviour
 		if ( touchStart ) {
 			var current = ConvertAxes(Camera.main.ScreenToWorldPoint(Input.mousePosition)); 
 			if (isInControlZone ) {
-				listener.OnControlZoneTouchMove(current - lastPos);
+				if( listener != null ) listener.OnControlZoneTouchMove(current - lastPos);
 				lastPos = current;
 			}
 			if ( isInMapZone ) {
-				listener.OnMapZoneTouchMove(current);
+				if( listener != null ) listener.OnMapZoneTouchMove(current);
 			}
 		}
 
@@ -84,13 +84,13 @@ public class TouchInput : MonoBehaviour
 						float swipeValue = Mathf.Sign(delta.y);
 						
 						if (swipeValue > 0){
-							listener.OnSwipeUp();
+							if( listener != null )  listener.OnSwipeUp();
 						}else if (swipeValue < 0) {
-							listener.OnSwipeDown();
+							if( listener != null )  listener.OnSwipeDown();
 						}
 						
 					} else if ( isInMapZone ) {
-						listener.OnMapZoneTap(current);
+						if( listener != null ) listener.OnMapZoneTap(current);
 					}
 				}
 				touchStart = false;
@@ -107,10 +107,10 @@ public class TouchInput : MonoBehaviour
 				break;
 			case TouchPhase.Moved:
 				if (isInControlZone ) {
-					listener.OnControlZoneTouchMove(t.deltaPosition);
+					if( listener != null ) listener.OnControlZoneTouchMove(t.deltaPosition);
 				}
 				if ( isInMapZone ) {
-					listener.OnMapZoneTouchMove(t.position);
+					if( listener != null ) listener.OnMapZoneTouchMove(t.position);
 				}
 				break;
 			case TouchPhase.Ended:
@@ -123,13 +123,13 @@ public class TouchInput : MonoBehaviour
 					float swipeValue = Mathf.Sign(delta.y);
 					
 					if (swipeValue > 0){
-						listener.OnSwipeUp();
+						if( listener != null ) listener.OnSwipeUp();
 					}else if (swipeValue < 0) {
-						listener.OnSwipeDown();
+						if( listener != null ) listener.OnSwipeDown();
 					}
 							
 				} else if ( isInMapZone ) {
-					listener.OnMapZoneTap(t.position);
+					if( listener != null ) listener.OnMapZoneTap(t.position);
 				}
 				break;
 			}

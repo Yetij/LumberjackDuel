@@ -60,7 +60,7 @@ public class p2Scene : Photon.MonoBehaviour
 		if ( PhotonNetwork.isMasterClient &  player_verf_count >= PhotonNetwork.room.maxPlayers ) {
 			masterReady = true;
 			if ( nonMasterReady & !_run ) {
-				photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
+				photonView.RPC("OnGameCanStart",PhotonTargets.All,Random.Range(0,2));
 			}
 		}
 	}
@@ -76,8 +76,12 @@ public class p2Scene : Photon.MonoBehaviour
 	[RPC] void NonMasterClientReady () {
 		nonMasterReady = true;
 		if ( masterReady & !_run ) {
-			photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
+			photonView.RPC("OnGameCanStart",PhotonTargets.All,Random.Range(0,2));
 		}
+	}
+
+	[RPC] void OnGameCanStart () {
+		p2Gui.Instance.PanelInToPre();
 	}
 
 	[RPC] void OnGameStart (int start_turn) {

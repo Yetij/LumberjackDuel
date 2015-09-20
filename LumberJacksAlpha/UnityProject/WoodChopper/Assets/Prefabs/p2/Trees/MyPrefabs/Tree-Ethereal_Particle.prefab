@@ -250,6 +250,7 @@ MonoBehaviour:
   - An ethereal tree? How strange!
   - 'An ethereal tree? Is it mine? '
   - An ethereal tree? So the rumors of outer world were true!
+  canBePlantedByPlayer: 1
   activateTime: 0
   plantCost: 2
   defaultTurnToLife: 1

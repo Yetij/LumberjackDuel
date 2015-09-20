@@ -22,7 +22,7 @@ public abstract class AbsTree : MonoBehaviour
 			return displayDialogs[Random.Range(0,displayDialogs.Length)];
 		}
 	}
-	
+	public bool canBePlantedByPlayer;
 	public TreeActivateTime activateTime;
 	AbsBuff[] buffs;
 	public int plantCost=1;

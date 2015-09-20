@@ -12,6 +12,8 @@ public class p2Gui : MonoBehaviour
 			return _instance;
 		}
 	}
+	public p2PregamePanel pregamePanel;
+	public p2IngamePanel ingamePanel;
 
 	public p2EndGamePanel endGamePanel;
 	[SerializeField] p2Dialog visualLog;
@@ -30,7 +32,16 @@ public class p2Gui : MonoBehaviour
 
 	[SerializeField] Toggle[] treeButtons;
 	public Toggle currentSelected { get; private set; }
-	  
+
+	public void PanelPreToIn () {
+		pregamePanel.gameObject.SetActive(false);
+		ingamePanel.gameObject.SetActive(true);
+	}
+	public void PanelInToPre () {
+		pregamePanel.gameObject.SetActive(true);
+		ingamePanel.gameObject.SetActive(false);
+	}
+
 	void Awake () {
 		if ( treeButtons.Length != 0 ) {
 			foreach ( var t in treeButtons ) {

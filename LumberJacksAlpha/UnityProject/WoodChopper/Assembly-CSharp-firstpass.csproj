@@ -56,9 +56,6 @@
      <Compile Include="Assets\Plugins\ChatApi\ChatState.cs" />
      <Compile Include="Assets\Plugins\ChatApi\ChatUserStatus.cs" />
      <Compile Include="Assets\Plugins\ChatApi\IChatClientListener.cs" />
-     <Compile Include="Assets\Plugins\LeanAudio.cs" />
-     <Compile Include="Assets\Plugins\LeanTest.cs" />
-     <Compile Include="Assets\Plugins\LeanTween.cs" />
      <Compile Include="Assets\Plugins\WebSocket\WebSocket.cs" />
      <Compile Include="Assets\Standard Assets\UnityAds\Scripts\Advertisement.cs" />
      <Compile Include="Assets\Standard Assets\UnityAds\Scripts\Advertisements\Misc\AsyncExec.cs" />

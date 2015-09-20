@@ -191,6 +191,14 @@
      <Compile Include="Assets\TestWWW.cs" />
      <Compile Include="Assets\ToonMaidCool\Resources\Scripts\EditCamera.cs" />
      <Compile Include="Assets\ToonMaidCool\Resources\Scripts\MaidCoolEdit.cs" />
+     <Compile Include="Assets\p2ButtonCellSelect.cs" />
+     <Compile Include="Assets\p2ButtonSelected.cs" />
+     <Compile Include="Assets\p2IngamePanel.cs" />
+     <Compile Include="Assets\p2PregamePanel.cs" />
+     <Compile Include="Assets\p2PregameTreeInfo.cs" />
+     <Compile Include="Assets\p2PreviewPanel.cs" />
+     <Compile Include="Assets\p2SelectionPanel.cs" />
+     <Compile Include="Assets\p2SelfRotate.cs" />
      <None Include="Assets\Plugins\Android\unityads\proguard-project.txt" />
      <None Include="Assets\JMO Assets\MatCap Shaders\Shaders\MatCap_TextureAdd_Bumped.shader" />
      <None Include="Assets\ToonMaidCool\Resources\Shaders\MaidSurfaceShader.shader" />

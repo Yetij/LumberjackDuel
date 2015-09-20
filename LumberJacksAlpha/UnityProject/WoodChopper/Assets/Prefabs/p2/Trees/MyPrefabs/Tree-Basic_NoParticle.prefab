@@ -111,6 +111,7 @@ MonoBehaviour:
   - What a lovely normal tree
   - A normal tree? now can chop with no worry..
   - Nothing fancy, just a normal tree
+  canBePlantedByPlayer: 1
   activateTime: 0
   plantCost: 1
   defaultTurnToLife: 1

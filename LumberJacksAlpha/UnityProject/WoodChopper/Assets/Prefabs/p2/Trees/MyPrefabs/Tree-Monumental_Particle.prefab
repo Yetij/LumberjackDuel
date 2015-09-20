@@ -169,6 +169,7 @@ MonoBehaviour:
   - How old is this tree? Must have been living for ages
   - Smell of ages ! A monument ! A tree !
   - Damn this tree is huge.. a monumental tree?
+  canBePlantedByPlayer: 1
   activateTime: 0
   plantCost: 1
   defaultTurnToLife: 1

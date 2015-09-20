@@ -123,4 +123,5 @@ MonoBehaviour:
   - _OnTurnStart
   - SceneLoaded
   - _BackGroundAddTree
+  - OnGameCanStart
   DisableAutoOpenWizard: 1

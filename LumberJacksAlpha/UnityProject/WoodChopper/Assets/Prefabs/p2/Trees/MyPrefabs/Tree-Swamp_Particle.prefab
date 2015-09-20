@@ -200,6 +200,7 @@ MonoBehaviour:
   - A swamp tree? Id better not to come closer
   - A swamp tree? Lets play hide and seek there
   - A swamp tree? Dont slow me or I cut u down!
+  canBePlantedByPlayer: 1
   activateTime: 3
   plantCost: 1
   defaultTurnToLife: 1
