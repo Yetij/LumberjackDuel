@@ -20,6 +20,8 @@ public class p2Scene : Photon.MonoBehaviour
 		localMap = p2Map.Instance;
 		localPool = p2TreePool.Instance;
 
+		localMap.gameObject.SetActive(true);
+
 		GameObject g = new GameObject("Touch Input2", typeof(TouchInput));
 		g.GetComponent<TouchInput>().minSwipeDistance = 20;
 
@@ -34,11 +36,11 @@ public class p2Scene : Photon.MonoBehaviour
 		if ( !PhotonNetwork.isMasterClient) photonView.RPC("SceneLoaded",PhotonTargets.MasterClient);
 	}
 	
-	[RPC] void SceneLoaded () {
+	[PunRPC] void SceneLoaded () {
 		photonView.RPC("CreatePlayers", PhotonTargets.All);
 	}
 	
-	[RPC] void CreatePlayers () {
+	[PunRPC] void CreatePlayers () {
 		PhotonNetwork.Instantiate(playerPrefabName,new Vector3(0,0,0),Quaternion.identity,0);
 	}
 
@@ -60,7 +62,7 @@ public class p2Scene : Photon.MonoBehaviour
 		if ( PhotonNetwork.isMasterClient &  player_verf_count >= PhotonNetwork.room.maxPlayers ) {
 			masterReady = true;
 			if ( nonMasterReady & !_run ) {
-				photonView.RPC("OnGameCanStart",PhotonTargets.All,Random.Range(0,2));
+				photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
 			}
 		}
 	}
@@ -73,18 +75,16 @@ public class p2Scene : Photon.MonoBehaviour
 		}
 	}
 
-	[RPC] void NonMasterClientReady () {
+	[PunRPC] void NonMasterClientReady () {
 		nonMasterReady = true;
 		if ( masterReady & !_run ) {
-			photonView.RPC("OnGameCanStart",PhotonTargets.All,Random.Range(0,2));
+			photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
 		}
 	}
+	
 
-	[RPC] void OnGameCanStart () {
-		p2Gui.Instance.PanelInToPre();
-	}
-
-	[RPC] void OnGameStart (int start_turn) {
+	[PunRPC] void OnGameStart (int start_turn) {
+		p2Gui.Instance.PanelPreToIn();
 		Debug.Log("OnGameStart");
 		nonMasterReady = false;
 		masterReady = false;
@@ -96,7 +96,7 @@ public class p2Scene : Photon.MonoBehaviour
 		}
 	}
 
-	[RPC] void OnGameEnd (int winner) {
+	[PunRPC] void OnGameEnd (int winner) {
 		_run = false;
 		foreach ( var p in players ) {
 			p.OnGameEnd (winner);
@@ -133,14 +133,14 @@ public class p2Scene : Photon.MonoBehaviour
 		throw new UnityException("Invalid owner id: "+ owner_id);
 	}
 
-	[RPC] void _BackGroundAddTree (byte t , int x, int z) {
+	[PunRPC] void _BackGroundAddTree (byte t , int x, int z) {
 		if( localMap[x,z] != null ) {
 			var tree = localPool.Get((TreeType)t);
 			localMap[x,z].OnPlayerPlantTree(tree,null, 1);
 		}
 	}
 
-	[RPC] void _OnBackgroundStart () {
+	[PunRPC] void _OnBackgroundStart () {
 		Debug.Log("_OnBackgroundStart");
 		foreach ( var tree in treesInScene ) {
 			tree.OnBackgroundUpdate (players);
@@ -155,7 +155,7 @@ public class p2Scene : Photon.MonoBehaviour
 	}
 
 	int background_end_counter = 0;
-	[RPC] void _OnBackgroundEnd () {
+	[PunRPC] void _OnBackgroundEnd () {
 		background_end_counter ++;
 		if ( background_end_counter == 2 ) {
 			currentTurnNb ++;
@@ -163,7 +163,7 @@ public class p2Scene : Photon.MonoBehaviour
 		}
 	}
 
-	[RPC] void _OnTurnStart ( int turn_nb ) {
+	[PunRPC] void _OnTurnStart ( int turn_nb ) {
 		background_end_counter = 0;
 		currentTurnNb = turn_nb;
 		foreach ( var t in treesInScene ) {
@@ -194,6 +194,8 @@ public class p2Scene : Photon.MonoBehaviour
 	}
 
 	public void OnRematch () {
+		Debug.Log("OnRematch");
+
 		localMap.OnRematch();
 		player_verf_count = 0;
 		turnToGen=0;
@@ -203,6 +205,8 @@ public class p2Scene : Photon.MonoBehaviour
 		foreach ( var p in players ) {
 			p.OnRematch();
 		}
+
+		p2Gui.Instance.PanelInToPre();
 	}
 
 	#region hide

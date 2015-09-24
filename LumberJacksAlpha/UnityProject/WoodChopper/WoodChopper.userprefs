@@ -1,10 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\p2PregamePanel.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\p2ConnectorUI.cs">
     <Files>
-      <File FileName="Assets\p2ButtonCellSelect.cs" Line="5" Column="53" />
-      <File FileName="Assets\p2ButtonSelected.cs" Line="9" Column="17" />
-      <File FileName="Assets\p2PregamePanel.cs" Line="46" Column="27" />
+      <File FileName="Assets\p2ConnectorUI.cs" Line="89" Column="34" />
+      <File FileName="Assets\Scripts\turnbase\p2\NameMap.cs" Line="1" Column="1" />
+      <File FileName="Assets\p2UpdateOnAwakeText.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\turnbase\p2\p2ButtonCellSelect.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\turnbase\p2\p2Connector.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\turnbase\p2\p2PregamePanel.cs" Line="12" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

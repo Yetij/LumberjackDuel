@@ -17,111 +17,38 @@ MonoBehaviour:
   ServerPort: 5055
   AppID: aa36630b-e588-4a17-a11e-b64f9d7cafe2
   PreferredRegion: 0
-  EnabledRegions: 0
+  EnabledRegions: -1
+  JoinLobby: 0
+  EnableLobbyStatistics: 0
   RpcList:
-  - _NetMove
+  - _BackGroundAddTree
+  - _OnBackgroundEnd
+  - _OnBackgroundStart
+  - _OnTurnStart
   - Chat
+  - Chop
   - ColorRpc
+  - CreatePlayers
   - DestroyRpc
   - DoJump
   - InstantiateRpc
   - Marco
+  - MoveTo
+  - NonMasterClientReady
   - OnAwakeRPC
-  - OnClientReady
-  - OnServerReady
+  - OnConnectStageFinished
+  - OnGameEnd
+  - OnGameStart
+  - OnNonMasterLoadStuffsDone
+  - OnNonMasterNetControlObjectInitialized
   - PickupItemInit
+  - Plant
   - Polo
   - PunPickup
   - PunPickupSimple
   - PunRespawn
   - RequestForPickupTimes
-  - StartGame
-  - TaggedPlayer
-  - MoveBy
-  - SetChopping
-  - SetKicking
-  - OnPlayerChop
-  - OnPlayerKick
-  - OnPlayerMoveBy
-  - OnGameControllerInstantiated
-  - CellProp1
-  - CellProp2
-  - CellProp3
-  - OnPlayerReady
-  - SetTreeBeingChopped
-  - __RegMove
-  - __UnRegMove
-  - __OnPlReady
-  - __CellTree
-  - __MesToAll
-  - __OnGameStart
-  - __SyncTr
-  - __TreeCut
-  - __CellReTree
-  - __TreeF
-  - __TreeToCell
-  - __EndGame
-  - __LostHp
-  - __PlaceTree
-  - __CreatePlayer
-  - __DoChop
-  - __PlantTree
-  - __StartGame
-  - __Tr
-  - __TreeGrow
-  - _OnDamageTree
-  - _OnGenTree
-  - _OnPlayerPlant
-  - __ClientCellManagerReady
-  - _TreeGrow
-  - _TreeVasnish
-  - _TreeStartFalling
-  - __ClientGridMapReady
-  - __CreateGridMap
-  - __LostHP
-  - _ClientCellManagerReady
-  - _ClientGridMapReady
-  - _CreateGridMap
-  - _CreatePlayer
-  - _EndGame
-  - _PlantTree
-  - _StartGame
-  - _Ready
-  - _TreeVanish
-  - __ClientCellControllerOk
-  - __ClientGridMapOk
-  - _SetTurn
-  - __AllStarted
-  - _EndTurn
-  - _StartTurn
-  - _PlayerReady
-  - RegMove
-  - UnRegMove
-  - ManualEndTurn
-  - _OnPlant
-  - DoChop
-  - DoPlant
-  - LostHp
-  - GenTree
-  - ReserveTree
-  - __ClientSyncSettingsOk
-  - __SyncSettings
-  - Chop
-  - OnGameEnd
-  - OnGameStart
-  - OnTurnEnd
-  - OnTurnStart
-  - Plant
-  - OnBackgroundProcess
-  - MoveTo
-  - OnBackgroundStart
-  - CreatePlayers
-  - NonMasterClientReady
-  - ServerLoaded
-  - _OnBackgroundEnd
-  - _OnBackgroundStart
-  - _OnTurnStart
   - SceneLoaded
-  - _BackGroundAddTree
-  - OnGameCanStart
+  - TaggedPlayer
+  - LoadStuffs
   DisableAutoOpenWizard: 1

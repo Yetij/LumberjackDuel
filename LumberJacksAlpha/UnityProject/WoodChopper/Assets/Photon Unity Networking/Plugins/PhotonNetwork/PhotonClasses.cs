@@ -113,7 +113,7 @@ public interface IPunCallbacks
     /// Most likely because the room name is already in use (some other client was faster than you).
     /// PUN logs some info if the PhotonNetwork.logLevel is >= PhotonLogLevel.Informational.
     /// </remarks>
-    /// <param name="codeAndMsg">codeAndMsg[0] is an integer ErrorCode and codeAndMsg[1] is a string debug msg.</param>
+    /// <param name="codeAndMsg">codeAndMsg[0] is short ErrorCode and codeAndMsg[1] is a string debug msg.</param>
     void OnPhotonCreateRoomFailed(object[] codeAndMsg);
 
     /// <summary>
@@ -123,7 +123,7 @@ public interface IPunCallbacks
     /// Most likely error is that the room does not exist or the room is full (some other client was faster than you).
     /// PUN logs some info if the PhotonNetwork.logLevel is >= PhotonLogLevel.Informational.
     /// </remarks>
-    /// <param name="codeAndMsg">codeAndMsg[0] is int ErrorCode. codeAndMsg[1] is string debug msg.</param>
+    /// <param name="codeAndMsg">codeAndMsg[0] is short ErrorCode and codeAndMsg[1] is string debug msg.</param>
     void OnPhotonJoinRoomFailed(object[] codeAndMsg);
 
     /// <summary>
@@ -211,7 +211,7 @@ public interface IPunCallbacks
     /// </summary>
     /// <remarks>
     /// This method is commonly used to instantiate player characters.
-    /// If a match has to be started "actively", you can call an [RPC](@ref PhotonView.RPC) triggered by a user's button-press or a timer.
+    /// If a match has to be started "actively", you can call an [PunRPC](@ref PhotonView.RPC) triggered by a user's button-press or a timer.
     ///
     /// When this is called, you can usually already access the existing players in the room via PhotonNetwork.playerList.
     /// Also, all custom properties should be already available as Room.customProperties. Check Room.playerCount to find out if
@@ -246,7 +246,7 @@ public interface IPunCallbacks
     /// When using multiple lobbies (via JoinLobby or TypedLobby), another lobby might have more/fitting rooms.<br/>
     /// PUN logs some info if the PhotonNetwork.logLevel is >= PhotonLogLevel.Informational.
     /// </remarks>
-    /// <param name="codeAndMsg">codeAndMsg[0] is int ErrorCode. codeAndMsg[1] is string debug msg.</param>
+    /// <param name="codeAndMsg">codeAndMsg[0] is short ErrorCode. codeAndMsg[1] is string debug msg.</param>
     void OnPhotonRandomJoinFailed(object[] codeAndMsg);
 
     /// <summary>
@@ -331,11 +331,11 @@ public interface IPunCallbacks
     /// Called by PUN when the response to a WebRPC is available. See PhotonNetwork.WebRPC.
     /// </summary>
     /// <remarks>
-    /// Important: The response.ReturnCode is 0 if Photon was able to reach your web-service.
-    /// The content of the response is what your web-service sent. You can create a WebResponse instance from it.
-    /// Example: WebRpcResponse webResponse = new WebRpcResponse(operationResponse);
+    /// Important: The response.ReturnCode is 0 if Photon was able to reach your web-service.<br/>
+    /// The content of the response is what your web-service sent. You can create a WebRpcResponse from it.<br/>
+    /// Example: WebRpcResponse webResponse = new WebRpcResponse(operationResponse);<br/>
     ///
-    /// Please note: Class OperationResponse is in a namespace which needs to be "used":
+    /// Please note: Class OperationResponse is in a namespace which needs to be "used":<br/>
     /// using ExitGames.Client.Photon;  // includes OperationResponse (and other classes)
     ///
     /// The OperationResponse.ReturnCode by Photon is:<pre>
@@ -357,6 +357,55 @@ public interface IPunCallbacks
     /// </remarks>
     /// <param name="viewAndPlayer">The PhotonView is viewAndPlayer[0] and the requesting player is viewAndPlayer[1].</param>
     void OnOwnershipRequest(object[] viewAndPlayer);
+
+    /// <summary>
+    /// Called when the Master Server sent an update for the Lobby Statistics, updating PhotonNetwork.LobbyStatistics.
+    /// </summary>
+    /// <remarks>
+    /// This callback has two preconditions:
+    /// EnableLobbyStatistics must be set to true, before this client connects.
+    /// And the client has to be connected to the Master Server, which is providing the info about lobbies.
+    /// </remarks>
+    void OnLobbyStatisticsUpdate();
+}
+
+/// <summary>
+/// Defines all the methods that a Object Pool must implement, so that PUN can use it.
+/// </summary>
+/// <remarks>
+/// To use a Object Pool for instantiation, you can set PhotonNetwork.ObjectPool. 
+/// That is used for all objects, as long as ObjectPool is not null.
+/// The pool has to return a valid non-null GameObject when PUN calls Instantiate.
+/// Also, the position and rotation must be applied.
+///
+/// Please note that pooled GameObjects don't get the usual Awake and Start calls.
+/// OnEnable will be called (by your pool) but the networking values are not updated yet
+/// when that happens. OnEnable will have outdated values for PhotonView (isMine, etc.).
+/// You might have to adjust scripts.
+/// 
+/// PUN will call OnPhotonInstantiate (see IPunCallbacks). This should be used to 
+/// setup the re-used object with regards to networking values / ownership.
+/// </remarks>
+public interface IPunPrefabPool
+{
+    /// <summary>
+    /// This is called when PUN wants to create a new instance of an entity prefab. Must return valid GameObject with PhotonView.
+    /// </summary>
+    /// <param name="prefabId">The id of this prefab.</param>
+    /// <param name="position">The position we want the instance instantiated at.</param>
+    /// <param name="rotation">The rotation we want the instance to take.</param>
+    /// <returns>The newly instantiated object, or null if a prefab with <paramref name="prefabId"/> was not found.</returns>
+    GameObject Instantiate(string prefabId, Vector3 position, Quaternion rotation);
+
+    /// <summary>
+    /// This is called when PUN wants to destroy the instance of an entity prefab.
+    /// </summary>
+	/// <remarks>
+	/// A pool needs some way to find out which type of GameObject got returned via Destroy().
+	/// It could be a tag or name or anything similar.
+	/// </remarks>
+    /// <param name="gameObject">The instance to destroy.</param>
+    void Destroy(GameObject gameObject);
 }
 
 
@@ -445,7 +494,7 @@ namespace Photon
         /// Most likely because the room name is already in use (some other client was faster than you).
         /// PUN logs some info if the PhotonNetwork.logLevel is >= PhotonLogLevel.Informational.
         /// </remarks>
-        /// <param name="codeAndMsg">codeAndMsg[0] is an integer ErrorCode and codeAndMsg[1] is a string debug msg.</param>
+        /// <param name="codeAndMsg">codeAndMsg[0] is a short ErrorCode and codeAndMsg[1] is a string debug msg.</param>
         public virtual void OnPhotonCreateRoomFailed(object[] codeAndMsg)
         {
         }
@@ -457,7 +506,7 @@ namespace Photon
         /// Most likely error is that the room does not exist or the room is full (some other client was faster than you).
         /// PUN logs some info if the PhotonNetwork.logLevel is >= PhotonLogLevel.Informational.
         /// </remarks>
-        /// <param name="codeAndMsg">codeAndMsg[0] is int ErrorCode. codeAndMsg[1] is string debug msg.</param>
+        /// <param name="codeAndMsg">codeAndMsg[0] is short ErrorCode. codeAndMsg[1] is string debug msg.</param>
         public virtual void OnPhotonJoinRoomFailed(object[] codeAndMsg)
         {
         }
@@ -563,7 +612,7 @@ namespace Photon
         /// </summary>
         /// <remarks>
         /// This method is commonly used to instantiate player characters.
-        /// If a match has to be started "actively", you can call an [RPC](@ref PhotonView.RPC) triggered by a user's button-press or a timer.
+        /// If a match has to be started "actively", you can call an [PunRPC](@ref PhotonView.RPC) triggered by a user's button-press or a timer.
         ///
         /// When this is called, you can usually already access the existing players in the room via PhotonNetwork.playerList.
         /// Also, all custom properties should be already available as Room.customProperties. Check Room.playerCount to find out if
@@ -604,7 +653,7 @@ namespace Photon
         /// When using multiple lobbies (via JoinLobby or TypedLobby), another lobby might have more/fitting rooms.<br/>
         /// PUN logs some info if the PhotonNetwork.logLevel is >= PhotonLogLevel.Informational.
         /// </remarks>
-        /// <param name="codeAndMsg">codeAndMsg[0] is int ErrorCode. codeAndMsg[1] is string debug msg.</param>
+        /// <param name="codeAndMsg">codeAndMsg[0] is short ErrorCode. codeAndMsg[1] is string debug msg.</param>
         public virtual void OnPhotonRandomJoinFailed(object[] codeAndMsg)
         {
         }
@@ -733,6 +782,18 @@ namespace Photon
         public virtual void OnOwnershipRequest(object[] viewAndPlayer)
         {
         }
+
+        /// <summary>
+        /// Called when the Master Server sent an update for the Lobby Statistics, updating PhotonNetwork.LobbyStatistics.
+        /// </summary>
+        /// <remarks>
+        /// This callback has two preconditions:
+        /// EnableLobbyStatistics must be set to true, before this client connects.
+        /// And the client has to be connected to the Master Server, which is providing the info about lobbies.
+        /// </remarks>
+        public virtual void OnLobbyStatisticsUpdate()
+        {
+        }
     }
 }
 
@@ -767,7 +828,12 @@ public class PhotonMessageInfo
 
     public double timestamp
     {
-        get { return ((double)(uint)this.timeInt) / 1000.0f; }
+        get
+        {
+            uint u = (uint)this.timeInt;
+            double t = u;
+            return t / 1000;
+        }
     }
 
     public override string ToString()
@@ -780,9 +846,6 @@ public class PhotonMessageInfo
 /// <remarks>This directly maps to what the fields in the Room class.</remarks>
 public class RoomOptions
 {
-    /// <summary>Max number of players that can be in the room at any time. 0 means "no limit".</summary>
-    public byte maxPlayers;
-
     /// <summary>Defines if this room is listed in the lobby. If not, it also is not joined randomly.</summary>
     /// <remarks>
     /// A room that is not visible will be excluded from the room lists that are sent to the clients in lobbies.
@@ -802,6 +865,27 @@ public class RoomOptions
     /// </remarks>
     public bool isOpen { get { return this.isOpenField; } set { this.isOpenField = value; } }
     private bool isOpenField = true;
+
+    /// <summary>Max number of players that can be in the room at any time. 0 means "no limit".</summary>
+    public byte maxPlayers;
+
+    /// <summary>Time To Live (TTL) for an 'actor' in a room. If a client disconnects, this actor is inactive first and removed after this timeout. In milliseconds.</summary>
+    // public int PlayerTtl;
+
+    /// <summary>Time To Live (TTL) for a room when the last player leaves. Keeps room in memory for case a player re-joins soon. In milliseconds.</summary>
+    // public int EmptyRoomTtl;
+
+
+    /// <summary>Time To Live (TTL) for a room when the last player leaves. Keeps room in memory for case a player re-joins soon. In milliseconds.</summary>
+    //public int EmptyRoomTtl;
+
+    ///// <summary>Activates UserId checks on joining - allowing a users to be only once in the room.</summary>
+    ///// <remarks>
+    ///// Turnbased rooms should be created with this check turned on! They should also use custom authentication.
+    ///// Disabled by default for backwards-compatibility.
+    ///// </remarks>
+    //public bool checkUserOnJoin { get { return this.checkUserOnJoinField; } set { this.checkUserOnJoinField = value; } }
+    //private bool checkUserOnJoinField = false;
 
     /// <summary>Removes a user's events and properties from the room when a user leaves.</summary>
     /// <remarks>
@@ -830,84 +914,114 @@ public class RoomOptions
     /// </remarks>
     public string[] customRoomPropertiesForLobby = new string[0];
 
-    /// <summary>Time To Live (TTL) for an 'actor' in a room. If a client disconnects, this actor is inactive first and removed after this timeout. In milliseconds.</summary>
-    //public int PlayerTtl;
-}
-
-
-/// <summary>Refers to a specific lobby (and type) on the server.</summary>
-/// <remarks>
-/// The name and type are the unique identifier for a lobby.<br/>
-/// Join a lobby via PhotonNetwork.JoinLobby(TypedLobby lobby).<br/>
-/// The current lobby is stored in PhotonNetwork.lobby.
-/// </remarks>
-public class TypedLobby
-{
     /// <summary>
-    /// The name of the Lobby. Can be any string. Default lobby uses "".
+    /// Tells the server to skip room events for joining and leaving players.
     /// </summary>
-    public string Name;
-
-    /// <summary>
-    /// The type of the Lobby. Default lobby uses LobbyType.Default.
-    /// </summary>
-    public LobbyType Type;
-
-    public static readonly TypedLobby Default = new TypedLobby();
-    public bool IsDefault { get { return this.Type == LobbyType.Default && string.IsNullOrEmpty(this.Name); } }
-
-    public TypedLobby()
-    {
-        this.Name = string.Empty;
-        this.Type = LobbyType.Default;
-    }
-
-    public TypedLobby(string name, LobbyType type)
-    {
-        this.Name = name;
-        this.Type = type;
-    }
-
-    public override string ToString()
-    {
-        return string.Format("Lobby '{0}'[{1}]", this.Name, this.Type);
-    }
-}
-
-
-/// <summary>Aggregates several less-often used options for operation RaiseEvent. See field descriptions for usage details.</summary>
-public class RaiseEventOptions
-{
-    /// <summary>Default options: CachingOption: DoNotCache, InterestGroup: 0, targetActors: null, receivers: Others, sequenceChannel: 0.</summary>
-    public readonly static RaiseEventOptions Default = new RaiseEventOptions();
-
-    /// <summary>Defines if the server should simply send the event, put it in the cache or remove events that are like this one.</summary>
     /// <remarks>
-    /// When using option: SliceSetIndex, SlicePurgeIndex or SlicePurgeUpToIndex, set a CacheSliceIndex. All other options except SequenceChannel get ignored.
+    /// Using this makes the client unaware of the other players in a room.
+    /// That can save some traffic if you have some server logic that updates players
+    /// but it can also limit the client's usability.
+    ///
+    /// PUN will break if you use this, so it's not settable.
     /// </remarks>
-    public EventCaching CachingOption;
+    public bool suppressRoomEvents { get { return this.suppressRoomEventsField; } /*set { this.suppressRoomEventsField = value; }*/ }
+    private bool suppressRoomEventsField = false;
 
-    /// <summary>The number of the Interest Group to send this to. 0 goes to all users but to get 1 and up, clients must subscribe to the group first.</summary>
-    public byte InterestGroup;
 
-    /// <summary>A list of PhotonPlayer.IDs to send this event to. You can implement events that just go to specific users this way.</summary>
-    public int[] TargetActors;
-
-    /// <summary>Sends the event to All, MasterClient or Others (default). Be careful with MasterClient, as the client might disconnect before it got the event and it gets lost.</summary>
-    public ReceiverGroup Receivers;
-
-    /// <summary>Events are ordered per "channel". If you have events that are independent of others, they can go into another sequence or channel.</summary>
-    public byte SequenceChannel;
-
-    /// <summary>Events can be forwarded to Webhooks, which can evaluate and use the events to follow the game's state.</summary>
-    public bool ForwardToWebhook;
-
-    /// <summary>Used along with CachingOption SliceSetIndex, SlicePurgeIndex or SlicePurgeUpToIndex if you want to set or purge a specific cache-slice.</summary>
-    public int CacheSliceIndex;
-
-    /// <summary>Use rarely. The binary message gets encrpted before being sent. Any receiver in the room will be able to decrypt the message, of course.</summary>
-    public bool Encrypt;
+    ///// <summary>
+    ///// Defines if the UserIds of players get "published" in the room. Useful for FindFriends, if players want to play another game together.
+    ///// </summary>
+    //public bool publishUserId { get { return this.publishUserIdField; } set { this.publishUserIdField = value; } }
+    //private bool publishUserIdField = false;
 }
+
+
+///// <summary>Refers to a specific lobby (and type) on the server.</summary>
+///// <remarks>
+///// The name and type are the unique identifier for a lobby.<br/>
+///// Join a lobby via PhotonNetwork.JoinLobby(TypedLobby lobby).<br/>
+///// The current lobby is stored in PhotonNetwork.lobby.
+///// </remarks>
+//public class TypedLobby
+//{
+//    /// <summary>
+//    /// The name of the Lobby. Can be any string. Default lobby uses "".
+//    /// </summary>
+//    public string Name;
+
+//    /// <summary>
+//    /// The type of the Lobby. Default lobby uses LobbyType.Default.
+//    /// </summary>
+//    public LobbyType Type;
+
+//    public static readonly TypedLobby Default = new TypedLobby();
+//    public bool IsDefault { get { return this.Type == LobbyType.Default && string.IsNullOrEmpty(this.Name); } }
+
+//    public TypedLobby()
+//    {
+//        this.Name = string.Empty;
+//        this.Type = LobbyType.Default;
+//    }
+
+//    public TypedLobby(string name, LobbyType type)
+//    {
+//        this.Name = name;
+//        this.Type = type;
+//    }
+
+//    public override string ToString()
+//    {
+//        return string.Format("Lobby '{0}'[{1}]", this.Name, this.Type);
+//    }
+//}
+
+
+///// <summary>Used in the PhotonNetwork.LobbyStatistics list of lobbies used by your application. Contains room- and player-count for each.</summary>
+//public class TypedLobbyInfo : TypedLobby
+//{
+//    public int PlayerCount;
+//    public int RoomCount;
+
+//    public override string ToString()
+//    {
+//        return string.Format("LobbyInfo '{0}'[{1}] rooms: {2} players: {3}", this.Name, this.Type, this.RoomCount, this.PlayerCount);
+//    }
+//}
+
+
+///// <summary>Aggregates several less-often used options for operation RaiseEvent. See field descriptions for usage details.</summary>
+//public class RaiseEventOptions
+//{
+//    /// <summary>Default options: CachingOption: DoNotCache, InterestGroup: 0, targetActors: null, receivers: Others, sequenceChannel: 0.</summary>
+//    public readonly static RaiseEventOptions Default = new RaiseEventOptions();
+
+//    /// <summary>Defines if the server should simply send the event, put it in the cache or remove events that are like this one.</summary>
+//    /// <remarks>
+//    /// When using option: SliceSetIndex, SlicePurgeIndex or SlicePurgeUpToIndex, set a CacheSliceIndex. All other options except SequenceChannel get ignored.
+//    /// </remarks>
+//    public EventCaching CachingOption;
+
+//    /// <summary>The number of the Interest Group to send this to. 0 goes to all users but to get 1 and up, clients must subscribe to the group first.</summary>
+//    public byte InterestGroup;
+
+//    /// <summary>A list of PhotonPlayer.IDs to send this event to. You can implement events that just go to specific users this way.</summary>
+//    public int[] TargetActors;
+
+//    /// <summary>Sends the event to All, MasterClient or Others (default). Be careful with MasterClient, as the client might disconnect before it got the event and it gets lost.</summary>
+//    public ReceiverGroup Receivers;
+
+//    /// <summary>Events are ordered per "channel". If you have events that are independent of others, they can go into another sequence or channel.</summary>
+//    public byte SequenceChannel;
+
+//    /// <summary>Events can be forwarded to Webhooks, which can evaluate and use the events to follow the game's state.</summary>
+//    public bool ForwardToWebhook;
+
+//    /// <summary>Used along with CachingOption SliceSetIndex, SlicePurgeIndex or SlicePurgeUpToIndex if you want to set or purge a specific cache-slice.</summary>
+//    public int CacheSliceIndex;
+
+//    /// <summary>Use rarely. The binary message gets encrpted before being sent. Any receiver in the room will be able to decrypt the message, of course.</summary>
+//    public bool Encrypt;
+//}
 
 /// <summary>Defines Photon event-codes as used by PUN.</summary>
 internal class PunEvent
@@ -1222,19 +1336,41 @@ public class PhotonStream
 }
 
 
-/// <summary>Provides easy access to most common WebRpc-Response values.</summary>
+#if UNITY_5_0 || !UNITY_5
+/// <summary>Empty implementation of the upcoming HelpURL of Unity 5.1. This one is only for compatibility of attributes.</summary>
+/// <remarks>http://feedback.unity3d.com/suggestions/override-component-documentation-slash-help-link</remarks>
+public class HelpURL : Attribute
+{
+    public HelpURL(string url)
+    {
+    }
+}
+#endif
+
+
+/// <summary>Reads an operation response of a WebRpc and provides convenient access to most common values.</summary>
 /// <remarks>
 /// See method PhotonNetwork.WebRpc.<br/>
-/// Instantiate as new WebRpcResponse(operationResponse) for operationResponse.OperationCode == OperationCode.WebRpc.
+/// Create a WebRpcResponse to access common result values.<br/>
+/// The operationResponse.OperationCode should be: OperationCode.WebRpc.<br/>
 /// </remarks>
 public class WebRpcResponse
 {
+    /// <summary>Name of the WebRpc that was called.</summary>
     public string Name { get; private set; }
-    /// <summary>-1 tells you: Got not ReturnCode from WebRpc service.</summary>
+    /// <summary>ReturnCode of the WebService that answered the WebRpc.</summary>
+    /// <remarks>
+    /// 0 is commonly used to signal success.<br/>
+    /// -1 tells you: Got no ReturnCode from WebRpc service.<br/>
+    /// Other ReturnCodes are defined by the individual WebRpc and service.
+    /// </remarks>
     public int ReturnCode { get; private set; }
+    /// <summary>Might be empty or null.</summary>
     public string DebugMessage { get; private set; }
+    /// <summary>Other key/values returned by the webservice that answered the WebRpc.</summary>
     public Dictionary<string, object> Parameters { get; private set; }
 
+    /// <summary>An OperationResponse for a WebRpc is needed to read it's values.</summary>
     public WebRpcResponse(OperationResponse response)
     {
         object value;
@@ -1251,6 +1387,8 @@ public class WebRpcResponse
         this.DebugMessage = value as string;
     }
 
+    /// <summary>Turns the response into an easier to read string.</summary>
+    /// <returns>String resembling the result.</returns>
     public string ToStringFull()
     {
         return string.Format("{0}={2}: {1} \"{3}\"", Name, SupportClass.DictionaryToString(Parameters), ReturnCode, DebugMessage);

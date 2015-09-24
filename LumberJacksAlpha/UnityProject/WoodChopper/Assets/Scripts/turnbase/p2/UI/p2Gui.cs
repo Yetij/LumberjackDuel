@@ -14,8 +14,10 @@ public class p2Gui : MonoBehaviour
 	}
 	public p2PregamePanel pregamePanel;
 	public p2IngamePanel ingamePanel;
+	public p2ConnectorUI connectorUI;
 
-	public p2EndGamePanel endGamePanel;
+	public p2EndGamePanelV2 endGamePanel;
+
 	[SerializeField] p2Dialog visualLog;
 	public Button skip;
 
@@ -35,10 +37,13 @@ public class p2Gui : MonoBehaviour
 
 	public void PanelPreToIn () {
 		pregamePanel.gameObject.SetActive(false);
+		p2Map.Instance.gameObject.SetActive(true);
 		ingamePanel.gameObject.SetActive(true);
 	}
+
 	public void PanelInToPre () {
 		pregamePanel.gameObject.SetActive(true);
+		p2Map.Instance.gameObject.SetActive(false);
 		ingamePanel.gameObject.SetActive(false);
 	}
 

@@ -53,7 +53,7 @@ public class PunStartup : MonoBehaviour
         }
     }
 
-    [MenuItem("Window/Photon Unity Networking/Apply Build Setup for Demos")]
+    [MenuItem("Window/Photon Unity Networking/Configure Demos (build setup)", false, 5)]
     public static void SetupDemo()
     {
         SetPunDemoBuildSettings();

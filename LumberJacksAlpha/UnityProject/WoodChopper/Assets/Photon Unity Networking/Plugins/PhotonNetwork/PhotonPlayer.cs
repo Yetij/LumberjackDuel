@@ -38,6 +38,7 @@ public class PhotonPlayer
     private string nameField = "";
 
     /// <summary>Nickname of this player.</summary>
+    /// <remarks>Set the PhotonNetwork.playerName to make the name synchronized in a room.</remarks>
     public string name {
         get
         {
@@ -59,6 +60,10 @@ public class PhotonPlayer
             PhotonNetwork.playerName = value;   // this will sync the local player's name in a room
         }
     }
+
+    ///// <summary>UserId of the player. Sent when room gets created with RoomOptions.publishUserId = true. Useful for FindFriends and blocking slots in a room for expected players.</summary>
+    //public string userId { get; internal set; }
+
 
     /// <summary>Only one player is controlled by each client. Others are not local.</summary>
     public readonly bool isLocal = false;
@@ -168,6 +173,10 @@ public class PhotonPlayer
         {
             this.nameField = (string)properties[ActorProperties.PlayerName];
         }
+        //if (properties.ContainsKey(ActorProperties.UserId))
+        //{
+        //    this.userId = (string)properties[ActorProperties.UserId];
+        //}
         if (properties.ContainsKey(ActorProperties.IsInactive))
         {
             // TODO: implement isinactive
@@ -208,7 +217,7 @@ public class PhotonPlayer
         Hashtable customProps = propertiesToSet.StripToStringKeys() as Hashtable;
         if (this.actorID > 0 && !PhotonNetwork.offlineMode)
         {
-            PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfActor(this.actorID, customProps, true, 0);
+            PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfActor(this.actorID, customProps);
         }
         NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerPropertiesChanged, this, propertiesToSet);
     }
@@ -246,7 +255,7 @@ public class PhotonPlayer
         {
             Hashtable customProps = propertiesToSet.StripToStringKeys() as Hashtable;
             Hashtable customPropsToCheck = expectedValues.StripToStringKeys() as Hashtable;
-            PhotonNetwork.networkingPeer.OpSetPropertiesOfActor(this.actorID, customProps, false, 0, customPropsToCheck);
+            PhotonNetwork.networkingPeer.OpSetPropertiesOfActor(this.actorID, customProps, customPropsToCheck);
         }
     }
 

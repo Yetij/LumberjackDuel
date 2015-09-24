@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using StaticStructure;
 
@@ -21,13 +21,17 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 
 	public int ActionPointsPerTurn = 4;
 
+	public int totalWinTimes { get; private set; }
+
 	[HideInInspector] public p2Cell currentCell;
 
 
 	enum TurnState : byte { MyTurn, Background, OpponentsTurn , NetWait }
 	TurnState state;
 
-	
+	void Awake () {
+		totalWinTimes = 0;
+	}
 	void Start () {
 		localMap = p2Map.Instance;
 		globalScene = p2Scene.Instance;
@@ -157,15 +161,16 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 	}
 		
 	public void OnGameEnd (int winner) {
+		bool i_won = winner == photonView.owner.ID;
+		if ( i_won ) totalWinTimes ++;
 		if ( photonView.isMine ) {
-			bool i_won = winner == photonView.owner.ID;
 			StartCoroutine(_EndGame(i_won));
 			if ( i_won ) gui.opponentHp.text = "HP: 0";
 		}
 	}
 
 	IEnumerator _EndGame (bool k) {
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(2f);
 		gui.endGamePanel.ShowResult(k);
 	}
 
@@ -239,7 +244,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		}
 	}
 
-	[RPC] void MoveTo ( int x, int z, int acCost ) {
+	[PunRPC] void MoveTo ( int x, int z, int acCost ) {
 
 		var cell = localMap[x,z];
 
@@ -276,7 +281,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		}
 	}
 
-	[RPC] void Plant ( int x, int z, byte treeType,int acCost ) {
+	[PunRPC] void Plant ( int x, int z, byte treeType,int acCost ) {
 		
 		if ( !ValidateRange(x,z) ) return;
 		var cell = localMap[x,z];
@@ -300,12 +305,14 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 		globalScene.ActivateTrees(TreeActivateTime.BeforeChop);
 
 		var acLeft = ( basic.actionPoints + bonus.actionPoints ) - (basic.chopCost + bonus.chopCost ); 
-		if ( acLeft >= 0 ) {
+		if ( acLeft >= 0 & !isChopBlockOn ) {
+			isChopBlockOn = true;
 			photonView.RPC("Chop", PhotonTargets.All, x,z, basic.chopCost + bonus.chopCost);
 		}
 	}
 
-	[RPC] void Chop ( int x, int z,int acCost ) {
+	bool isChopBlockOn= false;
+	[PunRPC] void Chop ( int x, int z,int acCost ) {
 		var cell = localMap[x,z];
 		localMap.OnPlayerChop(this,cell,acCost);
 		if ( photonView.isMine ) globalScene.ActivateTrees(TreeActivateTime.AfterChop);
@@ -324,6 +331,7 @@ public class p2Player : Photon.MonoBehaviour, AbsInputListener, AbsServerObserve
 			}
 			gui.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
 		}
+		isChopBlockOn = false;
 	}
 
 	//------------------------------ Input Message ------------------

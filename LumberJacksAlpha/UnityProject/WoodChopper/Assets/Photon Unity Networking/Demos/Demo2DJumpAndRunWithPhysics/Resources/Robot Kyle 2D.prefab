@@ -118,7 +118,6 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   viewIdField: 0
   instantiationId: -1
-  isRuntimeInstantiated: 0
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -132,15 +131,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PositionModel:
     SynchronizeEnabled: 1
-    TeleportEnabled: 1
-    TeleportIfDistanceGreaterThan: 3
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 6
     InterpolateLerpSpeed: 5
     InterpolateMoveTowardsAcceleration: 100
     InterpolateMoveTowardsDeceleration: 100
     InterpolateSpeedCurve:
-      serializedVersion: 2
       m_Curve:
       - time: -1
         value: 0
@@ -168,7 +164,22 @@ MonoBehaviour:
     ExtrapolateSpeed: 0
     ExtrapolateIncludingRoundTripTime: 0
     ExtrapolateNumberOfStoredPositions: 1
-    DrawErrorGizmo: 1
+    DrawNetworkGizmo: 0
+    NetworkGizmoColor:
+      r: 1
+      g: 0
+      b: 0
+      a: 1
+    NetworkGizmoType: 0
+    NetworkGizmoSize: 1
+    DrawExtrapolatedGizmo: 0
+    ExtrapolatedGizmoColor:
+      r: 1
+      g: .921568632
+      b: .0156862754
+      a: 1
+    ExtrapolatedGizmoType: 0
+    ExtrapolatedGizmoSize: 1
   m_RotationModel:
     SynchronizeEnabled: 0
     InterpolateOption: 0

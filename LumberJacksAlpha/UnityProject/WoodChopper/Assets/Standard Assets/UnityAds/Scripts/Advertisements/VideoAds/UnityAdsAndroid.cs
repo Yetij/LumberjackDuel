@@ -1,4 +1,4 @@
-﻿#if UNITY_ANDROID
+#if UNITY_ANDROID
 
 namespace UnityEngine.Advertisements {
   using UnityEngine;

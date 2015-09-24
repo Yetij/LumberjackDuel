@@ -19,7 +19,7 @@ public class p2Map : MonoBehaviour {
 	public byte localTotalX=10, localTotalY=8;
 	public float localOffsetX=1, localOffsetY=1;
 
-	void Awake () {
+	public void StartCustom () {
 		CreateOne(localTotalX,localTotalY,localOffsetX,localOffsetY,-6,0,-4);
 	}
 

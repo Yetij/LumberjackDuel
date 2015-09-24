@@ -1,4 +1,4 @@
-﻿#if UNITY_IPHONE
+#if UNITY_IPHONE
 
 namespace UnityEngine.Advertisements {
   using UnityEngine;

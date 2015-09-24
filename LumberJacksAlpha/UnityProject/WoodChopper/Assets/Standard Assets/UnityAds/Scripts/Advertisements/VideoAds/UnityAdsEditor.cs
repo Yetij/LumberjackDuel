@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+#if UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
 
 namespace UnityEngine.Advertisements {
   using UnityEngine;

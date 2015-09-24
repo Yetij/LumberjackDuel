@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class p2Connector : MonoBehaviour
+public class p2Connector : Photon.MonoBehaviour
 {	
 	public string room_name;
 	public string my_name="player";
@@ -28,7 +28,8 @@ public class p2Connector : MonoBehaviour
 	void OnJoinedRoom () {
 		if( PhotonNetwork.isMasterClient ) {
 			Debug.Log("joined room as master-client");
-			PhotonNetwork.InstantiateSceneObject(serverPrefabName,Vector3.zero,Quaternion.identity,0, null);
+			p2Map.Instance.StartCustom();
+			p2Map.Instance.gameObject.SetActive(false);
 		} else Debug.Log("joined room as normal-client");
 	}
 	
