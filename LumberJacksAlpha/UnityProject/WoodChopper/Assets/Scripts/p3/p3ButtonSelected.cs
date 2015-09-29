@@ -10,7 +10,6 @@ public class p3ButtonSelected : MonoBehaviour {
 	
 	virtual public void Set(p3PregameTreeInfo t ) {
 		if ( t == null ) {
-			Debug.Log(gameObject.name);
 			treeName.text = "";
 			ac.text = "";
 			info = null;

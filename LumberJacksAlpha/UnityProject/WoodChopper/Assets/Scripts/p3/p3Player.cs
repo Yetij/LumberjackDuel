@@ -92,6 +92,7 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 
 	void Start () {
 		p3Ui.Instance.ingamePanel.OnPlayerLoaded(this);
+		transform.SetParent(p3Names.Instance.transform,false);
 	}
 
 	public void SetUp () {
@@ -106,6 +107,8 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 		} else {
 			p3Ui.Instance.ingamePanel.inforbar.opponentName.text = photonView.owner.name;
 		}
+		
+
 	}
 
 	public void Initialize () {

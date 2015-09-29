@@ -70,7 +70,6 @@ public class p2Scene : Photon.MonoBehaviour
 		if ( !players.Contains(p) ) players.Add(p);
 		p.gameObject.SetActive(false);
 
-		return;
 		if ( !PhotonNetwork.isMasterClient &  player_verf_count >= PhotonNetwork.room.maxPlayers ) {
 			photonView.RPC("NonMasterClientReady", PhotonTargets.MasterClient);
 		}

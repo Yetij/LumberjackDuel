@@ -36,6 +36,8 @@ public class p3Scene : Photon.PunBehaviour, IControlable
 	}
 
 	public void SetUp () {
+		Debug.Log("p3 scene SetUp");
+
 		_players.AddRange(GameObject.FindObjectsOfType(typeof(p3Player)) as p3Player[] );
 
 		foreach ( var p in players ) {
@@ -47,22 +49,36 @@ public class p3Scene : Photon.PunBehaviour, IControlable
 		localMap = p3Map.Instance;
 		localPool = p3TreePool.Instance;
 
+
 		p3Ui.Instance.ingamePanel.OnSceneSetUpDone();
 	}
 	
 	public void Initialize () {
+		Debug.Log("p3 scene init");
 		foreach ( var p in players ) {
 			p.Initialize();
 		}
 	}
 
 	public void Run () {
-		foreach ( var p in players ) {
-			p.Run();
-		}
+		Debug.Log("p3 scene Run");
+
+		if ( PhotonNetwork.isMasterClient ) 
+			photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
 
 	}
+
+	[PunRPC] void OnGameStart (int start_turn) {
+		currentTurnNb = start_turn ;
+		
+		foreach ( var p in players ) {
+			p.Run();
+			p.OnGameStart (start_turn);
+		}
+	}
+
 	public void Stop () {
+		Debug.Log("p3 scene Stop");
 		foreach ( var p in players ) {
 			p.Stop();
 		}
@@ -76,13 +92,7 @@ public class p3Scene : Photon.PunBehaviour, IControlable
 		}
 	}
 	
-	[PunRPC] void OnGameStart (int start_turn) {
-		currentTurnNb = start_turn ;
-		
-		foreach ( var p in players ) {
-			p.OnGameStart (start_turn);
-		}
-	}
+
 	
 	[PunRPC] void OnGameEnd (int winner) {
 		_run = false;

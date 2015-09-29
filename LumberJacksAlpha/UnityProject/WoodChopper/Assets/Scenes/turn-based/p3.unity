@@ -578,7 +578,7 @@ GameObject:
   - 4: {fileID: 1184241885}
   - 114: {fileID: 1184241884}
   m_Layer: 0
-  m_Name: NAMES
+  m_Name: ROOT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -602,8 +602,8 @@ MonoBehaviour:
     connectionSettings: 39372294
     version: build280915
   prefabs:
-    player: {fileID: 154212, guid: 902d2402e89fdc945a6381ab648821a3, type: 2}
-    scene: {fileID: 125062, guid: be7fef9795a46214eb458619b0bafcff, type: 2}
+    player: {fileID: 116634, guid: 7880c6711a58cc84c876476d7b27c3d7, type: 2}
+    scene: {fileID: 179140, guid: eef20c778c0450c4fafc4d37cd719c56, type: 2}
 --- !u!4 &1184241885
 Transform:
   m_ObjectHideFlags: 0
@@ -611,7 +611,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1184241883}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.000427246094, y: -74.1000366, z: 100.400032}
+  m_LocalPosition: {x: -100, y: -100, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

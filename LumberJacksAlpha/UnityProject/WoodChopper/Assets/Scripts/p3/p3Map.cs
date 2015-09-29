@@ -21,6 +21,8 @@ public class p3Map : MonoBehaviour {
 	
 	public void SetUp () {
 		CreateOne(localTotalX,localTotalY,localOffsetX,localOffsetY,-6,0,-4);
+		
+		transform.SetParent(p3Names.Instance.transform);
 	}
 	
 	public void OnRematch () {
