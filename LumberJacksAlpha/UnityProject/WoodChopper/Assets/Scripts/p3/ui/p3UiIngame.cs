@@ -22,15 +22,13 @@ public class p3UiIngame : MonoBehaviour,  IControlable
 	public p2EndGamePanelV2 endGamePanel;
 
 	[SerializeField] p2Dialog visualLog;
-	public InfoBarControl inforbar;
+	public InfoBarControl infoBar;
 
-	p3TouchInput input;
+	[SerializeField] p3TouchInput input;
 
 	IInputListener listener;
 
-	void Awake () {
-		this.enabled = false;
-	}
+
 
 	public void AddListener ( IInputListener listener ) {
 		this.listener = listener;
@@ -52,6 +50,7 @@ public class p3UiIngame : MonoBehaviour,  IControlable
 
 	bool _run;
 	bool _runRequested;
+
 	public void Run () {
 		_runRequested = true;
 		TryRunning();
@@ -80,15 +79,24 @@ public class p3UiIngame : MonoBehaviour,  IControlable
 		playerNotMineLoaded = false;
 		sceneSetUpDone = false;
 
-		PhotonNetwork.Instantiate(p3Names.Instance.prefabs.player.name,Vector3.zero,Quaternion.identity,0,null);
-	}
-
-	public void Initialize() {
 		if ( treeButtons.Length != 0 ) {
 			foreach ( var t in treeButtons ) {
 				SetupButton(t);
 			}
 		}
+
+		PhotonNetwork.Instantiate(p3Names.Instance.prefabs.player.name,Vector3.zero,Quaternion.identity,0,null);
+	}
+
+	public void Initialize() {
+		var l = p3Ui.Instance.pregamePanel.selectedButtons;
+		if ( l.Length != treeButtons.Length ) throw new UnityException("error");
+
+		for(int i=0; i < treeButtons.Length; i ++ ) {
+			if( l[i].info != null ) 
+				treeButtons[i].GetComponent<p2GuiTree>().type = l[i].info.realTree.type;
+		}
+
 		_runRequested = false;
 	}
 	
@@ -101,7 +109,7 @@ public class p3UiIngame : MonoBehaviour,  IControlable
 		if( value ) {
 			currentSelected = source;
 			selected = source.GetComponent<p2GuiTree>();
-			DisplayDialog(p2TreePool.Instance.GetTreePlantLog(selected.type));
+			DisplayDialog(p3TreePool.Instance.GetTreePlantLog(selected.type));
 		} else {
 			currentSelected = null;
 			selected = null;
@@ -138,8 +146,8 @@ public class p3UiIngame : MonoBehaviour,  IControlable
 	}
 
 	public void SetColor (Color r ) {
-		inforbar.timer.color = r;
-		inforbar.ac.color = r;
+		infoBar.timer.color = r;
+		infoBar.ac.color = r;
 	}
 }
 

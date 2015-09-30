@@ -8,6 +8,7 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 
 	#region input listener
 	public void OnTreeSelected (p2GuiTree t) {
+		Debug.Log("OnTreeSelected");
 		guiSelectedTree = t;
 		if ( state != TurnState.MyTurn ) return;
 		if ( t == null ) {
@@ -24,6 +25,7 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 	}
 
 	public void OnDrag (Vector2 pos, Vector2 delta) {
+		Debug.Log("OnDrag");
 		var cell = localMap.GetPointedCell(pos);
 		
 		if ( cell == null ) {
@@ -51,18 +53,19 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 	}
 
 	public void OnTouch (Vector2 pos ) {
-		if ( state != TurnState.MyTurn ) return;
-		var cell = localMap.GetPointedCell(pos);
-		if ( cell == null ) return;
-		
-		if ( cell.player == this ) return;
-		
-		if ( cell.CanChop () ) {
-			PreChop(cell.x,cell.z);
-		} else if ( cell.CanPlant () & guiSelectedTree != null ) {
-			PrePlant(cell.x,cell.z,(byte)guiSelectedTree.type);
-		} else if ( cell.CanMoveTo() ) {
-			PreMove(cell.x,cell.z,false);
+		if ( state == TurnState.MyTurn ) {
+			var cell = localMap.GetPointedCell(pos);
+			if ( cell == null ) return;
+			
+			if ( cell.player == this ) return;
+			
+			if ( cell.CanChop () ) {
+				PreChop(cell.x,cell.z);
+			} else if ( cell.CanPlant () & guiSelectedTree != null ) {
+				PrePlant(cell.x,cell.z,(byte)guiSelectedTree.type);
+			} else if ( cell.CanMoveTo() ) {
+				PreMove(cell.x,cell.z,false);
+			}
 		}
 	}
 	#endregion
@@ -103,18 +106,20 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 
 		if ( photonView.isMine ) {
 			p3Ui.Instance.AddListener(this);
-			p3Ui.Instance.ingamePanel.inforbar.myName.text = photonView.owner.name;
+			p3Ui.Instance.ingamePanel.infoBar.myName.text = photonView.owner.name;
 		} else {
-			p3Ui.Instance.ingamePanel.inforbar.opponentName.text = photonView.owner.name;
+			p3Ui.Instance.ingamePanel.infoBar.opponentName.text = photonView.owner.name;
 		}
 		
 
 	}
 
 	public void Initialize () {
+
 		ResetBasic();
 		ZeroBonus();
-		
+		ResetInfoBar();
+
 		var host = localMap[0,0];
 		var client = localMap[localMap.total_x-1,0];
 		
@@ -130,10 +135,6 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 			transform.rotation = photonView.isMine ? q0_1 : q01;
 		}
 		currentCell.OnPlayerMoveIn(this);
-	}
-
-	public void Run () {
-		_run = true;
 	}
 
 	public void Stop () {
@@ -165,18 +166,21 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 	public int pointsToWin = 20;
 	int points = 0;
 	public void OnCredit (int tree_nb ) {
-		if( tree_nb < 0 ) return;
-		if ( photonView.isMine ) {
-			points += (int)Mathf.Pow(tree_nb+1,2);
-			gui.ingamePanel.inforbar.myPoints.text = "Points: " + points;
-			if ( points >= pointsToWin ) p3Scene.Instance.OnVictoryConditionsReached (photonView.owner.ID);
+		Debug.Log("OnCredit treenb="+tree_nb );
+		if( tree_nb >= 0 ) {
+			if ( photonView.isMine ) {
+				points += (int)Mathf.Pow(tree_nb+1,2);
+				gui.ingamePanel.infoBar.myPoints.text = "Points: " + points;
+				Debug.Log("OnCredit points="+points );
+				if ( points >= pointsToWin ) p3Scene.Instance.OnVictoryConditionsReached (photonView.owner.ID);
+			}
 		}
 	}
 	
 	void SkipTurn () {
 		if ( state == TurnState.MyTurn ) {
 			_timer = 0;
-			gui.ingamePanel.inforbar.timer.text = _timer.ToString("0.00");
+			gui.ingamePanel.infoBar.timer.text = _timer.ToString("0.00");
 			state = TurnState.NetWait;
 			globalScene.OnBackgroundStart (this,1);
 			
@@ -197,7 +201,7 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 				_timer += Time.deltaTime;
 				
 				if ( _timer < basic.turnTime ) {
-					gui.ingamePanel.inforbar.timer.text = _timer.ToString("0.00");
+					gui.ingamePanel.infoBar.timer.text = _timer.ToString("0.00");
 				} else {
 					SkipTurn();
 				}
@@ -217,10 +221,11 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 	//------------------------ server messages ----------------------------------
 	public void OnGameStart (int start_turn) {
 		Debug.Log(photonView.owner.name + ": OnGameStart");
+		_run = true;
 		_timer = 0;
 		if ( photonView.isMine ) {
 			_timer = 0;
-			gui.ingamePanel.inforbar.timer.text = _timer.ToString("0.00");
+			gui.ingamePanel.infoBar.timer.text = _timer.ToString("0.00");
 			state = TurnState.NetWait;
 			if ( start_turn % 2 == turn_identity ) globalScene.OnBackgroundStart (this,globalScene.startTreeNumber);
 			gui.ingamePanel.Reset();
@@ -233,11 +238,12 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 	}
 	
 	public void OnGameEnd (int winner) {
+		_run = false;
 		bool i_won = winner == photonView.owner.ID;
 		if ( i_won ) totalWinTimes ++;
 		if ( photonView.isMine ) {
 			StartCoroutine(_EndGame(i_won));
-			if ( i_won ) gui.ingamePanel.inforbar.opponentHp.text = "HP: 0";
+			if ( i_won ) gui.ingamePanel.infoBar.opponentHp.text = "HP: 0";
 		}
 	}
 	
@@ -275,8 +281,8 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 				
 				globalScene.ActivateTrees(TreeActivateTime.BeforeTurn);
 				
-				gui.ingamePanel.inforbar.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints);
-				gui.ingamePanel.inforbar.myHp.text = "HP: "+(basic.hp + bonus.hp);
+				gui.ingamePanel.infoBar.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints);
+				gui.ingamePanel.infoBar.myHp.text = "HP: "+(basic.hp + bonus.hp);
 			}
 			else {
 				gui.ingamePanel.SetColor( Color.yellow);
@@ -314,7 +320,7 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 				else basic.actionPoints --;
 				acCost --;
 			}
-			gui.ingamePanel.inforbar.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
+			gui.ingamePanel.infoBar.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
 			globalScene.ActivateTrees(TreeActivateTime.AfterMove);
 		}
 	}
@@ -347,26 +353,28 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 				else basic.actionPoints --;
 				acCost --;
 			}
-			gui.ingamePanel.inforbar.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
+			gui.ingamePanel.infoBar.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
 			gui.ingamePanel.Reset();
 			globalScene.ActivateTrees(TreeActivateTime.AfterPlant);
 		}
 	}
 	
 	void PreChop ( int x, int z ) {
-		if ( !ValidateRange(x,z) ) return;
-		
-		globalScene.ActivateTrees(TreeActivateTime.BeforeChop);
-		
-		var acLeft = ( basic.actionPoints + bonus.actionPoints ) - (basic.chopCost + bonus.chopCost ); 
-		if ( acLeft >= 0 & !isChopBlockOn ) {
-			isChopBlockOn = true;
-			photonView.RPC("Chop", PhotonTargets.All, x,z, basic.chopCost + bonus.chopCost);
+		if ( ValidateRange(x,z) ) {
+			Debug.Log("PRECHOP, chopblock = " + isChopBlockOn);
+			globalScene.ActivateTrees(TreeActivateTime.BeforeChop);
+			
+			var acLeft = ( basic.actionPoints + bonus.actionPoints ) - (basic.chopCost + bonus.chopCost ); 
+			if ( acLeft >= 0 & !isChopBlockOn ) {
+				isChopBlockOn = true;
+				photonView.RPC("Chop", PhotonTargets.All, x,z, basic.chopCost + bonus.chopCost);
+			}
 		}
 	}
 	
 	bool isChopBlockOn= false;
 	[PunRPC] void Chop ( int x, int z,int acCost ) {
+		Debug.Log("Chop, chopblock = " + isChopBlockOn);
 		var cell = localMap[x,z];
 		localMap.OnPlayerChop(this,cell,acCost);
 		if ( photonView.isMine ) globalScene.ActivateTrees(TreeActivateTime.AfterChop);
@@ -383,7 +391,7 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 				else basic.actionPoints --;
 				acCost --;
 			}
-			gui.ingamePanel.inforbar.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
+			gui.ingamePanel.infoBar.ac.text = "AC: "+(basic.actionPoints + bonus.actionPoints).ToString();
 		}
 		isChopBlockOn = false;
 	}
@@ -415,7 +423,7 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 			chopper.OnChopDone(acCost);
 			if ( bonus.hp > 0 ) bonus.hp --;
 			else basic.hp --;
-			gui.ingamePanel.inforbar.myHp.text = "HP: "+(basic.hp + bonus.hp).ToString();
+			gui.ingamePanel.infoBar.myHp.text = "HP: "+(basic.hp + bonus.hp).ToString();
 			if ( basic.hp == 0 ) {
 				globalScene.OnVictoryConditionsReached (chopper.photonView.owner.ID);
 			}
@@ -430,23 +438,19 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 		basic.plantCost = predef.plantCost;
 		basic.turnTime = predef.turnTime;
 	}
-	
-	public void OnRematch () {
-		ResetBasic();
-		points = 0;
-		gui.ingamePanel.inforbar.timer.color = Color.black;
-		gui.ingamePanel.inforbar.timer.text = "0.00";
-		gui.ingamePanel.inforbar.ac.color = Color.black;
-		gui.ingamePanel.inforbar.ac.text = "AC: 0";
-		
-		gui.ingamePanel.inforbar.opponentHp.text = "HP: "+basic.hp;
-		gui.ingamePanel.inforbar.myHp.text = "HP: "+basic.hp;
-		
-		gui.ingamePanel.inforbar.myPoints.text = "Points: 0";
-		gui.ingamePanel.inforbar.opponentPoints.text = "Points: 0";
-		//		Start();
-	}
 
+	void ResetInfoBar() {
+		gui.ingamePanel.infoBar.timer.color = Color.black;
+		gui.ingamePanel.infoBar.timer.text = "0.00";
+		gui.ingamePanel.infoBar.ac.color = Color.black;
+		gui.ingamePanel.infoBar.ac.text = "AC: 0";
+		
+		gui.ingamePanel.infoBar.opponentHp.text = "HP: "+basic.hp;
+		gui.ingamePanel.infoBar.myHp.text = "HP: "+basic.hp;
+		
+		gui.ingamePanel.infoBar.myPoints.text = "Points: 0";
+		gui.ingamePanel.infoBar.opponentPoints.text = "Points: 0";
+	}
 	bool _run;
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -462,17 +466,17 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 		else
 		{
 			var _timer = (float)stream.ReceiveNext();
-			if( state == TurnState.MyTurn ) gui.ingamePanel.inforbar.timer.text = _timer.ToString("0.00");
+			if( state == TurnState.MyTurn ) gui.ingamePanel.infoBar.timer.text = _timer.ToString("0.00");
 			var _hp = (int)stream.ReceiveNext();
 			if ( !photonView.isMine ) {
-				gui.ingamePanel.inforbar.opponentHp.text = "HP: "+_hp.ToString();
+				gui.ingamePanel.infoBar.opponentHp.text = "HP: "+_hp.ToString();
 			}
 			var _ac = (int)stream.ReceiveNext();
-			if( state == TurnState.MyTurn ) gui.ingamePanel.inforbar.ac.text = "AC: "+_ac.ToString();
+			if( state == TurnState.MyTurn ) gui.ingamePanel.infoBar.ac.text = "AC: "+_ac.ToString();
 			
 			var _points = (int)stream.ReceiveNext();
 			if ( !photonView.isMine ) {
-				gui.ingamePanel.inforbar.opponentPoints.text = "Points: "+ _points;
+				gui.ingamePanel.infoBar.opponentPoints.text = "Points: "+ _points;
 			}
 		}
 		

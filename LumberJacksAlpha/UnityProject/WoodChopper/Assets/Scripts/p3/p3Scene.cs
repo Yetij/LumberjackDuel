@@ -61,7 +61,6 @@ public class p3Scene : Photon.PunBehaviour, IControlable
 	}
 
 	public void Run () {
-		Debug.Log("p3 scene Run");
 
 		if ( PhotonNetwork.isMasterClient ) 
 			photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
@@ -70,9 +69,9 @@ public class p3Scene : Photon.PunBehaviour, IControlable
 
 	[PunRPC] void OnGameStart (int start_turn) {
 		currentTurnNb = start_turn ;
-		
+
 		foreach ( var p in players ) {
-			p.Run();
+			p.Initialize();
 			p.OnGameStart (start_turn);
 		}
 	}
@@ -93,7 +92,6 @@ public class p3Scene : Photon.PunBehaviour, IControlable
 	}
 	
 
-	
 	[PunRPC] void OnGameEnd (int winner) {
 		_run = false;
 		foreach ( var p in players ) {
@@ -198,11 +196,9 @@ public class p3Scene : Photon.PunBehaviour, IControlable
 		turnToGen=0;
 		background_end_counter = 0;
 		treesInScene.Clear();
-		
-		foreach ( var p in players ) {
-			p.OnRematch();
-		}
 
+		if ( PhotonNetwork.isMasterClient ) 
+			photonView.RPC("OnGameStart",PhotonTargets.All,Random.Range(0,2));
 	}
 	
 	#region hide

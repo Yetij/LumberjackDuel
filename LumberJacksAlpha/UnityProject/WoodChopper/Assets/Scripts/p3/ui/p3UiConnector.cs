@@ -30,6 +30,7 @@ public class p3UiConnector : Photon.PunBehaviour {
 	}
 
 	public void PlayButtonClicked () {
+		play.interactable = false;
 		StartCoroutine(PlayButtonClicked2());
 	}
 	

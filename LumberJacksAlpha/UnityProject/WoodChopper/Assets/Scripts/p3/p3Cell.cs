@@ -78,6 +78,7 @@ public class p3Cell : MonoBehaviour, AbsServerObserver {
 		player = null;
 		highlight.SetActive(false);
 		selected.SetActive(false);
+		aura.SetActive(false);
 	}
 	
 	public void RemoveTree() {

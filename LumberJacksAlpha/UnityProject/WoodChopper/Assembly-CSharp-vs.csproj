@@ -209,10 +209,10 @@
      <Compile Include="Assets\Scripts\p3\p3Names.cs" />
      <Compile Include="Assets\Scripts\p3\p3Player.cs" />
      <Compile Include="Assets\Scripts\p3\p3PoolInfo.cs" />
-     <Compile Include="Assets\Scripts\p3\p3PregameTreeInfo.cs" />
      <Compile Include="Assets\Scripts\p3\p3Scene.cs" />
      <Compile Include="Assets\Scripts\p3\p3TouchInput.cs" />
      <Compile Include="Assets\Scripts\p3\p3TreePool.cs" />
+     <Compile Include="Assets\Scripts\p3\ui\p3PregameTreeInfo.cs" />
      <Compile Include="Assets\Scripts\p3\ui\p3Ui.cs" />
      <Compile Include="Assets\Scripts\p3\ui\p3UiConnector.cs" />
      <Compile Include="Assets\Scripts\p3\ui\p3UiIngame.cs" />

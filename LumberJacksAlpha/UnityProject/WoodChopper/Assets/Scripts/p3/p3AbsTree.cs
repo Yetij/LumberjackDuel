@@ -73,6 +73,7 @@ public abstract class p3AbsTree : MonoBehaviour
 				cell.RemoveTree();
 				cell.HighLightOn(false);
 				cell.SelectedOn(false);
+				cell.AuraOn(false);
 				ActivateOnFall(choper);
 				
 				if ( dealDmg ) {
@@ -141,8 +142,9 @@ public abstract class p3AbsTree : MonoBehaviour
 		
 		ActivateOnChop(player, ref fx, ref fz);
 		
+		if ( tier ==  0 ) player.OnChopDone(acCost);
+
 		if ( !(fx == 0 & fz == 0 ) ) {
-			if ( tier == 0 ) player.OnChopDone(acCost);
 			fallingQuat = Angle.Convert(fx,fz);
 			dominoDelayTime = tier * p3Scene.Instance.globalDominoDelay;
 			
@@ -153,11 +155,14 @@ public abstract class p3AbsTree : MonoBehaviour
 						c.tree.OnBeingChoped(player, cell,tier+1);
 					} else player.OnCredit(tier);
 				} else player.OnCredit(tier);
-			} else player.OnCredit(state == TreeState.InSeed? tier-1 : tier);
+			} else {
+				Debug.Log("state == TreeState.InSeed ? " + (state == TreeState.InSeed));
+				player.OnCredit(state == TreeState.InSeed? tier-1 : tier);
+			}
 			
 			dealDmg = state != TreeState.InSeed;
 			state = TreeState.WaitDomino;
-		}
+		} 
 	}
 	
 	virtual protected void ActivateOnChop (p3Player player, ref int fx, ref int fz ) {
@@ -174,19 +179,18 @@ public abstract class p3AbsTree : MonoBehaviour
 	
 	//------------------------------ update per turn ----------------------------------------
 	virtual public void OnBackgroundUpdate (List<p3Player> players ) {
-		if ( turnToLifeCounter < 0 ) {
-			return;
+		if ( state == TreeState.InSeed ) {
+			if ( turnToLifeCounter == 0 ) {
+				_timer = 0;
+				state = TreeState.Growing;
+				cell.AuraOn(false);
+			}
+			
+			if ( turnToLifeCounter == 1 ) {
+				cell.AuraOn(true);
+			}
+			turnToLifeCounter --;
 		}
-		if ( turnToLifeCounter == 0 ) {
-			_timer = 0;
-			state = TreeState.Growing;
-			cell.AuraOn(false);
-		}
-		
-		if ( turnToLifeCounter == 1 ) {
-			cell.AuraOn(true);
-		}
-		turnToLifeCounter --;
 	}
 	
 	//-------------------------- used by pool ---------------------------

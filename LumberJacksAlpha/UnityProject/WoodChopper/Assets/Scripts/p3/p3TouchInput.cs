@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
 public class p3TouchInput
 {
-	public float minSwipeDistance = 20f;
+	public float minDragDistance = 0.05f;
 	Vector2 startPos;
 
 	#if UNITY_STANDALONE_WIN
@@ -37,7 +38,7 @@ public class p3TouchInput
 			var current = ConvertAxes(Camera.main.ScreenToWorldPoint(Input.mousePosition)); 
 
 			var delta = current - lastPos;
-			if( delta.magnitude > 0.5f ) {
+			if( delta.magnitude > minDragDistance) {
 				listener.OnDrag(current,delta);
 			}
 			lastPos = current;
