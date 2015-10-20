@@ -122,7 +122,8 @@ public class p3Player : Photon.PunBehaviour, IInputListener
 
 		var host = localMap[0,0];
 		var client = localMap[localMap.total_x-1,0];
-		
+
+		points = 0;
 		state = TurnState.NetWait;
 		
 		if ( PhotonNetwork.isMasterClient ) {
