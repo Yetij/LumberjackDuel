@@ -9,15 +9,7 @@ public class Lumberjack : Photon.MonoBehaviour {
     public PLAY player;
     public LumberJackParams parameters;
 
-    Server server;
-    void Start() {
-        server = GameObject.FindObjectOfType<Server>();
-    }
-
-    public void MoveTo (Cell target )
-    {
-
-    }
+	float move_to_time = 1f;
 
     public void Chop (Cell target )
     {
@@ -29,23 +21,44 @@ public class Lumberjack : Photon.MonoBehaviour {
 
     }
 
-    internal void VisualBeingChoped(PLAY player)
+	public void VisualBeingChoped(PLAY player)
     {
         throw new NotImplementedException();
     }
 
-    internal void VisualChop(int cx, int cy)
-    {
+	public void VisualChop(Cell c)
+	{
+		// start animation
         throw new NotImplementedException();
     }
 
-    internal void VisualPlant(int cx, int cy)
+	public void VisualPlant(Cell c)
     {
+		// start animation
         throw new NotImplementedException();
     }
 
-    internal void VisualMoveTo(int cx, int cy)
+	public void VisualMoveTo(Cell c)
     {
-        throw new NotImplementedException();
-    }
+		StartCoroutine (VisualMoveTo2 (c));
+	}
+		
+	IEnumerator VisualMoveTo2 (Cell target) {
+		// start animation
+		Server.self.ServerPause();
+		float timer = 0;
+		var from = currentCell.transform.position;
+		var to = target.transform.position;
+		while (true) {
+			yield return null;
+			timer += Time.deltaTime;
+			transform.position = Vector3.Lerp (from, to, timer/move_to_time );
+			if ( timer >= move_to_time ) {
+				transform.position = to;
+				currentCell = target;
+				Server.self.ServerUnPause();
+				break;
+			}
+		}
+	}
 } 

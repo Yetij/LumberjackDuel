@@ -22,6 +22,16 @@ public class Server : Photon.PunBehaviour {
     UiDisplay uiDisplay;
     PhotonPlayer[] players;
 
+	public static Server self { get; private set; }
+
+	void Awake () {
+		if (self == null) {
+			self = this;
+		} else {
+			Debug.LogError("Server class is supposed to be used as a singleton !");
+		}
+	}
+
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         playground = Instantiate<Playground>(playgroundPrefab);
@@ -52,27 +62,45 @@ public class Server : Photon.PunBehaviour {
 
     float timer = 0;
     public float turnTime = 10f;
+	int last_sync_time;
 
     void Update ()
     {
         if ( _run & PhotonNetwork.isMasterClient)
         {
-            timer += Time.deltaTime;
-            if ( timer > turnTime )
+            timer -= Time.deltaTime;
+            if ( timer <= 0 )
             {
-                timer = 0;
-                photonView.RPC("ChangeTurn", PhotonTargets.AllViaServer, current == PLAY.ER1 ? (int)PLAY.ER2 : (int)PLAY.ER1);
-            }
+				_run = false;
+				var next = current == PLAY.ER1 ? (int)PLAY.ER2 : (int)PLAY.ER1;
+				var p = character[next].parameters;
+				photonView.RPC("ChangeTurn", PhotonTargets.AllViaServer, next,p.ac, p.points);
+			} else {
+				if (timer <= last_sync_time ) {
+					photonView.RPC("SyncUiTime", PhotonTargets.AllViaServer,last_sync_time);
+					last_sync_time --;
+				}
+			}
         }
     }
 
-    [PunRPC] 
-    void ChangeTurn (int thisTurnPlayer )
-    {
-        current = (PLAY)thisTurnPlayer;
-        uiDisplay.UpdateUi(character[thisTurnPlayer]);
-    }
+	[PunRPC]
+	void SyncUiTime (int i ) {
+		uiDisplay.SetTime (i);
+	}
 
+    [PunRPC] 
+    void ChangeTurn (int thisTurnPlayer,int ac )
+	{
+		current = (PLAY)thisTurnPlayer;
+		uiDisplay.UpdateAc (ac);
+		if (PhotonNetwork.isMasterClient) {
+			timer = turnTime;
+			last_sync_time = (int)Mathf.Ceil(turnTime);
+			_run = true;
+		}
+	}
+	
     [PunRPC]
     void OneSideReady()
     {
@@ -125,8 +153,6 @@ public class Server : Photon.PunBehaviour {
 
     }
 
-    
-
     [PunRPC]
     void OnPlayerChop(int player, int cx, int cy)
     {
@@ -140,8 +166,7 @@ public class Server : Photon.PunBehaviour {
             var c = playground.GetCellAt(cx, cy);
             if ( c.tree != null )
             {
-                OnActionStart();
-                p.VisualChop(cx, cy);
+                p.VisualChop(c);
                 p.parameters.ac-= chopCost;
                 c.tree.VisualBeingChoped(_player);
             }
@@ -149,8 +174,7 @@ public class Server : Photon.PunBehaviour {
             {
                 if (c.character.player != _player)
                 {
-                    OnActionStart();
-                    p.VisualChop(cx, cy);
+                    p.VisualChop(c);
                     p.parameters.ac-= chopCost;
                     c.character.VisualBeingChoped(_player);
                 }
@@ -172,8 +196,7 @@ public class Server : Photon.PunBehaviour {
             var c = playground.GetCellAt(cx, cy);
             if (c.tree == null & c.character == null )
             {
-                OnActionStart();
-                p.VisualPlant(cx, cy);
+                p.VisualPlant(c);
                 p.parameters.ac -= plantCost;
                 c.VisualAddTree(playground.GetTree(type));
             }
@@ -192,20 +215,39 @@ public class Server : Photon.PunBehaviour {
             var c = playground.GetCellAt(cx, cy);
             if (c.tree == null & c.character == null)
             {
-                OnActionStart();
-                p.VisualMoveTo(cx, cy);
+                p.VisualMoveTo(c);
                 p.parameters.ac -= moveCost;
             }
         }
     }
 
-    private void OnActionStart()
+    public void ServerPause()
     {
-        throw new NotImplementedException();
+        if (PhotonNetwork.isMasterClient) {
+			_run = false;
+		}
     }
 
-    public void OnActionDone()
+    public void ServerUnPause()
     {
-        throw new NotImplementedException();
+        if (PhotonNetwork.isMasterClient) 
+		{
+			_run = true;
+			photonView.RPC("UpdateAcUi", PhotonTargets.All, character[(int)current].parameters.ac);
+			photonView.RPC("UpdateAcUi", PhotonTargets.All, (int)current,character[(int)current].parameters.points);
+
+		}
     }
+
+	[PunRPC]
+	void UpdateAcUi (int ac_remains ) 
+	{
+		uiDisplay.UpdateAc (ac_remains);
+	}
+
+	[PunRPC]
+	void UpdatePointsUi (int player, int points ) 
+	{
+		uiDisplay.UpdatePoints ((PLAY)player, points);
+	}
 }
