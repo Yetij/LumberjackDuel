@@ -23,6 +23,9 @@ public class PlantSelection : Photon.MonoBehaviour {
 
     public void OnStartButtonClicked()
     {
+
+        GameObject.FindObjectOfType<Button>().GetComponentInChildren<Text>().text = "wait...";
+
         if (PhotonNetwork.isMasterClient)
         {
             photonView.RPC("MasterReady", PhotonTargets.MasterClient);
@@ -54,7 +57,7 @@ public class PlantSelection : Photon.MonoBehaviour {
     [PunRPC]
     void StartGame()
     {
-        GameObject.FindObjectOfType<Button>().GetComponentInChildren<Text>().text = "wait...";
+        
         plantIndex = 0;
         foreach ( var c in buttons )
         {

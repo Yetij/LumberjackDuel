@@ -12,8 +12,8 @@ public class Server : Photon.PunBehaviour {
     public int gridX = 10, gridY = 10;
     float offsetX = 1f, offsetY = 1f;
 
-    PLAY iAm;
-    PLAY current;
+    public PLAY iAm;
+    public PLAY current;
 
     Playground playground;
     Lumberjack[] character;
@@ -39,10 +39,13 @@ public class Server : Photon.PunBehaviour {
 
         character = new Lumberjack[2];
         var l1 = Instantiate<Lumberjack>(lumberjackPrefab);
-        l1.player = PLAY.ER1;
+        l1.Init(PLAY.ER1, playground.GetCellAtIndex(0,0));
+        l1.parameters.ac = acPerTurn;
         character[0] = l1;
+
         var l2 = Instantiate<Lumberjack>(lumberjackPrefab);
-        l2.player = PLAY.ER2;
+        l2.Init(PLAY.ER2, playground.GetCellAtIndex(gridX-1, 0));
+        l2.parameters.ac = acPerTurn;
         character[1] = l2;
 
         iAm = PhotonNetwork.isMasterClient ? PLAY.ER1 : PLAY.ER2;
@@ -60,23 +63,25 @@ public class Server : Photon.PunBehaviour {
     private UiTree uiTreeSelected;
     private bool _run;
 
-    float timer = 0;
-    public float turnTime = 10f;
+    float turn_timer = 0;
+    public float timePerTurn = 10f;
 	int last_sync_time;
+    public int  acPerTurn = 5;
 
     void Update ()
     {
         if ( _run & PhotonNetwork.isMasterClient)
         {
-            timer -= Time.deltaTime;
-            if ( timer <= 0 )
+            turn_timer -= Time.deltaTime;
+            if ( turn_timer <= 0 )
             {
 				_run = false;
-				var next = current == PLAY.ER1 ? (int)PLAY.ER2 : (int)PLAY.ER1;
+				int next = current == PLAY.ER1 ? (int)PLAY.ER2 : (int)PLAY.ER1;
 				var p = character[next].parameters;
-				photonView.RPC("ChangeTurn", PhotonTargets.AllViaServer, next,p.ac, p.points);
+                p.ac = acPerTurn;
+                photonView.RPC("ChangeTurn", PhotonTargets.AllViaServer, next, p.ac);
 			} else {
-				if (timer <= last_sync_time ) {
+				if (turn_timer <= last_sync_time ) {
 					photonView.RPC("SyncUiTime", PhotonTargets.AllViaServer,last_sync_time);
 					last_sync_time --;
 				}
@@ -95,8 +100,8 @@ public class Server : Photon.PunBehaviour {
 		current = (PLAY)thisTurnPlayer;
 		uiDisplay.UpdateAc (ac);
 		if (PhotonNetwork.isMasterClient) {
-			timer = turnTime;
-			last_sync_time = (int)Mathf.Ceil(turnTime);
+			turn_timer = timePerTurn;
+			last_sync_time = (int)Mathf.Ceil(timePerTurn);
 			_run = true;
 		}
 	}
@@ -120,29 +125,27 @@ public class Server : Photon.PunBehaviour {
         inputAdapter.onTap += OnTap;
         inputAdapter.onDrag += OnDrag;
         players = PhotonNetwork.playerList;
-        _run = true;
+       
+        if ( PhotonNetwork.isMasterClient )
+        {
+            photonView.RPC("ChangeTurn", PhotonTargets.AllViaServer, (int)current, acPerTurn);
+        }
     }
 
     void OnTap ( Vector2 pos )
     {
 
-        Cell c = playground.GetCellAt(pos);
+        Cell c = playground.GetCellAtPos(pos);
+       
         if (c != null)
         {
             if (iAm == current)
             {
-                if (c.tree != null | c.character != null)
+                if ( uiTreeSelected != null )
                 {
-                    photonView.RPC("OnPlayerChop", PhotonTargets.MasterClient, (int)iAm, c.x, c.y);
-                } else
-                {
-                    if ( uiTreeSelected != null )
-                    {
-                        photonView.RPC("OnPlayerPlant", PhotonTargets.MasterClient, (int)iAm, c.x, c.y, (int) uiTreeSelected.type); 
-                    }
-                    else photonView.RPC("OnPlayerMove", PhotonTargets.MasterClient, (int)iAm, c.x, c.y);
-
+                    photonView.RPC("MO_PlayerWantPlant", PhotonTargets.MasterClient, (int)iAm, c.x, c.y, (int) uiTreeSelected.type); 
                 }
+                else photonView.RPC("MO_PlayerWantMoveOrChop", PhotonTargets.MasterClient, (int)iAm, c.x, c.y);
             }
         }
 
@@ -154,36 +157,56 @@ public class Server : Photon.PunBehaviour {
     }
 
     [PunRPC]
-    void OnPlayerChop(int player, int cx, int cy)
+    void MO_PlayerWantMoveOrChop(int player, int cx, int cy)
     {
         var p = character[player];
         PLAY _player = (PLAY)player;
 
-        int chopCost = playground.GetChopCost(p,cx,cy);
-
-        if ( p.parameters.ac - chopCost >= 0  )
+        var c = playground.GetCellAtIndex(cx, cy);
+        if (c != null)
         {
-            var c = playground.GetCellAt(cx, cy);
-            if ( c.tree != null )
+            if ( c.tree == null & c.character == null )
             {
-                p.VisualChop(c);
-                p.parameters.ac-= chopCost;
-                c.tree.VisualBeingChoped(_player);
-            }
-            if (c.character != null)
-            {
-                if (c.character.player != _player)
+                int moveCost = playground.GetMoveCost(p);
+                if (p.parameters.ac - moveCost >= 0)
                 {
-                    p.VisualChop(c);
-                    p.parameters.ac-= chopCost;
-                    c.character.VisualBeingChoped(_player);
+                    p.parameters.ac -= moveCost;
+                    photonView.RPC("VisualMove", PhotonTargets.AllViaServer, player, cx, cy);
                 }
             }
+            else
+            {
+                int chopCost = playground.GetChopCost(p, cx, cy);
+
+                if (c.tree != null)
+                {
+                    p.VisualChop(c);
+                    p.parameters.ac -= chopCost;
+                    c.tree.VisualBeingChoped(_player);
+                    photonView.RPC("VisualChop", PhotonTargets.AllViaServer, player, cx, cy);
+                }
+                if (c.character != null)
+                {
+                    if (c.character.player != _player)
+                    {
+                        p.parameters.ac -= chopCost;
+                        c.character.parameters.hp--;
+                        photonView.RPC("VisualChop", PhotonTargets.AllViaServer, player, cx, cy);
+                        if (c.character.parameters.hp < 0) 
+                        {
+                            _run = false;
+                            Debug.Log("GAME END!!");
+                        }
+                    }
+                }
+            }
+            
         }
+        
     }
 
     [PunRPC]
-    void OnPlayerPlant(int player, int cx, int cy,int treeType)
+    void MO_PlayerWantPlant(int player, int cx, int cy,int treeType)
     {
         var p = character[player];
         PLAY _player = (PLAY)player;
@@ -193,34 +216,57 @@ public class Server : Photon.PunBehaviour {
 
         if (p.parameters.ac - plantCost >= 0)
         {
-            var c = playground.GetCellAt(cx, cy);
+            var c = playground.GetCellAtIndex(cx, cy);
             if (c.tree == null & c.character == null )
             {
-                p.VisualPlant(c);
                 p.parameters.ac -= plantCost;
-                c.VisualAddTree(playground.GetTree(type));
+                photonView.RPC("VisualPlant", PhotonTargets.AllViaServer, player, cx, cy, treeType);
             }
         }
     }
 
-    [PunRPC] 
-    void OnPlayerMove (int player, int cx, int cy)
+   
+    [PunRPC]
+    void VisualMove(int player, int cx, int cy) {
+        var c = playground.GetCellAtIndex(cx, cy);
+        if (c.tree == null & c.character == null)
+        {
+            character[player].VisualMoveTo(c);
+        }
+    }
+
+    [PunRPC]
+    void VisualChop(int player, int cx, int cy)
     {
-        var p = character[player];
+        var c = playground.GetCellAtIndex(cx, cy);
         PLAY _player = (PLAY)player;
 
-        int moveCost = playground.GetMoveCost(p);
-        if (p.parameters.ac - moveCost >= 0)
+        if (c.tree != null)
         {
-            var c = playground.GetCellAt(cx, cy);
-            if (c.tree == null & c.character == null)
+            character[player].VisualChop(c);
+            c.tree.VisualBeingChoped(_player);
+        }
+        if (c.character != null)
+        {
+            if (c.character.player != _player)
             {
-                p.VisualMoveTo(c);
-                p.parameters.ac -= moveCost;
+                character[player].VisualChop(c);
+                c.character.VisualBeingChoped(_player);
             }
         }
     }
+    [PunRPC]
+    void VisualPlant(int player, int cx, int cy, int treetype)
+    {
+        var c = playground.GetCellAtIndex(cx, cy);
+        TreeType type = (TreeType)treetype;
 
+        if (c.tree == null & c.character == null)
+        {
+            character[player].VisualPlant(c);
+            c.VisualAddTree(playground.GetTree(type));
+        }
+    }
     public void ServerPause()
     {
         if (PhotonNetwork.isMasterClient) {
@@ -233,20 +279,19 @@ public class Server : Photon.PunBehaviour {
         if (PhotonNetwork.isMasterClient) 
 		{
 			_run = true;
-			photonView.RPC("UpdateAcUi", PhotonTargets.All, character[(int)current].parameters.ac);
-			photonView.RPC("UpdateAcUi", PhotonTargets.All, (int)current,character[(int)current].parameters.points);
-
+			photonView.RPC("UpdateUiAc", PhotonTargets.All, character[(int)current].parameters.ac);
+			photonView.RPC("UpdateUiPoints", PhotonTargets.All, (int)current,character[(int)current].parameters.points);
 		}
     }
 
 	[PunRPC]
-	void UpdateAcUi (int ac_remains ) 
+	void UpdateUiAc(int ac_remains ) 
 	{
 		uiDisplay.UpdateAc (ac_remains);
 	}
 
 	[PunRPC]
-	void UpdatePointsUi (int player, int points ) 
+	void UpdateUiPoints(int player, int points ) 
 	{
 		uiDisplay.UpdatePoints ((PLAY)player, points);
 	}

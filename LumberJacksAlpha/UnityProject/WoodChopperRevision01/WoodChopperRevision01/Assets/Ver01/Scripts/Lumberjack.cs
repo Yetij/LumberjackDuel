@@ -11,6 +11,12 @@ public class Lumberjack : Photon.MonoBehaviour {
 
 	float move_to_time = 1f;
 
+    public void Init(PLAY _player, Cell c )
+    {
+        player = _player;
+        currentCell = c;
+        transform.position = c.transform.position;
+    }
     public void Chop (Cell target )
     {
 

@@ -8,13 +8,17 @@ public class InputAdapter : MonoBehaviour {
     public event OnDrag onDrag;
     public event OnTap onTap;
 
+    float interval = 0.25f;
+    float last_tap = 0;
+
     Vector3 last_pos;
     void Update()
     {
         var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         
-        if ( Input.GetMouseButton(0) )  // tap 
+        if ( Input.GetMouseButton(0) & Time.time - last_tap > interval )  // tap 
         {
+            last_tap = Time.time;
             last_pos = pos;
             if ( onTap != null )
             {

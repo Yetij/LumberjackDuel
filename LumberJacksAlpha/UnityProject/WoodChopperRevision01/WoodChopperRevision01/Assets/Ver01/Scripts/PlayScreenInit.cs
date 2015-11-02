@@ -10,7 +10,7 @@ public class PlayScreenInit : Photon.MonoBehaviour {
         Debug.Log("OnLevelWasLoaded");
         PhotonNetwork.isMessageQueueRunning = true;
 
-        PhotonNetwork.InstantiateSceneObject(serverPrefab.name, Vector3.zero, Quaternion.identity, 0, null);
+        if ( PhotonNetwork.isMasterClient ) PhotonNetwork.InstantiateSceneObject(serverPrefab.name, Vector3.zero, Quaternion.identity, 0, null);
     }
 
 }

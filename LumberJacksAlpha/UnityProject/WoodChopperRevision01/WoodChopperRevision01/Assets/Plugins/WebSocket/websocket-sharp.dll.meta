@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: beb7dcae4cef1b24abdafabe0aa8f791
+guid: 748eb70bc0d7515498ef73fed155520a
 PluginImporter:
   serializedVersion: 1
   iconMap: {}
@@ -14,7 +14,7 @@ PluginImporter:
       enabled: 0
       settings: {}
     Editor:
-      enabled: 0
+      enabled: 1
       settings:
         CPU: AnyCPU
         DefaultValueInitialized: true
@@ -35,16 +35,15 @@ PluginImporter:
       enabled: 0
       settings:
         CPU: AnyCPU
-    SamsungTV:
-      enabled: 0
-      settings:
-        STV_MODEL: STANDARD_13
     WP8:
       enabled: 0
       settings:
         CPU: AnyCPU
         DontProcess: False
         PlaceholderPath: 
+    WebGL:
+      enabled: 0
+      settings: {}
     Win:
       enabled: 0
       settings:
@@ -54,12 +53,12 @@ PluginImporter:
       settings:
         CPU: AnyCPU
     WindowsStoreApps:
-      enabled: 1
+      enabled: 0
       settings:
         CPU: AnyCPU
         DontProcess: False
-        PlaceholderPath: Assets/Plugins/Metro/Photon3Unity3D.dll
-        SDK: SDK80
+        PlaceholderPath: 
+        SDK: AnySDK
     iOS:
       enabled: 0
       settings:

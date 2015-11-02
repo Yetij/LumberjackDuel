@@ -20,7 +20,7 @@ public class Cell : MonoBehaviour {
         transform.position = new Vector3(x * offsetx,  y * offsety);
     }
 
-    internal void VisualAddTree(AbsTree v)
+    public void VisualAddTree(AbsTree v)
     {
         throw new NotImplementedException();
     }
