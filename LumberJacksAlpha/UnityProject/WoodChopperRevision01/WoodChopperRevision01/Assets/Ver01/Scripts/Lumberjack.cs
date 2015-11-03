@@ -51,7 +51,7 @@ public class Lumberjack : Photon.MonoBehaviour {
 		
 	IEnumerator VisualMoveTo2 (Cell target) {
 		// start animation
-		Server.self.ServerPause();
+		Server.self.Pause();
 		float timer = 0;
 		var from = currentCell.transform.position;
 		var to = target.transform.position;
@@ -62,9 +62,19 @@ public class Lumberjack : Photon.MonoBehaviour {
 			if ( timer >= move_to_time ) {
 				transform.position = to;
 				currentCell = target;
-				Server.self.ServerUnPause();
+				Server.self.Unpause();
 				break;
 			}
 		}
 	}
+
+    internal void GainCredit(int tier)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void BeingChop(Lumberjack p)
+    {
+        throw new NotImplementedException();
+    }
 } 

@@ -1,11 +1,11 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoodChopperRevision01.CSharp.Plugins", "WoodChopperRevision01.CSharp.Plugins.csproj", "{81A6F2F4-8C7A-10E1-7DE8-CFC18BAD2AA0}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{7DC1E59F-362C-0E61-67D6-85650E4E8522}") = "WoodChopperRevision01", "Assembly-CSharp-firstpass.csproj", "{FDA1DAC6-00E5-E6EA-1F2C-2FCCEEA15F8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoodChopperRevision01.CSharp", "WoodChopperRevision01.CSharp.csproj", "{6E46433E-BE8E-A1EC-B2FB-6A39E9279FAD}"
+Project("{7DC1E59F-362C-0E61-67D6-85650E4E8522}") = "WoodChopperRevision01", "Assembly-CSharp.csproj", "{4C5898F7-133C-FEF3-9E35-AF6B632A0B00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoodChopperRevision01.CSharp.Editor", "WoodChopperRevision01.CSharp.Editor.csproj", "{D7927E9D-4943-C3C4-23C3-CFA0C993FF83}"
+Project("{7DC1E59F-362C-0E61-67D6-85650E4E8522}") = "WoodChopperRevision01", "Assembly-CSharp-Editor.csproj", "{13CBB287-A031-F283-F10E-28E925D549F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,20 +13,40 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{81A6F2F4-8C7A-10E1-7DE8-CFC18BAD2AA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81A6F2F4-8C7A-10E1-7DE8-CFC18BAD2AA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81A6F2F4-8C7A-10E1-7DE8-CFC18BAD2AA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81A6F2F4-8C7A-10E1-7DE8-CFC18BAD2AA0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E46433E-BE8E-A1EC-B2FB-6A39E9279FAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E46433E-BE8E-A1EC-B2FB-6A39E9279FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E46433E-BE8E-A1EC-B2FB-6A39E9279FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E46433E-BE8E-A1EC-B2FB-6A39E9279FAD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7927E9D-4943-C3C4-23C3-CFA0C993FF83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7927E9D-4943-C3C4-23C3-CFA0C993FF83}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7927E9D-4943-C3C4-23C3-CFA0C993FF83}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7927E9D-4943-C3C4-23C3-CFA0C993FF83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDA1DAC6-00E5-E6EA-1F2C-2FCCEEA15F8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDA1DAC6-00E5-E6EA-1F2C-2FCCEEA15F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDA1DAC6-00E5-E6EA-1F2C-2FCCEEA15F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDA1DAC6-00E5-E6EA-1F2C-2FCCEEA15F8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C5898F7-133C-FEF3-9E35-AF6B632A0B00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C5898F7-133C-FEF3-9E35-AF6B632A0B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C5898F7-133C-FEF3-9E35-AF6B632A0B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C5898F7-133C-FEF3-9E35-AF6B632A0B00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13CBB287-A031-F283-F10E-28E925D549F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13CBB287-A031-F283-F10E-28E925D549F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13CBB287-A031-F283-F10E-28E925D549F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13CBB287-A031-F283-F10E-28E925D549F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+					GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = null
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+		$0.TextStylePolicy = $3
+		$3.FileWidth = 120
+		$3.TabWidth = 4
+		$3.IndentWidth = 4
+		$3.EolMarker = Unix
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/plain
+		$3.scope = text/plain
+	EndGlobalSection
+
 EndGlobal

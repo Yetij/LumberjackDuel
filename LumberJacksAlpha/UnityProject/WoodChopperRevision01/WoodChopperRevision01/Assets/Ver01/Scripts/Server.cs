@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class Server : Photon.PunBehaviour {
+public class Server : Photon.PunBehaviour
+{
+    public static Server self { get; private set; }
     public Playground playgroundPrefab;
     public Lumberjack lumberjackPrefab;
     public InputAdapter inputAdapterPrefab;
 
+    public List<AbsTree> availableTrees { get; private set;  }
 
     public int gridX = 10, gridY = 10;
     float offsetX = 1f, offsetY = 1f;
@@ -15,14 +18,13 @@ public class Server : Photon.PunBehaviour {
     public PLAY iAm;
     public PLAY current;
 
-    Playground playground;
+    public Playground playground { get; private set; }
     Lumberjack[] character;
     InputAdapter inputAdapter;
 
     UiDisplay uiDisplay;
     PhotonPlayer[] players;
 
-	public static Server self { get; private set; }
 
 	void Awake () {
 		if (self == null) {
@@ -30,7 +32,9 @@ public class Server : Photon.PunBehaviour {
 		} else {
 			Debug.LogError("Server class is supposed to be used as a singleton !");
 		}
-	}
+
+        availableTrees = new List<AbsTree>();
+    }
 
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
@@ -61,7 +65,7 @@ public class Server : Photon.PunBehaviour {
 
     bool onePlayerReady = false;
     private UiTree uiTreeSelected;
-    private bool _run;
+    private int multiLayerLock = -1;
 
     float turn_timer = 0;
     public float timePerTurn = 10f;
@@ -70,15 +74,19 @@ public class Server : Photon.PunBehaviour {
 
     void Update ()
     {
-        if ( _run & PhotonNetwork.isMasterClient)
+        if ( multiLayerLock == 0 & PhotonNetwork.isMasterClient)
         {
             turn_timer -= Time.deltaTime;
             if ( turn_timer <= 0 )
             {
-				_run = false;
+				multiLayerLock = 1;
 				int next = current == PLAY.ER1 ? (int)PLAY.ER2 : (int)PLAY.ER1;
 				var p = character[next].parameters;
                 p.ac = acPerTurn;
+                foreach ( var t in availableTrees )
+                {
+                    t.OnTurnChange();
+                }
                 photonView.RPC("ChangeTurn", PhotonTargets.AllViaServer, next, p.ac);
 			} else {
 				if (turn_timer <= last_sync_time ) {
@@ -102,7 +110,7 @@ public class Server : Photon.PunBehaviour {
 		if (PhotonNetwork.isMasterClient) {
 			turn_timer = timePerTurn;
 			last_sync_time = (int)Mathf.Ceil(timePerTurn);
-			_run = true;
+			multiLayerLock = 0;
 		}
 	}
 	
@@ -159,6 +167,7 @@ public class Server : Photon.PunBehaviour {
     [PunRPC]
     void MO_PlayerWantMoveOrChop(int player, int cx, int cy)
     {
+        if (multiLayerLock != 0) return;
         var p = character[player];
         PLAY _player = (PLAY)player;
 
@@ -180,9 +189,8 @@ public class Server : Photon.PunBehaviour {
 
                 if (c.tree != null)
                 {
-                    p.VisualChop(c);
                     p.parameters.ac -= chopCost;
-                    c.tree.VisualBeingChoped(_player);
+                    c.tree.BeingChoped(p,0);
                     photonView.RPC("VisualChop", PhotonTargets.AllViaServer, player, cx, cy);
                 }
                 if (c.character != null)
@@ -190,11 +198,11 @@ public class Server : Photon.PunBehaviour {
                     if (c.character.player != _player)
                     {
                         p.parameters.ac -= chopCost;
-                        c.character.parameters.hp--;
+                        c.character.BeingChop(p);
                         photonView.RPC("VisualChop", PhotonTargets.AllViaServer, player, cx, cy);
                         if (c.character.parameters.hp < 0) 
                         {
-                            _run = false;
+                            multiLayerLock ++;
                             Debug.Log("GAME END!!");
                         }
                     }
@@ -205,9 +213,30 @@ public class Server : Photon.PunBehaviour {
         
     }
 
+    public void OnVisualTreeFall (int cx, int cy)
+    {
+        if (PhotonNetwork.isMasterClient )
+        {
+            photonView.RPC("VisualTreeFall", PhotonTargets.AllViaServer, cx, cy);
+        }
+    }
+
+    [PunRPC]
+    void VisualTreeFall (int cx, int cy )
+    {
+        var c = playground.GetCellAtIndex(cx, cy);
+        if ( c != null ) {
+            c.tree.VisualFall();
+        } else
+        {
+            throw new UnityException("invalid x,y=" + cx + "," + cy + " , remember the case and tell TUAN");
+        }
+    }
+    
     [PunRPC]
     void MO_PlayerWantPlant(int player, int cx, int cy,int treeType)
     {
+        if (multiLayerLock != 0) return;
         var p = character[player];
         PLAY _player = (PLAY)player;
         TreeType type = (TreeType)treeType;
@@ -267,18 +296,18 @@ public class Server : Photon.PunBehaviour {
             c.VisualAddTree(playground.GetTree(type));
         }
     }
-    public void ServerPause()
+    public void Pause()
     {
         if (PhotonNetwork.isMasterClient) {
-			_run = false;
+			multiLayerLock ++;
 		}
     }
 
-    public void ServerUnPause()
+    public void Unpause()
     {
         if (PhotonNetwork.isMasterClient) 
 		{
-			_run = true;
+			multiLayerLock --;
 			photonView.RPC("UpdateUiAc", PhotonTargets.All, character[(int)current].parameters.ac);
 			photonView.RPC("UpdateUiPoints", PhotonTargets.All, (int)current,character[(int)current].parameters.points);
 		}

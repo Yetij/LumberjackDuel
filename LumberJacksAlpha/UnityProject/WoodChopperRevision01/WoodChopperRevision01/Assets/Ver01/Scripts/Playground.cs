@@ -35,11 +35,11 @@ public class Playground : Photon.PunBehaviour {
     public Cell GetCellAtPos(Vector2 pos)
     {
         var delta = pos - (Vector2) transform.position;
-        int x = (int) Math.Ceiling(delta.x / offsetX);
-        int y = (int) Math.Ceiling(delta.y / offsetY);
+        int x = (int) (delta.x / offsetX);
+        int y = (int) (delta.y / offsetY);
 
         Debug.Log("getting cell at " + x + "," + y);
-        if (x >= 0 & x < gridX & y >= 0 & y < gridY)
+        if ( Valid(x, y) )
         {
             return cells[x, y];
         }
@@ -67,11 +67,34 @@ public class Playground : Photon.PunBehaviour {
 
     public int GetMoveCost(Lumberjack p)
     {
-        return 1;
+        int move_cost = 1;
+        int bonus_move_cost = 0;
+        foreach ( var r in Server.self.availableTrees )
+        {
+            r.MoveCost(p, ref bonus_move_cost);
+        }
+        move_cost += bonus_move_cost;
+        if (move_cost < 0) move_cost = 0;
+        return move_cost;
     }
 
     public int GetChopCost(Lumberjack p,int cx, int cy)
     {
-        return 1;
+        int chop_cost = 1;
+        int bonus_chop_cost = 0;
+        foreach (var r in Server.self.availableTrees)
+        {
+            r.ChopCost(p, ref bonus_chop_cost);
+        }
+        chop_cost += bonus_chop_cost;
+
+        cells[cx, cy].tree.DirectChopCost(ref chop_cost);
+        if (chop_cost < 0) chop_cost = 0;
+        return chop_cost;
+    }
+
+    internal bool Valid(int x, int y)
+    {
+        return x >= 0 & x < gridX & y >= 0 & y < gridY;
     }
 }
