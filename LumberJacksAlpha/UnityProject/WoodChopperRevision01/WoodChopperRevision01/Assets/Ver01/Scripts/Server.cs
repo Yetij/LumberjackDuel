@@ -5,323 +5,268 @@ using System;
 
 public class Server : Photon.PunBehaviour
 {
-    public static Server self { get; private set; }
-    public Playground playgroundPrefab;
-    public Lumberjack lumberjackPrefab;
-    public InputAdapter inputAdapterPrefab;
-
-    public List<AbsTree> availableTrees { get; private set;  }
-
     public int gridX = 10, gridY = 10;
     float offsetX = 1f, offsetY = 1f;
 
+    public LogicPlayground playground { get; private set; }
+
     public PLAY iAm;
-    public PLAY current;
+    public PLAY playing;
 
-    public Playground playground { get; private set; }
-    Lumberjack[] character;
-    InputAdapter inputAdapter;
-
-    UiDisplay uiDisplay;
-    PhotonPlayer[] players;
-
-
-	void Awake () {
-		if (self == null) {
-			self = this;
-		} else {
-			Debug.LogError("Server class is supposed to be used as a singleton !");
-		}
-
-        availableTrees = new List<AbsTree>();
+	void Awake ()
+    {
+        if (!PhotonNetwork.isMasterClient) Destroy(this);
     }
 
-    public override void OnPhotonInstantiate(PhotonMessageInfo info)
+    void Start ()
     {
-        playground = Instantiate<Playground>(playgroundPrefab);
-        playground.Init(gridX, gridY, offsetX, offsetY);
+        playground = new LogicPlayground(gridX, gridY, offsetX, offsetY);
 
-        character = new Lumberjack[2];
-        var l1 = Instantiate<Lumberjack>(lumberjackPrefab);
-        l1.Init(PLAY.ER1, playground.GetCellAtIndex(0,0));
-        l1.parameters.ac = acPerTurn;
+        character = new LogicJack[2];
+
+        var l1 = new LogicJack(PLAY.ER1, 0, 0);
+        l1.ac = acPerTurn;
         character[0] = l1;
 
-        var l2 = Instantiate<Lumberjack>(lumberjackPrefab);
-        l2.Init(PLAY.ER2, playground.GetCellAtIndex(gridX-1, 0));
-        l2.parameters.ac = acPerTurn;
+        var l2 = new LogicJack(PLAY.ER2, gridX - 1, 0);
+        l2.ac = acPerTurn;
         character[1] = l2;
 
-        iAm = PhotonNetwork.isMasterClient ? PLAY.ER1 : PLAY.ER2;
-        current = PLAY.ER1;
+        l1.Opponent = l2;
+        l2.Opponent = l1;
 
-        inputAdapter = Instantiate<InputAdapter>(inputAdapterPrefab);
-
-        uiDisplay = GameObject.FindObjectOfType<UiDisplay>();
-            
-
-        photonView.RPC("OneSideReady", PhotonTargets.MasterClient);
+        ready = new bool[2] { false, false };
     }
 
-    bool onePlayerReady = false;
-    private UiTree uiTreeSelected;
-    private int multiLayerLock = -1;
+  
+    public int  acPerTurn = 5;
+    private LogicJack[] character;
 
+    bool[] ready;
+    private bool _run;
+    [SerializeField] int startTreeNumber;
+
+   
     float turn_timer = 0;
     public float timePerTurn = 10f;
-	int last_sync_time;
-    public int  acPerTurn = 5;
+    int last_sync_time;
+    private bool blockInput;
+    [SerializeField] float dominoDelay;
+
+    [PunRPC] 
+    void S_ClientInited (int player)
+    {
+        ready[player] = true;
+        if ( ready[0] & ready[1] )
+        {
+            playground.RandomTree(startTreeNumber);
+
+            foreach ( var t in playground.trees )
+            {
+                photonView.RPC("C_PlantTree", PhotonTargets.AllViaServer, t.x, t.y,(int) t.type, (int)t.growth );
+            }
+
+            photonView.RPC("C_3sPrepare", PhotonTargets.AllViaServer);
+            ready[0] = false;
+            ready[1] = false;
+        }
+    }
+
+    [PunRPC]
+    void S_ClientPrepared(int player)
+    {
+        ready[player] = true;
+        if (ready[0] & ready[1])
+        {
+            turn_timer = timePerTurn;
+            last_sync_time = (int)Mathf.Ceil(timePerTurn);
+
+            _run = true;
+
+            ready[0] = false;
+            ready[1] = false;
+        }
+    }
 
     void Update ()
     {
-        if ( multiLayerLock == 0 & PhotonNetwork.isMasterClient)
+        if ( _run )
         {
             turn_timer -= Time.deltaTime;
             if ( turn_timer <= 0 )
             {
-				multiLayerLock = 1;
-				int next = current == PLAY.ER1 ? (int)PLAY.ER2 : (int)PLAY.ER1;
-				var p = character[next].parameters;
-                p.ac = acPerTurn;
-                foreach ( var t in availableTrees )
+                _run = false;
+                playing = playing == PLAY.ER1 ? PLAY.ER2 : PLAY.ER1;
+
+                foreach (var c in character) c.ac = acPerTurn;
+
+                playground.TurnChange(character);
+                photonView.RPC("C_TurnChanged", PhotonTargets.AllViaServer, (int)playing, character[(int)playing].ac);
+			}
+            else
+            {
+				if (turn_timer <= last_sync_time )
                 {
-                    t.OnTurnChange();
-                }
-                photonView.RPC("ChangeTurn", PhotonTargets.AllViaServer, next, p.ac);
-			} else {
-				if (turn_timer <= last_sync_time ) {
-					photonView.RPC("SyncUiTime", PhotonTargets.AllViaServer,last_sync_time);
+					photonView.RPC("C_Timer", PhotonTargets.AllViaServer,last_sync_time);
 					last_sync_time --;
 				}
 			}
         }
     }
 
-	[PunRPC]
-	void SyncUiTime (int i ) {
-		uiDisplay.SetTime (i);
-	}
-
-    [PunRPC] 
-    void ChangeTurn (int thisTurnPlayer,int ac )
-	{
-		current = (PLAY)thisTurnPlayer;
-		uiDisplay.UpdateAc (ac);
-		if (PhotonNetwork.isMasterClient) {
-			turn_timer = timePerTurn;
-			last_sync_time = (int)Mathf.Ceil(timePerTurn);
-			multiLayerLock = 0;
-		}
-	}
-	
     [PunRPC]
-    void OneSideReady()
+    void S_PlayerInput (int _player, int x, int y, int _treeSelected )
     {
-        if ( onePlayerReady )
+        if (blockInput) return;
+        PLAY player = (PLAY)_player;
+        if ( player != playing )
         {
-            photonView.RPC("AllReady", PhotonTargets.AllViaServer);
-        } else
-        {
-            onePlayerReady = true;
+            Debug.LogError("This should never happend");
+            return;
         }
-    }
-
-
-    [PunRPC]
-    void AllReady ()
-    {
-        inputAdapter.onTap += OnTap;
-        inputAdapter.onDrag += OnDrag;
-        players = PhotonNetwork.playerList;
-       
-        if ( PhotonNetwork.isMasterClient )
+        TreeType treeSelected = (TreeType)_treeSelected;
+        if ( treeSelected != TreeType.None )
         {
-            photonView.RPC("ChangeTurn", PhotonTargets.AllViaServer, (int)current, acPerTurn);
-        }
-    }
-
-    void OnTap ( Vector2 pos )
-    {
-
-        Cell c = playground.GetCellAtPos(pos);
-       
-        if (c != null)
-        {
-            if (iAm == current)
+            // plant a tree 
+            if ( playground.PlantTree(character[_player], treeSelected, x, y) )
             {
-                if ( uiTreeSelected != null )
-                {
-                    photonView.RPC("MO_PlayerWantPlant", PhotonTargets.MasterClient, (int)iAm, c.x, c.y, (int) uiTreeSelected.type); 
-                }
-                else photonView.RPC("MO_PlayerWantMoveOrChop", PhotonTargets.MasterClient, (int)iAm, c.x, c.y);
+                StartCoroutine(corPlantTree(_player, x, y, _treeSelected, character[_player].ac));
             }
         }
-
-    }
-
-    void OnDrag (Vector2 pos, Vector2 delta)
-    {
-
-    }
-
-    [PunRPC]
-    void MO_PlayerWantMoveOrChop(int player, int cx, int cy)
-    {
-        if (multiLayerLock != 0) return;
-        var p = character[player];
-        PLAY _player = (PLAY)player;
-
-        var c = playground.GetCellAtIndex(cx, cy);
-        if (c != null)
+        else
         {
-            if ( c.tree == null & c.character == null )
+            // move or chop
+            var op = character[_player].Opponent;
+            if ( op.x == x & op.y == y )
             {
-                int moveCost = playground.GetMoveCost(p);
-                if (p.parameters.ac - moveCost >= 0)
+                // chop player
+                if ( op.BeingChop (character[_player]) )
                 {
-                    p.parameters.ac -= moveCost;
-                    photonView.RPC("VisualMove", PhotonTargets.AllViaServer, player, cx, cy);
+                    if (op.hp > 0)
+                    {
+                        StartCoroutine(corChopPlayer(_player, (int)op.player, character[_player].ac));
+                    }
+                    else
+                    {
+                        StartCoroutine(corMatchEnd(_player));
+                    }
                 }
             }
             else
             {
-                int chopCost = playground.GetChopCost(p, cx, cy);
-
-                if (c.tree != null)
+                LogicTree t = playground.TreeAt(x, y);
+                
+                if ( t == null )
                 {
-                    p.parameters.ac -= chopCost;
-                    c.tree.BeingChoped(p,0);
-                    photonView.RPC("VisualChop", PhotonTargets.AllViaServer, player, cx, cy);
-                }
-                if (c.character != null)
-                {
-                    if (c.character.player != _player)
+                    //move
+                    if (playground.PlayerMove(character[_player],x,y))
                     {
-                        p.parameters.ac -= chopCost;
-                        c.character.BeingChop(p);
-                        photonView.RPC("VisualChop", PhotonTargets.AllViaServer, player, cx, cy);
-                        if (c.character.parameters.hp < 0) 
-                        {
-                            multiLayerLock ++;
-                            Debug.Log("GAME END!!");
-                        }
+                        StartCoroutine(corPlayerMove(_player, x, y));
                     }
                 }
-            }
-            
-        }
-        
-    }
-
-    public void OnVisualTreeFall (int cx, int cy)
-    {
-        if (PhotonNetwork.isMasterClient )
-        {
-            photonView.RPC("VisualTreeFall", PhotonTargets.AllViaServer, cx, cy);
-        }
-    }
-
-    [PunRPC]
-    void VisualTreeFall (int cx, int cy )
-    {
-        var c = playground.GetCellAtIndex(cx, cy);
-        if ( c != null ) {
-            c.tree.VisualFall();
-        } else
-        {
-            throw new UnityException("invalid x,y=" + cx + "," + cy + " , remember the case and tell TUAN");
-        }
-    }
-    
-    [PunRPC]
-    void MO_PlayerWantPlant(int player, int cx, int cy,int treeType)
-    {
-        if (multiLayerLock != 0) return;
-        var p = character[player];
-        PLAY _player = (PLAY)player;
-        TreeType type = (TreeType)treeType;
-
-        int plantCost = playground.GetPLantCost(p,type);
-
-        if (p.parameters.ac - plantCost >= 0)
-        {
-            var c = playground.GetCellAtIndex(cx, cy);
-            if (c.tree == null & c.character == null )
-            {
-                p.parameters.ac -= plantCost;
-                photonView.RPC("VisualPlant", PhotonTargets.AllViaServer, player, cx, cy, treeType);
+                else
+                {
+                    // chop tree
+                    List<LogicTree> domino;
+                    if ( playground.ChopTree(character[_player],x,y, out domino) )
+                    {
+                        StartCoroutine(corChopTree(_player, x, y, domino));
+                    }
+                }
+                
             }
         }
+
     }
 
-   
-    [PunRPC]
-    void VisualMove(int player, int cx, int cy) {
-        var c = playground.GetCellAtIndex(cx, cy);
-        if (c.tree == null & c.character == null)
-        {
-            character[player].VisualMoveTo(c);
-        }
-    }
+    // ###################### coroutines ##########################################
 
-    [PunRPC]
-    void VisualChop(int player, int cx, int cy)
+    private IEnumerator corChopTree(int _player, int x, int y, List<LogicTree> domino)
     {
-        var c = playground.GetCellAtIndex(cx, cy);
-        PLAY _player = (PLAY)player;
+        photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
+        blockInput = true;
+        _run = false;
 
-        if (c.tree != null)
+        photonView.RPC("C_AC", PhotonTargets.AllViaServer, character[_player].ac);
+        for (int i =0; i < domino.Count; i ++ )
         {
-            character[player].VisualChop(c);
-            c.tree.VisualBeingChoped(_player);
+            photonView.RPC("C_ChopTree", PhotonTargets.AllViaServer, _player, x, y);
+            yield return new WaitForSeconds(dominoDelay);
         }
-        if (c.character != null)
-        {
-            if (c.character.player != _player)
-            {
-                character[player].VisualChop(c);
-                c.character.VisualBeingChoped(_player);
-            }
-        }
+        photonView.RPC("C_Points", PhotonTargets.AllViaServer, character[_player].points);
+
+        photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
+        blockInput = false;
+        _run = true;
     }
-    [PunRPC]
-    void VisualPlant(int player, int cx, int cy, int treetype)
+
+    private IEnumerator corPlayerMove(int _player, int x, int y)
     {
-        var c = playground.GetCellAtIndex(cx, cy);
-        TreeType type = (TreeType)treetype;
+        photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
+        blockInput = true;
+        _run = false;
 
-        if (c.tree == null & c.character == null)
-        {
-            character[player].VisualPlant(c);
-            c.VisualAddTree(playground.GetTree(type));
-        }
+        photonView.RPC("C_Move", PhotonTargets.AllViaServer, _player, x, y);
+        photonView.RPC("C_AC", PhotonTargets.AllViaServer, character[_player].ac);
+
+        //expect the animation time = 1s for both players in this case
+        yield return new WaitForSeconds(1f);
+
+        photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
+        blockInput = false;
+        _run = true;
     }
-    public void Pause()
+
+    private IEnumerator corMatchEnd(int _player)
     {
-        if (PhotonNetwork.isMasterClient) {
-			multiLayerLock ++;
-		}
+        photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
+        blockInput = true;
+        _run = false;
+
+        character[_player].matchScore++;
+        photonView.RPC("C_MatchEnd", PhotonTargets.AllViaServer, _player, character[0].matchScore, character[1].matchScore);
+       
+        //expect the animation time = 2s for both players in this case
+        yield return new WaitForSeconds(2f);
+
+        // !! SHOULD BE SOME KIND OF RESET MATCH HERE !!
+        photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
+        blockInput = false;
+        _run = true;
     }
 
-    public void Unpause()
+    private IEnumerator corPlantTree(int _player, int x, int y, int _treeSelected, int ac)
     {
-        if (PhotonNetwork.isMasterClient) 
-		{
-			multiLayerLock --;
-			photonView.RPC("UpdateUiAc", PhotonTargets.All, character[(int)current].parameters.ac);
-			photonView.RPC("UpdateUiPoints", PhotonTargets.All, (int)current,character[(int)current].parameters.points);
-		}
+        photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
+        blockInput = true;
+        _run = false;
+
+        photonView.RPC("C_PlantTree", PhotonTargets.AllViaServer, _player, x, y, _treeSelected);
+        photonView.RPC("C_AC", PhotonTargets.AllViaServer, ac);
+
+        //expect the animation time = 0.5s for both players in this case
+        yield return new WaitForSeconds(0.5f);
+
+        photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
+        blockInput = false;
+        _run = true;
     }
 
-	[PunRPC]
-	void UpdateUiAc(int ac_remains ) 
-	{
-		uiDisplay.UpdateAc (ac_remains);
-	}
+    private IEnumerator corChopPlayer(int player, int another,  int ac)
+    {
+        photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
+        blockInput = true;
+        _run = false;
 
-	[PunRPC]
-	void UpdateUiPoints(int player, int points ) 
-	{
-		uiDisplay.UpdatePoints ((PLAY)player, points);
-	}
+        photonView.RPC("C_ChopPlayer", PhotonTargets.AllViaServer, player, another);
+        photonView.RPC("C_AC", PhotonTargets.AllViaServer, ac);
+
+        //expect the animation time = 0.5s for both players in this case
+        yield return new WaitForSeconds(0.5f);
+
+        photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
+        blockInput = false;
+        _run = true;
+    }
+
 }

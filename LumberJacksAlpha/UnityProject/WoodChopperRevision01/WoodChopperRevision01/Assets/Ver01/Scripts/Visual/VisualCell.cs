@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BasicTree : AbsTree {
+public class VisualCell : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

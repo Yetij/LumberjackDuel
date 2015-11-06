@@ -8,7 +8,7 @@ public class InputAdapter : MonoBehaviour {
     public event OnDrag onDrag;
     public event OnTap onTap;
 
-    float interval = 0.25f;
+    float interval = 0.3f;
     float last_tap = 0;
 
     Vector3 last_pos;
