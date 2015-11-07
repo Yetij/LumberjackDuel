@@ -140,7 +140,7 @@ public class Server : Photon.PunBehaviour
             if ( op.x == x & op.y == y )
             {
                 // chop player
-                if ( op.BeingChop (character[_player]) )
+                if ( playground.ChopPlayer(character[_player], character[(int)op.player]) )
                 {
                     if (op.hp > 0)
                     {

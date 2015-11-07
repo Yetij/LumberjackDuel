@@ -142,7 +142,7 @@ public class Client : Photon.PunBehaviour {
     void C_ChopTree (int _player, int x, int y )
     {
         character[_player].Chop(x, y);
-        playground.ChopTree(x, y);
+        playground.ChopTree(character[_player], x, y);
     }
 
     [PunRPC]
@@ -152,23 +152,10 @@ public class Client : Photon.PunBehaviour {
     }
 
     [PunRPC]
-    void C_PlantTree(int x, int y, int tree_type, int growth)
+    void C_PlantTree(int x, int y, int type, int growth)
     {
-        var type = (TreeType)tree_type;
-        var tree_growth = (Growth)growth;
-
-        VisualTree tree = null;
-        foreach (var s in seeds)
-        {
-            if (s.type == type)
-            {
-                tree = Instantiate<VisualTree>(s);
-            }
-        }
-
-        if (tree == null) throw new UnityException("wtf ? type= " + type);
-
-        playground.PlaceTree(tree, x, y);
+        
+        playground.PlaceTree(tree_type, x, y, tree_growth);
     }
 
 }

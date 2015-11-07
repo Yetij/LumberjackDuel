@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class VisualTree : MonoBehaviour {
     internal TreeType type;
@@ -13,4 +14,14 @@ public class VisualTree : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    internal void BeingChoped()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void BeingChoped(VisualJack chopper)
+    {
+        throw new NotImplementedException();
+    }
 }

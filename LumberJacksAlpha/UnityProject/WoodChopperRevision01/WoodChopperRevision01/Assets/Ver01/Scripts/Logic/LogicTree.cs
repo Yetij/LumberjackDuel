@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public enum Growth :int { Small, FullGrown }
 
-public class LogicTree  {
+public abstract class LogicTree  {
     public int x, y;
     public Growth growth;
     public TreeType type;
+    LogicJack owner; 
 
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    virtual public void Init(LogicPlayground logicPlayground,int _x, int _y, LogicJack _owner, Growth _growth = Growth.Small )
+    {
+        x = _x;
+        y = _y;
+        growth = _growth;
+        owner = _owner;
+    }
 }

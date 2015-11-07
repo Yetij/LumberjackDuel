@@ -9,6 +9,13 @@ public class VisualPlayground : MonoBehaviour {
     private float offsetY;
 
     static public VisualPlayground self;
+    private VisualCell[,] cells;
+    private VisualTree[,] trees;
+
+    [SerializeField]
+    VisualCell cellPrefab;
+    [SerializeField]
+    VisualTree[] treeSeeds;
 
     void Awake ()
     {
@@ -20,42 +27,90 @@ public class VisualPlayground : MonoBehaviour {
             throw new UnityException("object Playground must be unique");
         }
     }
-    public void Init(int gridX, int gridY, float offsetX, float offsetY)
+
+    public void Init(int _gridX, int _gridY, float _offsetX, float _offsetY)
     {
-        this.gridX = gridX;
-        this.gridY = gridY;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-        // create cells
+        gridX = _gridX;
+        gridY = _gridY;
+        offsetX = _offsetX;
+        offsetY = _offsetY;
+
+        cells = new VisualCell[_gridX, _gridY];
+        trees = new VisualTree[_gridX, _gridY];
+        for (int y = 0; y < _gridY; y++)
+        {
+            for (int x = 0; x < _gridX; x++)
+            {
+                VisualCell c = Instantiate<VisualCell>(cellPrefab);
+                c.transform.SetParent(transform);
+                c.transform.position = Pos(x, y);
+                cells[x, y] = c;
+            }
+        }
+
+        transform.Translate(new Vector3(-(_gridX - 1) * _offsetY / 2, -(_gridY - 1) * _offsetY / 2));
+        
     }
 
     public Vector3 Pos(int x, int y)
     {
-        throw new NotImplementedException();
+        return new Vector3(x * offsetX, y * offsetY, 0);
     }
 
-    public VisualCell GetCellAtIndex(int v1, int v2)
+    public VisualCell GetCellAtIndex(int x, int y)
     {
-        throw new NotImplementedException();
+        if (ValidIndex(x, y)) return cells[x, y];
+        return null;
     }
 
-    public void PlaceTree(VisualTree tree, int x, int y)
+    public bool ValidPos(Vector2 pos, out int _x, out int _y)
     {
-        throw new NotImplementedException();
+        var position = transform.position;
+        var _fx = pos.x - position.x;
+        var _fy = pos.y - position.y;
+        
+        if ( _fx < 0 | _fy < 0 | _fx >= gridX*offsetX | _fy >= gridY*offsetY )
+        {
+            _x = _y = -1;
+            return false;
+        }
+
+        _x = (int)_fx;
+        _y = (int)_fy;
+
+        return true;
     }
 
-    public bool ValidPos(Vector2 pos, out int x, out int y)
+    bool ValidIndex(int x, int y)
     {
-        throw new NotImplementedException();
+        return x >= 0 & x < gridX & y >= 0 & y < gridY;
     }
 
-    public void ValidPos(Vector2 pos)
+    public void ChopTree(VisualJack chopper, int x, int y)
     {
-        throw new NotImplementedException();
+        if (!ValidIndex(x, y)) throw new UnityException("wtf ? x,y= " + x + "," + y);
+        if ( trees[x,y] == null ) throw new UnityException("wtf no treed? x,y= " + x + "," + y);
+        trees[x, y].BeingChoped(chopper);
     }
 
-    public void ChopTree(int x, int y)
+    internal void PlaceTree(TreeType tree_type, int x, int y, Growth tree_growth)
     {
-        throw new NotImplementedException();
+        if (!ValidIndex(x, y) ) throw new UnityException("wtf ? x,y= " + x+","+y);
+
+        VisualTree tree = null;
+        foreach (var s in treeSeeds)
+        {
+            if (s.type == tree_type)
+            {
+                tree = Instantiate<VisualTree>(s);
+            }
+        }
+
+        if (tree == null) throw new UnityException("wtf ? type= " + tree_type);
+
+        trees[x, y] = tree;
+        tree.transform.SetParent(transform);
+        tree.transform.position = Pos(x, y);
+        // tree set growth
     }
 }
