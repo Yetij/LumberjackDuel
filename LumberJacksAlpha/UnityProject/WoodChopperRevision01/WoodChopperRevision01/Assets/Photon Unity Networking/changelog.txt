@@ -1,3 +1,18 @@
+v1.64.2 (6. November 2015)
+Fixed: SetCustomProperties in PhotonPlayer and Room classes. It applies set properties locally, unless you do a server-side Check and Swap with expected properties. It also does the callbacks as before (CAS delays the callback by one roundtrip, as the server sets it). In OfflineMode, CAS gets ignored but props stored.
+Changed: The Mecanim Demo minimally with a new scene / meshes.
+
+v1.64 (5. November 2015)
+Changed: Online docs are now generated with search enabled.
+Changed: Some scripts in UtilityScripts to not use the PhotonNetwork.networkingPeer directly anymore. This improves compatibility when using PUN in UnityScript.
+Added: Description how to use PUN from UnityScript. This is in the readme.txt.
+Added: PhotonNetwork.ServerTimestamp to expose the low level, synced server timestamp. More doc and usage samples are upcoming.
+Updated: SetCustomProperties() in Room and PhotonPlayer classes. There is now an option to "WebForward" the changes. You can setup a WebHook for this in the Cloud Dashboard (or server config). The parameter expectedProperties is still available (optional, too) to check some key-values before updating the properties.
+Changed: SetCustomProperties() in Room and PhotonPlayer now update the locally cached Custom Properties, as if the client was online. Note: The callbacks (OnPhotonCustomRoomPropertiesChanged and OnPhotonPlayerPropertiesChanged, respectively) get called immediately by SetCustomProperties().
+Changed: PhotonTransformView*Control classes now also update their internally cached values when sending. When transferring ownership, this gives them a recent value as "last networked update", so smoothing and extrapolation works better.
+Updated: To Photon3Unity3d.dll v4.0.0.12.
+
+
 v1.63 (27. October 2015)
 Changed: The case "no match found" is now logged as Warning, instead of Error. This happens and it was confusing if you used "Break on Error" in the Editor.
 Changed: OnMasterClientSwitched handler documentation to make it more clear if the master is still in list or already removed.
@@ -5,7 +20,6 @@ Fixed: 2D Demo. There was an issue with a missing script and the layers. The dem
 Fixed: A bug that prevented manually instantiated GameObjects (PhotonViews) from being cleaned up when a player leaves. Even if you manually instantiate GameObjects, they get cleaned up, as long as PhotonNetwork.autoCleanUpPlayerObjects is true. The doc is updated.
 Changed: Several scripts in demos to handle PUN's both callbacks: OnJoinedLobby() and OnConnectedToMaster(). Which one gets called, depends on the "Auto-Join Lobby" setting in the PhotonServerSettings (default is off / OnConnectedToMaster()). 
 Updated: To latest Photon3Unity3d.dll v4.0.0.11p1.
-
 
 v1.62 (13. October 2015)
 Fixed: Clean up of instantiated Game Objects (Clean Up Cache on Leave). This bug was only in v1.61.

@@ -27,7 +27,7 @@ using System.IO;
 public static class PhotonNetwork
 {
     /// <summary>Version number of PUN. Also used in GameVersion to separate client version from each other.</summary>
-    public const string versionPUN = "1.62";
+    public const string versionPUN = "1.64.2";
 
     /// <summary>Version string for your this build. Can be used to separate incompatible clients. Sent during connect.</summary>
     /// <remarks>This is only sent when you connect so that is also the place you set it usually (e.g. in ConnectUsingSettings).</remarks>
@@ -479,24 +479,23 @@ public static class PhotonNetwork
             if (value && connected)
             {
                 Debug.LogError("Can't start OFFLINE mode while connected!");
+                return;
+            }
+            
+            if (networkingPeer.PeerState != PeerStateValue.Disconnected)
+            {
+                networkingPeer.Disconnect(); // Cleanup (also calls OnLeftRoom to reset stuff)
+            }
+            isOfflineMode = value;
+            if (isOfflineMode)
+            {
+                networkingPeer.ChangeLocalID(-1);
+                NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnConnectedToMaster);
             }
             else
             {
-                if (networkingPeer.PeerState != PeerStateValue.Disconnected)
-                {
-                    networkingPeer.Disconnect(); // Cleanup (also calls OnLeftRoom to reset stuff)
-                }
-                isOfflineMode = value;
-                if (isOfflineMode)
-                {
-                    networkingPeer.ChangeLocalID(-1);
-                    NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnConnectedToMaster);
-                }
-                else
-                {
-                    offlineModeRoom = null;
-                    networkingPeer.ChangeLocalID(-1);
-                }
+                offlineModeRoom = null;
+                networkingPeer.ChangeLocalID(-1);
             }
         }
     }
@@ -809,6 +808,32 @@ public static class PhotonNetwork
                 double t = u;
                 return t / 1000;
             }
+        }
+    }
+
+    /// <summary>
+    /// The current server's millisecond timestamp.
+    /// </summary>
+    /// <remarks>
+    /// This can be useful to sync actions and events on all clients in one room.
+    /// The timestamp is based on the server's Environment.TickCount. 
+    /// 
+    /// It will overflow from a positive to a negative value every so often, so 
+    /// be careful to use only time-differences to check the time delta when things 
+    /// happen.
+    /// 
+    /// This is the basis for PhotonNetwork.time.
+    /// </remarks>
+    public static int ServerTimestamp
+    {
+        get
+        {
+            if (offlineMode)
+            {
+                return Environment.TickCount;
+            }
+            
+            return networkingPeer.ServerTimeInMilliSeconds;
         }
     }
 
@@ -2439,7 +2464,7 @@ public static class PhotonNetwork
         {
             Hashtable newProps = new Hashtable() { { GamePropertyKey.MasterClientId, masterClientPlayer.ID } };
             Hashtable prevProps = new Hashtable() { { GamePropertyKey.MasterClientId, networkingPeer.mMasterClientId } };
-            return networkingPeer.OpSetPropertiesOfRoom(newProps, false, prevProps);
+            return networkingPeer.OpSetPropertiesOfRoom(newProps, expectedProperties: prevProps, webForward: false);
         }
         else
         {

@@ -3,14 +3,23 @@ using System.Collections;
 using System;
 
 public class VisualJack : MonoBehaviour {
-    int x, y;
+    public int x, y;
     private PLAY player;
 
-    public void Init(PLAY eR1, int x, int y)
+    VisualPlayground playground; 
+    
+    void Start ()
+    {
+        playground = GameObject.FindObjectOfType<VisualPlayground>();
+        if (playground == null) throw new UnityException("cant find (visual) Playground");
+    }
+
+    public void Init(PLAY eR1, int x, int y, Vector3 pos)
     {
         player = eR1;
         this.x = x;
         this.y = y;
+        transform.position = pos;
     }
 
     public void Move(int x, int y)
@@ -21,7 +30,7 @@ public class VisualJack : MonoBehaviour {
     private IEnumerator _Move(int x, int y)
     {
         var from = transform.position;
-        var to = VisualPlayground.self.Pos(x, y);
+        var to = playground.Pos(x, y);
         float timer = 0;
 
 

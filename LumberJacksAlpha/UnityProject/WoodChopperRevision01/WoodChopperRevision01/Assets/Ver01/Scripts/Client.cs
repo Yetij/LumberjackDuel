@@ -4,9 +4,7 @@ using System.Collections.Generic;
 
 public class Client : Photon.PunBehaviour {
     [SerializeField] VisualJack jack_prefab;
-    [SerializeField] VisualCell cell_prefab;
     [SerializeField] VisualPlayground playground_prefab;
-    [SerializeField] VisualTree[] seeds;
 
     private VisualPlayground playground;
     private VisualJack[] character;
@@ -17,7 +15,7 @@ public class Client : Photon.PunBehaviour {
 
     private InputAdapter input;
     private UIAdapter ui;
-    private bool lockInput;
+    private bool lockInput = false;
 
     // ################## events / callbacks #############################
     void OnTap(Vector2 pos)
@@ -47,6 +45,7 @@ public class Client : Photon.PunBehaviour {
     [PunRPC]
     void InitClient (int gridX, int gridY, float offsetX , float offsetY )
     {
+        Debug.Log("InitClient");
         playground = Instantiate<VisualPlayground>(playground_prefab);
         playground.name = "Playground";
         playground.Init(gridX, gridY, offsetX, offsetY);
@@ -54,12 +53,12 @@ public class Client : Photon.PunBehaviour {
         character = new VisualJack[2];
 
         var l1 = Instantiate<VisualJack>(jack_prefab);
-        l1.Init(PLAY.ER1, 0, 0);
+        l1.Init(PLAY.ER1,  0, 0, playground.Pos(0,0));
         l1.name = "Jack-1";
         character[0] = l1;
 
         var l2 = Instantiate<VisualJack>(jack_prefab);
-        l2.Init(PLAY.ER2, gridX-1, 0);
+        l2.Init(PLAY.ER2, gridX-1, 0, playground.Pos(gridX - 1, 0));
         l2.name = "Jack-2";
         character[1] = l2;
 
@@ -106,9 +105,9 @@ public class Client : Photon.PunBehaviour {
 
     // ######################### UI #################################
     [PunRPC]
-    void C_Points(int points)
+    void C_Points(int player, int points)
     {
-        ui.Points(points);
+        ui.Points(player,points);
     }
 
     [PunRPC]
@@ -126,7 +125,7 @@ public class Client : Photon.PunBehaviour {
     [PunRPC]
     void C_MatchEnd (int winner, int player1_matchScore, int player2_matchScore )
     {
-
+        // ui show dialog
     }
 
     // ################### Jack Actions #################################
@@ -154,8 +153,7 @@ public class Client : Photon.PunBehaviour {
     [PunRPC]
     void C_PlantTree(int x, int y, int type, int growth)
     {
-        
-        playground.PlaceTree(tree_type, x, y, tree_growth);
+        playground.PlaceTree((TreeType ) type, x, y,(Growth) growth);
     }
 
 }

@@ -9,17 +9,29 @@ public class UIAdapter : MonoBehaviour {
     public TreeType selectedPlant { get; private set; }
     public Toggle currentSelected { get; private set; }
 
-    void Awake ()
+    Text ac, time, player1_points;
+    Text[] player_points;
+
+    void Start()
     {
         ui_plants = GetComponentsInChildren<ToggleAdapter>();
-        foreach ( var u in ui_plants )
+        foreach (var u in ui_plants)
         {
             u.onTreeSelected += TreeSelected;
             u.onTreeDeselected += TreeDeselected;
         }
-    }
+        
+        ac = GameObject.Find("_#TextAc").GetComponent<Text>();
+        time = GameObject.Find("_#TextTime").GetComponent<Text>();
+        var player1_points = GameObject.Find("_#TextPlayer1Points").GetComponent<Text>();
+        var player2_points = GameObject.Find("_#TextPlayer2Points").GetComponent<Text>();
+        player_points = new Text[2] { player1_points, player2_points };
 
-    
+        if (ac == null | time == null | player1_points == null | player2_points == null)
+        {
+            throw new UnityException("Something is missing, check names of ui elements in Hierarchy");
+        }
+    }
 
     void TreeSelected(Toggle toggle, TreeType type )
     {
@@ -40,18 +52,18 @@ public class UIAdapter : MonoBehaviour {
         selectedPlant = TreeType.None;
     }
 
-    internal void Timer(int time)
+    public void Timer(int _time)
     {
-        throw new NotImplementedException();
+        time.text = _time.ToString();
     }
 
-    internal void AC(int ac)
+    public void AC(int _ac)
     {
-        throw new NotImplementedException();
+        ac.text = _ac.ToString();
     }
 
-    internal void Points(int points)
+    public void Points(int player, int points)
     {
-        throw new NotImplementedException();
+        player_points[player].text = points.ToString();
     }
 }

@@ -17,17 +17,6 @@ public class VisualPlayground : MonoBehaviour {
     [SerializeField]
     VisualTree[] treeSeeds;
 
-    void Awake ()
-    {
-        if ( self == null )
-        {
-            self = this;
-        } else
-        {
-            throw new UnityException("object Playground must be unique");
-        }
-    }
-
     public void Init(int _gridX, int _gridY, float _offsetX, float _offsetY)
     {
         gridX = _gridX;
@@ -91,9 +80,10 @@ public class VisualPlayground : MonoBehaviour {
         if (!ValidIndex(x, y)) throw new UnityException("wtf ? x,y= " + x + "," + y);
         if ( trees[x,y] == null ) throw new UnityException("wtf no treed? x,y= " + x + "," + y);
         trees[x, y].BeingChoped(chopper);
+        trees[x, y] = null;
     }
 
-    internal void PlaceTree(TreeType tree_type, int x, int y, Growth tree_growth)
+    public void PlaceTree(TreeType tree_type, int x, int y, Growth tree_growth)
     {
         if (!ValidIndex(x, y) ) throw new UnityException("wtf ? x,y= " + x+","+y);
 
@@ -110,7 +100,7 @@ public class VisualPlayground : MonoBehaviour {
 
         trees[x, y] = tree;
         tree.transform.SetParent(transform);
-        tree.transform.position = Pos(x, y);
+        tree.Init(Pos(x, y), x, y);
         // tree set growth
     }
 }

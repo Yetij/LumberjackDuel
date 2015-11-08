@@ -3,25 +3,21 @@ using System.Collections;
 using System;
 
 public class VisualTree : MonoBehaviour {
-    internal TreeType type;
+    public TreeType type { get; private set;  }
+    public int x { get; private set;  }
+    public int y { get; private set;  }
 
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-    internal void BeingChoped()
+    public void BeingChoped(VisualJack chopper)
     {
-        throw new NotImplementedException();
+        int dirx = x - chopper.x;
+        int dirt = y - chopper.y;
+        
     }
 
-    internal void BeingChoped(VisualJack chopper)
+    public void Init(Vector3 pos, int _x, int _y)
     {
-        throw new NotImplementedException();
+        transform.position = pos;
+        x = _x;
+        y = _y;
     }
 }

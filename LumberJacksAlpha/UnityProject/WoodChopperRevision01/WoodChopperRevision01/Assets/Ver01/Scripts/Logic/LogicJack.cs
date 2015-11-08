@@ -50,4 +50,9 @@ public class LogicJack  {
     {
         throw new NotImplementedException();
     }
+
+    internal int EarnPoints(LogicTree tree, List<LogicTree> domino)
+    {
+        throw new NotImplementedException();
+    }
 }

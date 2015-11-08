@@ -9,8 +9,7 @@ public class Server : Photon.PunBehaviour
     float offsetX = 1f, offsetY = 1f;
 
     public LogicPlayground playground { get; private set; }
-
-    public PLAY iAm;
+    
     public PLAY playing;
 
 	void Awake ()
@@ -20,6 +19,7 @@ public class Server : Photon.PunBehaviour
 
     void Start ()
     {
+        Debug.Log("Server Start");
         playground = new LogicPlayground(gridX, gridY, offsetX, offsetY);
 
         character = new LogicJack[2];
@@ -36,6 +36,8 @@ public class Server : Photon.PunBehaviour
         l2.Opponent = l1;
 
         ready = new bool[2] { false, false };
+
+        photonView.RPC("InitClient", PhotonTargets.AllViaServer,gridX, gridY, offsetX, offsetY);
     }
 
   
@@ -61,9 +63,9 @@ public class Server : Photon.PunBehaviour
         {
             playground.RandomTree(startTreeNumber);
 
-            foreach ( var t in playground.trees )
+            foreach ( var t in playground.cellControl )
             {
-                photonView.RPC("C_PlantTree", PhotonTargets.AllViaServer, t.x, t.y,(int) t.type, (int)t.growth );
+                if ( t != null ) photonView.RPC("C_PlantTree", PhotonTargets.AllViaServer, t.x, t.y,(int) t.type, (int)t.growth );
             }
 
             photonView.RPC("C_3sPrepare", PhotonTargets.AllViaServer);
@@ -188,12 +190,15 @@ public class Server : Photon.PunBehaviour
         _run = false;
 
         photonView.RPC("C_AC", PhotonTargets.AllViaServer, character[_player].ac);
+
+        photonView.RPC("C_ChopTree", PhotonTargets.AllViaServer, _player, x, y);
+        yield return new WaitForSeconds(dominoDelay);
         for (int i =0; i < domino.Count; i ++ )
         {
-            photonView.RPC("C_ChopTree", PhotonTargets.AllViaServer, _player, x, y);
+            photonView.RPC("C_ChopTree", PhotonTargets.AllViaServer, _player, domino[i].x, domino[i].y);
             yield return new WaitForSeconds(dominoDelay);
         }
-        photonView.RPC("C_Points", PhotonTargets.AllViaServer, character[_player].points);
+        photonView.RPC("C_Points", PhotonTargets.AllViaServer, _player, character[_player].points);
 
         photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
         blockInput = false;

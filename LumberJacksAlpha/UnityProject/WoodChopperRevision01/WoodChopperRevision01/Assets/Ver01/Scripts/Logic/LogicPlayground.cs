@@ -1,13 +1,86 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
 using System.Collections.Generic;
+using System;
 
 public delegate void OnPlayerTryChop(LogicJack jack, ref int ac_remain, ref int dirx, ref int diry, ref int priorityLock);
 public delegate void OnPlayerTryPlant(LogicJack jack, ref int ac_remain,ref int priorityLock);
 public delegate void OnPlayerTryMove(LogicJack jack, ref int ac_remain, ref int priorityLock);
 
-public class LogicPlayground  {
+public class Int2 : IEquatable<Int2>
+{
+    public int p, q;
+
+    public bool Equals(Int2 other)
+    {
+        return p == other.p & q == other.q;
+    }
+}
+
+public class CellControl : IEnumerable<LogicTree>
+{
+    LogicTree[,] _trees;
+
+    public List<Int2> free_cells { get; private set; }
+
+    public CellControl(int gx, int gy)
+    {
+        _trees = new LogicTree[gx, gy];
+        free_cells = new List<Int2>(gx * gy);
+        for (int _y = 0; _y < gy; _y++)
+        {
+            for (int _x = 0; _x < gx; _x++)
+            {
+                free_cells.Add(new Int2() { p = _x, q = _y });
+            }
+        }
+    }
+
+    public LogicTree this[int x, int y]
+    {
+        set
+        {
+            _trees[x, y] = value;
+            if (value == null)
+            {
+                free_cells.Add(new Int2() { p = x, q = y });
+            }
+            else
+            {
+                free_cells.Remove(new Int2() { p = x, q = y });
+            }
+        }
+        get
+        {
+            return _trees[x, y];
+        }
+    }
+
+    public IEnumerator<LogicTree> GetEnumerator()
+    {
+        foreach (var r in _trees)
+            yield return r;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+}
+
+public class LogicPlayground {
+    
+    public event OnPlayerTryPlant onPlayerTryPlant;
+    public event Action<LogicJack> onPlayerPlantDone;
+
+    public event OnPlayerTryMove onPlayerTryMove;
+    public event Action<LogicJack> onPlayerMoveDone;
+
+    public event OnPlayerTryChop onPlayerTryChop;
+    public event Action<LogicJack, int> onPlayerChopDone;
+
+    public event Action<LogicJack[]> onTurnChange;
+
     private int gridX;
     private int gridY;
     private float offsetX;
@@ -23,7 +96,8 @@ public class LogicPlayground  {
         TreeType.Stone,
         TreeType.Swamp
     };
-    public LogicTree[,] trees { get; private set; }
+
+    public CellControl cellControl { get; private set;  }
 
     public LogicPlayground(int gridX, int gridY, float offsetX, float offsetY)
     {
@@ -31,24 +105,26 @@ public class LogicPlayground  {
         this.gridY = gridY;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
-        trees = new LogicTree[gridX, gridY];
         priority = 0;
+        cellControl = new CellControl(gridX, gridY);
     }
 
-    public event OnPlayerTryPlant onPlayerTryPlant;
-    public event Action<LogicJack> onPlayerPlantDone;
-
-    public event OnPlayerTryMove onPlayerTryMove;
-    public event Action<LogicJack> onPlayerMoveDone;
-
-    public event OnPlayerTryChop onPlayerTryChop;
-    public event Action<LogicJack,int> onPlayerChopDone;
-
-    public event Action<LogicJack[]> onTurnChange;
+    
 
     public void RandomTree(int startTreeNumber)
     {
-        throw new NotImplementedException();
+        for(int i=0; i < startTreeNumber; i ++ )
+        {
+            Int2 r = RandomFreeCell();
+            TreeType r_type = t_types[UnityEngine.Random.Range(0, t_types.Length)];
+            var t = GetTree(r_type);
+        }
+
+    }
+
+    private Int2 RandomFreeCell()
+    {
+        return cellControl.free_cells.Count > 0 ? cellControl.free_cells[UnityEngine.Random.Range(0, cellControl.free_cells.Count)] : null;
     }
 
     public void TurnChange(LogicJack[] character)
@@ -84,7 +160,7 @@ public class LogicPlayground  {
         
         LogicTree tree = GetTree(treeSelected);
         tree.Init(this, x,y, logicJack);
-        trees[x, y] = tree;
+        cellControl[x, y] = tree;
 
         if (onPlayerPlantDone != null & logicJack != null)
         {
@@ -95,7 +171,26 @@ public class LogicPlayground  {
 
     private LogicTree GetTree(TreeType treeSelected)
     {
-        throw new NotImplementedException();
+        switch( treeSelected )
+        {
+            case TreeType.None:
+                throw new UnityException("TreeType cant be None here");
+            case TreeType.Basic:
+                return new l_BasicTree();
+            case TreeType.BonusAc:
+                return new l_BonusAc();
+            case TreeType.Ethereal:
+                return new l_Ethereal();
+            case TreeType.Monumental:
+                return new l_MonumentalTree();
+            case TreeType.Stone:
+                return new l_Stone();
+            case TreeType.Swamp:
+                return new l_Swamp();
+            default:
+                throw new UnityException("Code should not reach here");
+
+        }
     }
 
     bool ValidIndex(int x, int y)
@@ -125,7 +220,7 @@ public class LogicPlayground  {
 
     public LogicTree TreeAt(int x, int y)
     {
-        if (ValidIndex(x, y)) return trees[x, y];
+        if (ValidIndex(x, y)) return cellControl[x, y];
         return null;
     }
     public bool ChopTree(LogicJack jack, int x, int y, out List<LogicTree> domino)
@@ -159,18 +254,40 @@ public class LogicPlayground  {
         jack.ac = ac_remain;
 
         domino = new List<LogicTree>();
-        for (int i = x, j = y; i < gridX & i >= 0 & j < gridY & j >= 0; i += dirx, j += diry)
+        var tree = cellControl[x, y];
+        if (ChopTree2(jack, tree))
         {
-            if (trees[i, j] != null) domino.Add(trees[i, j]);
-            else break;
+
+            for (int i = x, j = y; i < gridX & i >= 0 & j < gridY & j >= 0; i += dirx, j += diry)
+            {
+                if (cellControl[i, j] != null)
+                {
+                    if (!cellControl[i, j].AffectedByDomino()) break;
+                    domino.Add(cellControl[i, j]);
+                    if (!cellControl[i, j].PassDomino()) break;
+                }
+                else break;
+            }
         }
-        int earned_point = jack.EarnPoints(domino);
+
+        int earned_point = jack.EarnPoints(tree,domino);
 
         if (onPlayerChopDone != null)
         {
             onPlayerChopDone(jack, earned_point);
         }
         return true;
+    }
+
+    private bool ChopTree2(LogicJack jack, LogicTree logicTree)
+    {
+        if (logicTree.BeingChopped(jack))
+        {
+            cellControl[logicTree.x, logicTree.y] = null;
+            logicTree.Flush(this);
+            return true;
+        }
+        return false;
     }
 
     public bool ChopPlayer(LogicJack chopper, LogicJack another)
