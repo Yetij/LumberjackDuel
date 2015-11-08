@@ -13,8 +13,10 @@ public class ToggleAdapter : MonoBehaviour {
     void Awake ()
     {
         toggle = GetComponent<Toggle>();
+        toggle.onValueChanged.AddListener(ValueChanged);
     }
-    public void ValueChanged ( bool current )
+
+    void ValueChanged ( bool current )
     {
         if ( onTreeSelected != null & current )
         {

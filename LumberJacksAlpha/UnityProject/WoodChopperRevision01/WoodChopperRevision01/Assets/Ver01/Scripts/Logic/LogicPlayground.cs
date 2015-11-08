@@ -10,6 +10,12 @@ public delegate void OnPlayerTryMove(LogicJack jack, ref int ac_remain, ref int 
 public class Int2 : IEquatable<Int2>
 {
     public int p, q;
+    
+    public Int2(int _x, int _y)
+    {
+        p = _x;
+        q = _y;
+    }
 
     public bool Equals(Int2 other)
     {
@@ -31,7 +37,7 @@ public class CellControl : IEnumerable<LogicTree>
         {
             for (int _x = 0; _x < gx; _x++)
             {
-                free_cells.Add(new Int2() { p = _x, q = _y });
+                free_cells.Add(new Int2 (_x,_y) );
             }
         }
     }
@@ -43,11 +49,11 @@ public class CellControl : IEnumerable<LogicTree>
             _trees[x, y] = value;
             if (value == null)
             {
-                free_cells.Add(new Int2() { p = x, q = y });
+                free_cells.Add(new Int2(x, y));
             }
             else
             {
-                free_cells.Remove(new Int2() { p = x, q = y });
+                free_cells.Remove(new Int2(x, y));
             }
         }
         get

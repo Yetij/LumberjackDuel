@@ -58,6 +58,8 @@ public class VisualPlayground : MonoBehaviour {
         var position = transform.position;
         var _fx = pos.x - position.x;
         var _fy = pos.y - position.y;
+        Debug.Log("click pos = " + pos);
+        Debug.Log("pos = " + position);
         
         if ( _fx < 0 | _fy < 0 | _fx >= gridX*offsetX | _fy >= gridY*offsetY )
         {
@@ -65,8 +67,10 @@ public class VisualPlayground : MonoBehaviour {
             return false;
         }
 
-        _x = (int)_fx;
-        _y = (int)_fy;
+        _x = (int)(_fx/offsetX);
+        _y = (int)(_fy/offsetY);
+        Debug.Log("result = " + new Int2(_x,_y));
+
 
         return true;
     }

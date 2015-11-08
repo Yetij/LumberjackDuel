@@ -17,6 +17,10 @@ public class Connector: PunBehaviour
 
     public void Start()
     {
+        Debug.Log((int) 1.7f);
+        Debug.Log((int)1.2f);
+        Debug.Log((int)(-1.2f));
+        Debug.Log((int)(-1.7f));
         message = GameObject.FindObjectOfType<Text>();
         PhotonNetwork.autoJoinLobby = false;
         PhotonNetwork.playerName = my_name + Random.Range(0, 1000);
