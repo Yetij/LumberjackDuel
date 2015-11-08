@@ -77,6 +77,7 @@ public class Server : Photon.PunBehaviour
     [PunRPC]
     void S_ClientPrepared(int player)
     {
+        Debug.Log("S_ClientPrepared");
         ready[player] = true;
         if (ready[0] & ready[1])
         {
@@ -84,6 +85,7 @@ public class Server : Photon.PunBehaviour
             last_sync_time = (int)Mathf.Ceil(timePerTurn);
 
             _run = true;
+            Debug.Log("RUN = true");
 
             ready[0] = false;
             ready[1] = false;
@@ -95,23 +97,26 @@ public class Server : Photon.PunBehaviour
         if ( _run )
         {
             turn_timer -= Time.deltaTime;
-            if ( turn_timer <= 0 )
+            if ( turn_timer < 0 & last_sync_time * turn_timer > 0 )
             {
-                _run = false;
                 playing = playing == PLAY.ER1 ? PLAY.ER2 : PLAY.ER1;
-
+                    
                 foreach (var c in character) c.ac = acPerTurn;
 
-                playground.TurnChange(character);
+                playground.TurnChange(character);   
+
+                turn_timer = timePerTurn;
+                last_sync_time = (int)Mathf.Ceil(timePerTurn);
+
                 photonView.RPC("C_TurnChanged", PhotonTargets.AllViaServer, (int)playing, character[(int)playing].ac);
 			}
             else
             {
 				if (turn_timer <= last_sync_time )
                 {
-					photonView.RPC("C_Timer", PhotonTargets.AllViaServer,last_sync_time);
-					last_sync_time --;
-				}
+                    photonView.RPC("C_Timer", PhotonTargets.AllViaServer,last_sync_time);
+                    last_sync_time--;
+                }
 			}
         }
     }
@@ -123,7 +128,6 @@ public class Server : Photon.PunBehaviour
         PLAY player = (PLAY)_player;
         if ( player != playing )
         {
-            Debug.LogError("This should never happend");
             return;
         }
         TreeType treeSelected = (TreeType)_treeSelected;

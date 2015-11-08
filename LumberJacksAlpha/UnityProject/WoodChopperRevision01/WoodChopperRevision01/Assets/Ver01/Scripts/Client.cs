@@ -16,11 +16,12 @@ public class Client : Photon.PunBehaviour {
     private InputAdapter input;
     private UIAdapter ui;
     private bool lockInput = false;
+    private bool localLock;
 
     // ################## events / callbacks #############################
     void OnTap(Vector2 pos)
     {
-        if (lockInput) return;
+        if ( iAm != playing | lockInput) return;
         int x, y;
         if ( playground.ValidPos(pos,out x, out y) )
         {
@@ -37,7 +38,7 @@ public class Client : Photon.PunBehaviour {
    
     void OnDrag(Vector2 pos, Vector2 delta)
     {
-        if (lockInput) return;
+        if (iAm != playing | lockInput) return;
 
     }
 
@@ -54,6 +55,7 @@ public class Client : Photon.PunBehaviour {
 
         var l1 = Instantiate<VisualJack>(jack_prefab);
         l1.Init(PLAY.ER1,  0, 0, playground.Pos(0,0));
+        Debug.Log("jack 1 pos = " + playground.Pos(0, 0));
         l1.name = "Jack-1";
         character[0] = l1;
 
@@ -100,7 +102,6 @@ public class Client : Photon.PunBehaviour {
     {
         ui.AC(ac);
         playing = (PLAY)player;
-
     }
 
     // ######################### UI #################################

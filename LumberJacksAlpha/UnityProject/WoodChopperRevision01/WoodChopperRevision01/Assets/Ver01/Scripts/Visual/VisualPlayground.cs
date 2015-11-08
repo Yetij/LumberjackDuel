@@ -32,7 +32,7 @@ public class VisualPlayground : MonoBehaviour {
             {
                 VisualCell c = Instantiate<VisualCell>(cellPrefab);
                 c.transform.SetParent(transform);
-                c.transform.position = Pos(x, y);
+                c.transform.position = new Vector3( x * offsetX, y * offsetY , 0 );
                 cells[x, y] = c;
             }
         }
@@ -43,7 +43,8 @@ public class VisualPlayground : MonoBehaviour {
 
     public Vector3 Pos(int x, int y)
     {
-        return new Vector3(x * offsetX, y * offsetY, 0);
+        var r = transform.position;
+        return new Vector3(x * offsetX + r.x, y * offsetY + r.y, 0);
     }
 
     public VisualCell GetCellAtIndex(int x, int y)
