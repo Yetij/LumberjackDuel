@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 public class VisualTree : MonoBehaviour {
-    public TreeType type { get; private set;  }
+    public TreeType type;
     public int x { get; private set;  }
     public int y { get; private set;  }
 
@@ -11,7 +11,8 @@ public class VisualTree : MonoBehaviour {
     {
         int dirx = x - chopper.x;
         int dirt = y - chopper.y;
-        
+
+        Destroy(gameObject);
     }
 
     public void Init(Vector3 pos, int _x, int _y)

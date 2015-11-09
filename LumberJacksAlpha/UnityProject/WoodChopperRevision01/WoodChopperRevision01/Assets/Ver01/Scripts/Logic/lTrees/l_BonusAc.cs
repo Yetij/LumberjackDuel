@@ -7,6 +7,7 @@ public class l_BonusAc : LogicTree
     {
         base.Init(logicPlayground, _x, _y, _owner, _growth);
         logicPlayground.onTurnChange += GiveBonusAc;
+        type = TreeType.BonusAc;
     }
 
     public override void Flush(LogicPlayground logicPlayground)

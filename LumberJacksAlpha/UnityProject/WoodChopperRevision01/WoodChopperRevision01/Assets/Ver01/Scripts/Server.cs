@@ -85,7 +85,10 @@ public class Server : Photon.PunBehaviour
             last_sync_time = (int)Mathf.Ceil(timePerTurn);
 
             _run = true;
-            Debug.Log("RUN = true");
+
+            playing = PLAY.ER1;
+
+            photonView.RPC("C_TurnChanged", PhotonTargets.AllViaServer, (int)playing, character[(int)playing].ac);
 
             ready[0] = false;
             ready[1] = false;
@@ -124,7 +127,7 @@ public class Server : Photon.PunBehaviour
     [PunRPC]
     void S_PlayerInput (int _player, int x, int y, int _treeSelected )
     {
-        if (blockInput) return;
+        if (blockInput | !_run ) return;
         PLAY player = (PLAY)_player;
         if ( player != playing )
         {
@@ -134,10 +137,13 @@ public class Server : Photon.PunBehaviour
         if ( treeSelected != TreeType.None )
         {
             // plant a tree 
-            if ( playground.PlantTree(character[_player], treeSelected, x, y) )
+            if ( playground.PlantTree(character,_player, treeSelected, x, y) )
             {
-                StartCoroutine(corPlantTree(_player, x, y, _treeSelected, character[_player].ac));
+                Debug.Log("SERVER Player plant tree OK x,y=" + new Int2(x, y));
+                StartCoroutine(corPlantTree(_player, x, y, _treeSelected, character[_player].ac, (int) Growth.Small));
             }
+            else
+                Debug.Log("SERVER Player plant tree FAILED");
         }
         else
         {
@@ -148,6 +154,7 @@ public class Server : Photon.PunBehaviour
                 // chop player
                 if ( playground.ChopPlayer(character[_player], character[(int)op.player]) )
                 {
+                    Debug.Log("SERVER Player chop player OK");
                     if (op.hp > 0)
                     {
                         StartCoroutine(corChopPlayer(_player, (int)op.player, character[_player].ac));
@@ -157,6 +164,8 @@ public class Server : Photon.PunBehaviour
                         StartCoroutine(corMatchEnd(_player));
                     }
                 }
+                else
+                    Debug.Log("SERVER  Player chop player FAILED");
             }
             else
             {
@@ -167,8 +176,11 @@ public class Server : Photon.PunBehaviour
                     //move
                     if (playground.PlayerMove(character[_player],x,y))
                     {
+                        Debug.Log("SERVER Player move OK");
                         StartCoroutine(corPlayerMove(_player, x, y));
                     }
+                    else
+                        Debug.Log("SERVER Player move FAILED");
                 }
                 else
                 {
@@ -176,42 +188,43 @@ public class Server : Photon.PunBehaviour
                     List<LogicTree> domino;
                     if ( playground.ChopTree(character[_player],x,y, out domino) )
                     {
+                        Debug.Log("SERVER Player chop tree OK ");
                         StartCoroutine(corChopTree(_player, x, y, domino));
                     }
+                    else
+                        Debug.Log("SERVER Player chop tree FAILED");
                 }
-                
             }
         }
-
     }
 
     // ###################### coroutines ##########################################
 
     private IEnumerator corChopTree(int _player, int x, int y, List<LogicTree> domino)
     {
-        photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
+        //photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
         blockInput = true;
         _run = false;
 
         photonView.RPC("C_AC", PhotonTargets.AllViaServer, character[_player].ac);
 
         photonView.RPC("C_ChopTree", PhotonTargets.AllViaServer, _player, x, y);
-        yield return new WaitForSeconds(dominoDelay);
+        yield return new WaitForSeconds(Definitions.visual_tree_fall_time);
         for (int i =0; i < domino.Count; i ++ )
         {
             photonView.RPC("C_ChopTree", PhotonTargets.AllViaServer, _player, domino[i].x, domino[i].y);
-            yield return new WaitForSeconds(dominoDelay);
+            yield return new WaitForSeconds(Definitions.visual_tree_fall_time);
         }
         photonView.RPC("C_Points", PhotonTargets.AllViaServer, _player, character[_player].points);
 
-        photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
+        //photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
         blockInput = false;
         _run = true;
     }
 
     private IEnumerator corPlayerMove(int _player, int x, int y)
     {
-        photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
+       // photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
         blockInput = true;
         _run = false;
 
@@ -219,51 +232,50 @@ public class Server : Photon.PunBehaviour
         photonView.RPC("C_AC", PhotonTargets.AllViaServer, character[_player].ac);
 
         //expect the animation time = 1s for both players in this case
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(Definitions.visual_move_time);
 
-        photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
+        //photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
         blockInput = false;
         _run = true;
     }
 
     private IEnumerator corMatchEnd(int _player)
     {
-        photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
+        //photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
         blockInput = true;
         _run = false;
 
         character[_player].matchScore++;
         photonView.RPC("C_MatchEnd", PhotonTargets.AllViaServer, _player, character[0].matchScore, character[1].matchScore);
        
-        //expect the animation time = 2s for both players in this case
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(Definitions.visual_match_end);
 
         // !! SHOULD BE SOME KIND OF RESET MATCH HERE !!
-        photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
+        //photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
         blockInput = false;
         _run = true;
     }
 
-    private IEnumerator corPlantTree(int _player, int x, int y, int _treeSelected, int ac)
+    private IEnumerator corPlantTree(int _player, int x, int y, int _treeSelected, int ac, int growth)
     {
-        photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
+        //photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
         blockInput = true;
         _run = false;
 
-        photonView.RPC("C_PlantTree", PhotonTargets.AllViaServer, _player, x, y, _treeSelected);
+        photonView.RPC("C_PlantTree", PhotonTargets.AllViaServer, x, y, _treeSelected, growth);
         photonView.RPC("C_AC", PhotonTargets.AllViaServer, ac);
 
         //expect the animation time = 0.5s for both players in this case
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(Definitions.visual_chop_player_time);
 
-        photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
+        //photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
         blockInput = false;
         _run = true;
     }
 
     private IEnumerator corChopPlayer(int player, int another,  int ac)
     {
-        photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
+        //photonView.RPC("C_Lock", PhotonTargets.AllViaServer);
         blockInput = true;
         _run = false;
 
@@ -271,9 +283,9 @@ public class Server : Photon.PunBehaviour
         photonView.RPC("C_AC", PhotonTargets.AllViaServer, ac);
 
         //expect the animation time = 0.5s for both players in this case
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(Definitions.visual_chop_player_time);
 
-        photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
+        //photonView.RPC("C_Unlock", PhotonTargets.AllViaServer);
         blockInput = false;
         _run = true;
     }

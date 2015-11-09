@@ -37,8 +37,7 @@ public class VisualPlayground : MonoBehaviour {
             }
         }
 
-        transform.Translate(new Vector3(-(_gridX - 1) * _offsetY / 2, -(_gridY - 1) * _offsetY / 2));
-        
+        transform.Translate(new Vector3(-(_gridX - 1) * _offsetX / 2f, -(_gridY - 1) * _offsetY / 2f));
     }
 
     public Vector3 Pos(int x, int y)
@@ -56,10 +55,8 @@ public class VisualPlayground : MonoBehaviour {
     public bool ValidPos(Vector2 pos, out int _x, out int _y)
     {
         var position = transform.position;
-        var _fx = pos.x - position.x;
-        var _fy = pos.y - position.y;
-        Debug.Log("click pos = " + pos);
-        Debug.Log("pos = " + position);
+        var _fx = pos.x - position.x + offsetX/2;
+        var _fy = pos.y - position.y + offsetY/2;
         
         if ( _fx < 0 | _fy < 0 | _fx >= gridX*offsetX | _fy >= gridY*offsetY )
         {
@@ -69,9 +66,7 @@ public class VisualPlayground : MonoBehaviour {
 
         _x = (int)(_fx/offsetX);
         _y = (int)(_fy/offsetY);
-        Debug.Log("result = " + new Int2(_x,_y));
-
-
+        
         return true;
     }
 

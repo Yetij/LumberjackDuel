@@ -7,7 +7,10 @@ public class LogicJack  {
     public int hp, ac, x, y;
     public int points;
     public int matchScore ;
-    public int range;
+    public int chop_range = 1; // default;
+    public int move_range = 1;  // default;
+    public int plant_range = 1;  // default;
+
 
     public LogicJack Opponent { get; internal set; }
 
@@ -21,38 +24,51 @@ public class LogicJack  {
         points = 0;
     }
 
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
     internal bool BeingChop(LogicJack logicJack)
     {
-        throw new NotImplementedException();
+        // hp --;
+        //throw new NotImplementedException();
+        UnityEngine.Debug.Log("Unimplemented feature ");
+        return true;
     }
 
-    internal bool ValidRange(int x, int y)
+    internal bool ValidChopRange(int x, int y)
     {
-        throw new NotImplementedException();
+        return Math.Abs(this.x - x) <= chop_range & Math.Abs(this.y - y) <= chop_range;
     }
 
-    internal int EarnPoints(List<LogicTree> domino)
+
+    internal int EstimateEarnedPoints(LogicTree tree, List<LogicTree> domino)
     {
-        throw new NotImplementedException();
+        int p = 0;
+        if ( domino.Count > 0 )
+        {
+            p = domino.Count+1;
+            p *= p;
+        } else
+        {
+            p = 1;
+        }
+        return p;
     }
 
-    public static explicit operator int (LogicJack v)
+    internal bool ValidMoveRange(int x, int y)
     {
-        throw new NotImplementedException();
+        int _x = Math.Abs(this.x - x);
+        int _y = Math.Abs(this.y - y);
+        if (_x > plant_range | _y > plant_range) return false;
+        if (_x * _y > 0) return false;
+        return true;
     }
 
-    internal int EarnPoints(LogicTree tree, List<LogicTree> domino)
+    internal void MoveTo(int x, int y)
     {
-        throw new NotImplementedException();
+        this.x = x;
+        this.y = y;
+    }
+
+    internal bool ValidPlantRange(int x, int y)
+    {
+        return Math.Abs(this.x - x) <= plant_range & Math.Abs(this.y - y) <= plant_range;
     }
 }

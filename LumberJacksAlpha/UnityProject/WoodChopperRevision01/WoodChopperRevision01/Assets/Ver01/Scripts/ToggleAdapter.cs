@@ -9,11 +9,21 @@ public class ToggleAdapter : MonoBehaviour {
 
     public TreeType treeType;
     private Toggle toggle;
+    private Text label;
+
+    public bool isOn
+    {
+        get
+        {
+            return toggle.isOn;
+        }
+    }
 
     void Awake ()
     {
         toggle = GetComponent<Toggle>();
         toggle.onValueChanged.AddListener(ValueChanged);
+        label = GetComponentInChildren<Text>();
     }
 
     void ValueChanged ( bool current )
@@ -24,10 +34,14 @@ public class ToggleAdapter : MonoBehaviour {
         }
         if (onTreeDeselected != null & !current)
         {
-            onTreeSelected(toggle, treeType);
+            onTreeDeselected(toggle, treeType);
         }
     }
 
+    public void SetText ( string s)
+    {
+        label.text = s;
+    }
     public void Flush ()
     {
         toggle.isOn = false;

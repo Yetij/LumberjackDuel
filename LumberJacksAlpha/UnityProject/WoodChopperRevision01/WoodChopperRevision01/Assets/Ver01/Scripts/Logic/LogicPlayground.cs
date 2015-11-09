@@ -6,6 +6,7 @@ using System;
 public delegate void OnPlayerTryChop(LogicJack jack, ref int ac_remain, ref int dirx, ref int diry, ref int priorityLock);
 public delegate void OnPlayerTryPlant(LogicJack jack, ref int ac_remain,ref int priorityLock);
 public delegate void OnPlayerTryMove(LogicJack jack, ref int ac_remain, ref int priorityLock);
+public delegate void OnPlayerChopDone(LogicJack jack, ref int earned_points);
 
 public class Int2 : IEquatable<Int2>
 {
@@ -20,6 +21,11 @@ public class Int2 : IEquatable<Int2>
     public bool Equals(Int2 other)
     {
         return p == other.p & q == other.q;
+    }
+
+    public override string ToString()
+    {
+        return "(" + p + "," + q + ")";
     }
 }
 
@@ -41,7 +47,7 @@ public class CellControl : IEnumerable<LogicTree>
             }
         }
     }
-
+    
     public LogicTree this[int x, int y]
     {
         set
@@ -83,7 +89,7 @@ public class LogicPlayground {
     public event Action<LogicJack> onPlayerMoveDone;
 
     public event OnPlayerTryChop onPlayerTryChop;
-    public event Action<LogicJack, int> onPlayerChopDone;
+    public event OnPlayerChopDone onPlayerChopDone;
 
     public event Action<LogicJack[]> onTurnChange;
 
@@ -142,33 +148,55 @@ public class LogicPlayground {
     }
 
 
-    public bool PlantTree(LogicJack logicJack, TreeType treeSelected, int x, int y)
+    public bool PlantTree(LogicJack[] jacks, int player, TreeType treeSelected, int x, int y)
     {
         if (!ValidIndex(x, y))
         {
             Debug.LogError("wtf ? x,y= " + x + "," + y);
             return false;
         }
-        if (treeSelected == TreeType.None)
+
+        if ( cellControl[x,y] != null )
         {
-            Debug.LogError("TreeType cant be None in this case");
+            Debug.LogError("there is already a tree at " + x + "," + y);
             return false;
         }
-        int ac_remain = logicJack.ac;
-        int priorityLock = 0;
-        if ( onPlayerTryPlant != null & logicJack != null)
+
+        foreach (var j in jacks)
         {
-            onPlayerTryPlant(logicJack,ref ac_remain, ref priorityLock);
+            if (j.x == x & j.y == y)
+            {
+                return false;
+            }
         }
 
-        if (ac_remain < 0) return false;
-        logicJack.ac = ac_remain;
+        if (treeSelected == TreeType.None)
+        {
+            return false;
+        }
+
+        LogicJack logicJack = null;
+        if (player >= 0)
+        {
+            logicJack = jacks[player];
+            if (!logicJack.ValidPlantRange(x, y)) return false;
+
+            int ac_remain = logicJack.ac - 1; // default plant cost
+            int priorityLock = 0;
+            if (onPlayerTryPlant != null)
+            {
+                onPlayerTryPlant(logicJack, ref ac_remain, ref priorityLock);
+            }
+
+            if (ac_remain < 0) return false;
+            logicJack.ac = ac_remain;
+        }
         
         LogicTree tree = GetTree(treeSelected);
-        tree.Init(this, x,y, logicJack);
+        tree.Init(this, x,y, logicJack );
         cellControl[x, y] = tree;
 
-        if (onPlayerPlantDone != null & logicJack != null)
+        if (onPlayerPlantDone != null & player >= 0 )
         {
             onPlayerPlantDone(logicJack);
         }
@@ -206,15 +234,24 @@ public class LogicPlayground {
 
     public bool PlayerMove(LogicJack jack,int x,int y)
     {
-        int ac_remain = jack.ac;
+        if (!jack.ValidMoveRange(x, y)) return false;
+        if (jack.x == x & jack.y == y) return false;
+
+        int ac_remain = jack.ac-1; // default cost
         int priorityLock = 0;
         if (onPlayerTryMove != null)
         {
             onPlayerTryMove(jack, ref ac_remain, ref priorityLock);
         }
 
-        if (ac_remain < 0 ) return false;
+        if (ac_remain < 0)
+        {
+            Debug.Log("not enough ac");
+            return false;
+        }
+
         jack.ac = ac_remain;
+        jack.MoveTo(x, y); 
 
         if (onPlayerMoveDone != null)
         {
@@ -233,7 +270,7 @@ public class LogicPlayground {
     {
         domino = null;
 
-        if (!jack.ValidRange(x, y)) return false;
+        if (!jack.ValidChopRange(x, y)) return false;
 
         if (!ValidIndex(x, y))
         {
@@ -244,7 +281,7 @@ public class LogicPlayground {
         int dirx = x - jack.x;
         int diry = y - jack.y;
 
-        int ac_remain = jack.ac;
+        int ac_remain = jack.ac - 1; // default cost = 1;
         int priorityLock = 0;
         if ( onPlayerTryChop != null )
         {
@@ -257,37 +294,51 @@ public class LogicPlayground {
         }
 
         if (ac_remain < 0) return false;
-        jack.ac = ac_remain;
-
-        domino = new List<LogicTree>();
+        
         var tree = cellControl[x, y];
-        if (ChopTree2(jack, tree))
+        
+        if (!ChopTree2(jack, tree)) return false;
+
+        //tree chop succeeded
+        jack.ac = ac_remain;
+        domino = new List<LogicTree>();
+        
+        for (int i = x+ dirx, j = y+diry; i < gridX & i >= 0 & j < gridY & j >= 0; i += dirx, j += diry)
         {
-
-            for (int i = x, j = y; i < gridX & i >= 0 & j < gridY & j >= 0; i += dirx, j += diry)
+            var t = cellControl[i, j];
+            if ( t != null)
             {
-                if (cellControl[i, j] != null)
+                if (!ChopTree2(jack, t, false)) break;
+                domino.Add(t);
+                if (!t.PassDomino())
                 {
-                    if (!cellControl[i, j].AffectedByDomino()) break;
-                    domino.Add(cellControl[i, j]);
-                    if (!cellControl[i, j].PassDomino()) break;
+                    break;
                 }
-                else break;
             }
+            else break;
         }
+        
+        int earned_point = jack.EstimateEarnedPoints(tree, domino);
 
-        int earned_point = jack.EarnPoints(tree,domino);
+        tree.AfterChop(jack, ref earned_point);
+        foreach ( var _t in domino)
+        {
+            _t.AfterChop(jack, ref earned_point);
+        }
 
         if (onPlayerChopDone != null)
         {
-            onPlayerChopDone(jack, earned_point);
+            onPlayerChopDone(jack,ref earned_point);
         }
+
+        jack.points += earned_point;
+
         return true;
     }
 
-    private bool ChopTree2(LogicJack jack, LogicTree logicTree)
+    private bool ChopTree2(LogicJack jack, LogicTree logicTree,bool directly = true)
     {
-        if (logicTree.BeingChopped(jack))
+        if (logicTree.BeingChopped(jack, directly))
         {
             cellControl[logicTree.x, logicTree.y] = null;
             logicTree.Flush(this);
@@ -298,7 +349,7 @@ public class LogicPlayground {
 
     public bool ChopPlayer(LogicJack chopper, LogicJack another)
     {
-        if (!chopper.ValidRange(another.x, another.y)) return false;
+        if (!chopper.ValidChopRange(another.x, another.y)) return false;
 
         int dirx = another.x - chopper.x;
         int diry = another.y - chopper.y;
@@ -321,8 +372,10 @@ public class LogicPlayground {
 
         if (onPlayerChopDone != null)
         {
-            onPlayerChopDone(chopper, 0);
+            int zero = 0;
+            onPlayerChopDone(chopper,ref zero);
         }
+        
         return true;
     }
 }

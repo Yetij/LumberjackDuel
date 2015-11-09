@@ -33,13 +33,10 @@ public class VisualJack : MonoBehaviour {
         var to = playground.Pos(x, y);
         float timer = 0;
 
-
-        // animation time should be the same time as delay time on server 
-        // need additional class to maintain this!!
-        while ( timer < 1f)
+        while ( timer < Definitions.visual_move_time)
         {
             timer += Time.deltaTime;
-            transform.position = Vector3.Lerp(from, to, timer / 1f);
+            transform.position = Vector3.Lerp(from, to, timer / Definitions.visual_move_time);
             yield return null;
         }
 
@@ -61,6 +58,6 @@ public class VisualJack : MonoBehaviour {
     public void Chop(int x, int y)
     {
         // animate 
-        throw new NotImplementedException();
+        Debug.Log("CLIENT player chop");
     }
 }

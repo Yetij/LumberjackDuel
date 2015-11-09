@@ -1,17 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Definitions : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+public class Definitions {
+    static public float visual_match_end = 5f;
+    internal static float visual_tree_fall_time = 0.5f;
+    internal static float visual_chop_player_time = 0.5f;
+    internal static float visual_move_time = 0.3f;
 }
 
 public enum PLAY : int { ER1 = 0, ER2 = 1 };

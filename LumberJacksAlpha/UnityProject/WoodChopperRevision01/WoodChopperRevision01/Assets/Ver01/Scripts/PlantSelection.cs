@@ -11,13 +11,13 @@ public class PlantSelection : Photon.MonoBehaviour {
         PhotonNetwork.isMessageQueueRunning = true;
     }
 
-    Toggle[] buttons;
+    ToggleAdapter[] buttons;
     private bool nonMasterReady;
     private bool masterReady;
 
     void Start ()
     {
-        buttons = GameObject.FindObjectsOfType<Toggle>();
+        buttons = GameObject.FindObjectsOfType<ToggleAdapter>();
     }
 
 
@@ -63,7 +63,7 @@ public class PlantSelection : Photon.MonoBehaviour {
         {
             if ( c.isOn )
             {
-                PlayerPrefs.SetString("fukingtreehash_tree" + plantIndex, c.name);
+                PlayerPrefs.SetInt("fukingtreehash_tree" + plantIndex, (int)c.treeType);
                 plantIndex++;
                 if (plantIndex == 3) break;
             }

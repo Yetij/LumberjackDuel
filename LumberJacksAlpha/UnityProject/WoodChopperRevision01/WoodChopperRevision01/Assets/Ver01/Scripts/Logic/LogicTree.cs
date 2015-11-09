@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 
-public enum Growth :int { Small, FullGrown }
+public enum Growth :int { Small = 0, FullGrown =1}
 
 public static class LogicTreeExtensions
 {
@@ -28,22 +28,23 @@ public abstract class LogicTree {
         owner = _owner;
     }
 
-    virtual public bool BeingChopped(LogicJack jack)
+    virtual public bool BeingChopped(LogicJack jack, bool directly)
     {
         return true;
     }
 
     virtual public bool PassDomino()
     {
-        return growth != Growth.Small;
-    }
-
-    virtual public bool AffectedByDomino()
-    {
+        Debug.LogError("!MODIFIED FOR TEST PURPOSE ONLY !");
         return true;
+        //return growth != Growth.Small;
     }
 
     virtual public void Flush(LogicPlayground logicPlayground)
+    {
+    }
+
+    internal void AfterChop(LogicJack jack, ref int earned_point)
     {
     }
 }

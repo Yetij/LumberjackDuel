@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 public class l_Stone : LogicTree
 {
-
-    public override bool AffectedByDomino()
+    public override void Init(LogicPlayground logicPlayground, int _x, int _y, LogicJack _owner, Growth _growth = Growth.Small)
     {
-        return false;
+        base.Init(logicPlayground, _x, _y, _owner, _growth);
+        type = TreeType.Stone;
     }
 
     public override bool PassDomino()
@@ -14,7 +14,7 @@ public class l_Stone : LogicTree
         return false;
     }
 
-    public override bool BeingChopped(LogicJack jack)
+    public override bool BeingChopped(LogicJack jack,bool directly)
     {
         return false;
     }

@@ -12,6 +12,7 @@ public class UIAdapter : MonoBehaviour {
     Text ac, time, player1_points;
     Text[] player_points;
 
+    static int plants_nb = 3;
     void Start()
     {
         ui_plants = GetComponentsInChildren<ToggleAdapter>();
@@ -21,6 +22,12 @@ public class UIAdapter : MonoBehaviour {
             u.onTreeDeselected += TreeDeselected;
         }
         
+        for(int i =0; i < plants_nb; i ++ )
+        {
+            var type = (TreeType ) PlayerPrefs.GetInt("fukingtreehash_tree" + i);
+            ui_plants[i].treeType = type;
+            ui_plants[i].SetText(type.ToString());
+        }
         ac = GameObject.Find("_#TextAc").GetComponent<Text>();
         time = GameObject.Find("_#TextTime").GetComponent<Text>();
         var player1_points = GameObject.Find("_#TextPlayer1Points").GetComponent<Text>();
@@ -35,7 +42,7 @@ public class UIAdapter : MonoBehaviour {
 
     void TreeSelected(Toggle toggle, TreeType type )
     {
-        if( currentSelected != toggle )
+        if(currentSelected != null & currentSelected != toggle )
         {
             currentSelected.isOn = false;
         }

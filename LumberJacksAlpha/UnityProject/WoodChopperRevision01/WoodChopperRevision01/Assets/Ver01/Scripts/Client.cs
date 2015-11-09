@@ -154,6 +154,7 @@ public class Client : Photon.PunBehaviour {
     [PunRPC]
     void C_PlantTree(int x, int y, int type, int growth)
     {
+        Debug.Log("Client place tree at " + new Int2(x, y));
         playground.PlaceTree((TreeType ) type, x, y,(Growth) growth);
     }
 

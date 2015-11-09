@@ -123,12 +123,10 @@
      <Compile Include="Assets\Ver01\Scripts\Server.cs" />
      <Compile Include="Assets\Ver01\Scripts\ToggleAdapter.cs" />
      <Compile Include="Assets\Ver01\Scripts\UIAdapter.cs" />
-     <Compile Include="Assets\Ver01\Scripts\UiDisplay.cs" />
      <Compile Include="Assets\Ver01\Scripts\Visual\VisualCell.cs" />
      <Compile Include="Assets\Ver01\Scripts\Visual\VisualJack.cs" />
      <Compile Include="Assets\Ver01\Scripts\Visual\VisualPlayground.cs" />
      <Compile Include="Assets\Ver01\Scripts\Visual\VisualTree.cs" />
-     <Compile Include="Assets\Ver01\Scripts\Visual\vTrees\v__BasicTree.cs" />
      <None Include="Assets\Plugins\Photon3Unity3D.xml" />
      <None Include="Assets\Plugins\release_history.txt" />
      <None Include="Assets\Photon Unity Networking\readme.txt" />
