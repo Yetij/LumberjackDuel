@@ -1,9 +1,19 @@
 fileFormatVersion: 2
 guid: fca020a6256ea4344964373fe2c762d5
-timeCreated: 1446931574
+timeCreated: 1447112982
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: top_ui_element_0
+    21300002: top_ui_element_1
+    21300004: top_ui_element_2
+    21300006: top_ui_element_3
+    21300008: top_ui_element_4
+    21300010: top_ui_element_5
+    21300012: top_ui_element_6
+    21300014: top_ui_element_7
+    21300016: top_ui_element_8
+    21300018: top_ui_element_9
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -26,11 +36,11 @@ TextureImporter:
   cubemapConvolutionSteps: 8
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: -3
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: -1
+    aniso: 16
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -38,7 +48,7 @@ TextureImporter:
   rGBM: 0
   compressionQuality: 50
   allowsAlphaSplitting: 0
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -49,7 +59,107 @@ TextureImporter:
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: top_ui_element_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 427
+        width: 509
+        height: 238
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: top_ui_element_1
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 340
+        width: 98
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: top_ui_element_2
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 347
+        width: 48
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: top_ui_element_3
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 343
+        width: 115
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: top_ui_element_4
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 0
+        width: 102
+        height: 388
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: top_ui_element_5
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 261
+        width: 84
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: top_ui_element_6
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 203
+        width: 166
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: top_ui_element_7
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 107
+        width: 205
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: top_ui_element_8
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 107
+        width: 133
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: top_ui_element_9
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 21
+        width: 47
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
   assetBundleName: 

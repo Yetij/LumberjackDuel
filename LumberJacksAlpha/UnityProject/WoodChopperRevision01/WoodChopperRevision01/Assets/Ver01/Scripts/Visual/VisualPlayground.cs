@@ -37,7 +37,7 @@ public class VisualPlayground : MonoBehaviour {
             }
         }
 
-        transform.Translate(new Vector3(-(_gridX - 1) * _offsetX / 2f, -(_gridY - 1) * _offsetY / 2f));
+        transform.Translate(new Vector3(-(_gridX - 1) * _offsetX / 2f, -(_gridY - 1) * _offsetY / 2f -1));
     }
 
     public Vector3 Pos(int x, int y)

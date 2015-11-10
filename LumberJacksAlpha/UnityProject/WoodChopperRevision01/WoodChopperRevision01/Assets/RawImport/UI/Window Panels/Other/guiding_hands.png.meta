@@ -1,9 +1,14 @@
 fileFormatVersion: 2
 guid: 15e5e3419fa57e8499fcb709e1b45a96
-timeCreated: 1446931570
+timeCreated: 1447108068
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: guiding_hands_0
+    21300002: guiding_hands_1
+    21300004: guiding_hands_2
+    21300006: guiding_hands_3
+    21300008: guiding_hands_4
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -30,7 +35,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: -1
+    aniso: 16
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -38,7 +43,7 @@ TextureImporter:
   rGBM: 0
   compressionQuality: 50
   allowsAlphaSplitting: 0
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -49,7 +54,57 @@ TextureImporter:
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: guiding_hands_0
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 474
+        width: 402
+        height: 343
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: guiding_hands_1
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 511
+        width: 181
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: guiding_hands_2
+      rect:
+        serializedVersion: 2
+        x: 769
+        y: 523
+        width: 180
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: guiding_hands_3
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 17
+        width: 440
+        height: 348
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: guiding_hands_4
+      rect:
+        serializedVersion: 2
+        x: 630
+        y: 38
+        width: 387
+        height: 318
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
   assetBundleName: 
