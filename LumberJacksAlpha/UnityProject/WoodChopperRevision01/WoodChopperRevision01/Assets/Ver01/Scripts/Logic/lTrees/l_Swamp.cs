@@ -19,4 +19,10 @@ public class l_Swamp : LogicTree
         if (!this.InRange(jack, area)) return; 
         ac_remain -= slow_penalty;   // normal move cost = 1;
     }
+
+    public override void Flush(LogicPlayground logicPlayground)
+    {
+
+        logicPlayground.onPlayerTryMove -= MakeThemMoveHarder;
+    }
 }

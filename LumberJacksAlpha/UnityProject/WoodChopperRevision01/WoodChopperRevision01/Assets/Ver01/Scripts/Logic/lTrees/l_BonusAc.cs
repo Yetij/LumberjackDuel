@@ -12,7 +12,6 @@ public class l_BonusAc : LogicTree
 
     public override void Flush(LogicPlayground logicPlayground)
     {
-        base.Flush(logicPlayground);
         logicPlayground.onTurnChange -= GiveBonusAc;
     }
 
