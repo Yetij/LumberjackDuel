@@ -1,9 +1,20 @@
 fileFormatVersion: 2
 guid: 0b6dafe6ac963ea4bb18366758c2716b
-timeCreated: 1446931570
+timeCreated: 1447370347
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: round_bottom_Corner_0
+    21300002: round_bottom_Corner_1
+    21300004: round_bottom_Corner_2
+    21300006: round_bottom_Corner_3
+    21300008: round_bottom_Corner_4
+    21300010: round_bottom_Corner_5
+    21300012: round_bottom_Corner_6
+    21300014: round_bottom_Corner_7
+    21300016: round_bottom_Corner_8
+    21300018: round_bottom_Corner_9
+    21300020: round_bottom_Corner_10
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -30,7 +41,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: -1
+    aniso: 16
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -38,7 +49,7 @@ TextureImporter:
   rGBM: 0
   compressionQuality: 50
   allowsAlphaSplitting: 0
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -49,7 +60,117 @@ TextureImporter:
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: round_bottom_Corner_0
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 697
+        width: 443
+        height: 417
+      alignment: 8
+      pivot: {x: 1, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: round_bottom_Corner_1
+      rect:
+        serializedVersion: 2
+        x: 477
+        y: 673
+        width: 394
+        height: 387
+      alignment: 8
+      pivot: {x: 1, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: round_bottom_Corner_2
+      rect:
+        serializedVersion: 2
+        x: 915
+        y: 597
+        width: 464
+        height: 541
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: round_bottom_Corner_3
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 216
+        width: 387
+        height: 419
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: round_bottom_Corner_4
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 675
+        width: 442
+        height: 22
+      alignment: 8
+      pivot: {x: 1, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: round_bottom_Corner_5
+      rect:
+        serializedVersion: 2
+        x: 962
+        y: 373
+        width: 161
+        height: 158
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: round_bottom_Corner_6
+      rect:
+        serializedVersion: 2
+        x: 1182
+        y: 360
+        width: 161
+        height: 158
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: round_bottom_Corner_7
+      rect:
+        serializedVersion: 2
+        x: 933
+        y: 157
+        width: 161
+        height: 159
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: round_bottom_Corner_8
+      rect:
+        serializedVersion: 2
+        x: 1159
+        y: 128
+        width: 203
+        height: 203
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: round_bottom_Corner_9
+      rect:
+        serializedVersion: 2
+        x: 952
+        y: 9
+        width: 123
+        height: 129
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: round_bottom_Corner_10
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 627
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
   assetBundleName: 

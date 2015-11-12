@@ -14,8 +14,6 @@ public class VisualPlayground : MonoBehaviour {
 
     [SerializeField]
     VisualCell cellPrefab;
-    [SerializeField]
-    VisualTree[] treeSeeds;
 
     public void Init(int _gridX, int _gridY, float _offsetX, float _offsetY)
     {
@@ -88,15 +86,12 @@ public class VisualPlayground : MonoBehaviour {
         if (!ValidIndex(x, y) ) throw new UnityException("wtf ? x,y= " + x+","+y);
 
         VisualTree tree = null;
-        foreach (var s in treeSeeds)
-        {
-            if (s.type == tree_type)
-            {
-                tree = Instantiate<VisualTree>(s);
-            }
-        }
+        var seed = MonoRefCenter.instance.Get(tree_type);
+        
 
-        if (tree == null) throw new UnityException("wtf ? type= " + tree_type);
+        if (seed == null) throw new UnityException("wtf ? type= " + tree_type);
+
+        tree = Instantiate<VisualTree>(seed);
 
         trees[x, y] = tree;
         tree.transform.SetParent(transform);

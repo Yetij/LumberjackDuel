@@ -9,7 +9,7 @@ public class ToggleAdapter : MonoBehaviour {
 
     public TreeType treeType;
     private Toggle toggle;
-    private Text label;
+    private Image treeDisplay;
 
     public bool isOn
     {
@@ -23,7 +23,7 @@ public class ToggleAdapter : MonoBehaviour {
     {
         toggle = GetComponent<Toggle>();
         toggle.onValueChanged.AddListener(ValueChanged);
-        label = GetComponentInChildren<Text>();
+        treeDisplay = transform.FindChild("Label").GetComponent<Image>();
     }
 
     void ValueChanged ( bool current )
@@ -38,9 +38,9 @@ public class ToggleAdapter : MonoBehaviour {
         }
     }
 
-    public void SetText ( string s)
+    public void SetImage ( Sprite s)
     {
-        label.text = s;
+        treeDisplay.sprite = s;
     }
     public void Flush ()
     {
