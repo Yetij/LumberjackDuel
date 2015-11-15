@@ -10,8 +10,17 @@ public class VisualTree : MonoBehaviour {
     public void BeingChoped(VisualJack chopper)
     {
         int dirx = x - chopper.x;
-        int dirt = y - chopper.y;
+        int diry = y - chopper.y;
 
+        StartCoroutine(BeingChoped2(dirx, diry));
+    }
+
+    private IEnumerator BeingChoped2(int dirx, int diry)
+    {
+        
+        var c = GetComponent<Animator>();
+        if (c) c.Play("fall_01");
+        yield return new WaitForSeconds(1f);
         Destroy(gameObject);
     }
 
