@@ -17,7 +17,7 @@ public class VisualTree : MonoBehaviour {
 
     private IEnumerator BeingChoped2(int dirx, int diry)
     {
-        
+        transform.Rotate(new Vector3(0,0,90f));
         var c = GetComponent<Animator>();
         if (c) c.Play("fall_01");
         yield return new WaitForSeconds(1f);
