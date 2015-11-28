@@ -15,15 +15,21 @@ public class VisualTree : MonoBehaviour {
         StartCoroutine(BeingChoped2(dirx, diry));
     }
 
-    private IEnumerator BeingChoped2(int dirx, int diry)
+    private IEnumerator BeingChoped2(int x, int y)
     {
-        transform.Rotate(new Vector3(0,0,90f));
-        var c = GetComponent<Animator>();
-        if (c) c.Play("fall_01");
+        var animator = GetComponent<Animator>();
+        if (animator == null)
+            throw new UnityException("Component Animator not found");
+        animator.Play(x.ToString() + y.ToString());
+        
         yield return new WaitForSeconds(1f);
         Destroy(gameObject);
     }
 
+    bool PairEquals ( int x1, int y1, int x2, int y2)
+    {
+        return x1 == x2 & y1 == y2;
+    }
     public void Init(Vector3 pos, int _x, int _y)
     {
         transform.position = pos;

@@ -13,7 +13,7 @@ public class l_MonumentalTree : LogicTree
     public override bool BeingChopped(LogicJack jack, bool directly)
     {
         Debug.LogError("!MODIFIED FOR TEST PURPOSE ONLY !");
-        return directly? true: false;
+        return true;
         //if (!directly & growth == Growth.FullGrown) return false;
        // return true;
     }
