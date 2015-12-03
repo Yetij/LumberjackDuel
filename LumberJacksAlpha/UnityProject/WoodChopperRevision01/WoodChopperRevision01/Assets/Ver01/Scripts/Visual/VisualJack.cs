@@ -52,7 +52,7 @@ public class VisualJack : MonoBehaviour {
 
     public void BeingChop(VisualJack visualJack)
     {
-        throw new NotImplementedException();
+        Debug.LogError("NotImplementedException");
     }
 
     public void Chop(int x, int y)

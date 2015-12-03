@@ -247,7 +247,7 @@ public class LogicPlayground {
         if (ac_remain < 0)
         {
             Debug.Log("not enough ac");
-            return false;
+            return false;   
         }
 
         jack.ac = ac_remain;

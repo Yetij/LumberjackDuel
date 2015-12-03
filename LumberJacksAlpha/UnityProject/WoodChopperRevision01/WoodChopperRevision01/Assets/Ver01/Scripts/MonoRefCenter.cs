@@ -19,6 +19,7 @@ public class MonoRefCenter : MonoBehaviour {
     
     [SerializeField] VisualTree[] treeSeeds;
 
+   
     public VisualTree Get(TreeType type)
     {
         foreach( var r in treeSeeds )

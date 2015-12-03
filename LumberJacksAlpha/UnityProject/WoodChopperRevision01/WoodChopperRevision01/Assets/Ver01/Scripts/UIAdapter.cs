@@ -26,7 +26,8 @@ public class UIAdapter : MonoBehaviour {
         {
             var type = (TreeType ) PlayerPrefs.GetInt("fukingtreehash_tree" + i);
             ui_plants[i].treeType = type;
-            ui_plants[i].SetImage(MonoRefCenter.instance.Get(type).GetComponent<SpriteRenderer>().sprite);
+            var _t = MonoRefCenter.instance.Get(type);
+            if ( _t.Icon != null)  ui_plants[i].SetImage(_t.Icon);
         }
         ac = GameObject.Find("_#TextAc").GetComponent<Text>();
         time = GameObject.Find("_#TextTime").GetComponent<Text>();
