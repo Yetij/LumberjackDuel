@@ -7,10 +7,13 @@ public class VisualTree : MonoBehaviour {
     public Vector3 offset;
     public int x { get; private set;  }
     public int y { get; private set;  }
-    public virtual Sprite Icon
+
+    [SerializeField]
+    Sprite icon;
+    public Sprite Icon
     {
-        get;
-        set;
+        get { return icon; }
+        set { icon = value; }
     }
     public void BeingChoped(VisualJack chopper)
     {
