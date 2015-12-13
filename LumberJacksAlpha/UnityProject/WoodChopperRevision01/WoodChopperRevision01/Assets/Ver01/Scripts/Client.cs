@@ -92,8 +92,8 @@ public class Client : Photon.PunBehaviour {
     [PunRPC]
     IEnumerator C_3sPrepare ()
     {
-        Debug.Log("3sec for preparation");
-        yield return new WaitForSeconds(3f);
+        Debug.Log(Definitions.DelayAtBeginningTime + " sec for preparation");
+        yield return new WaitForSeconds(Definitions.DelayAtBeginningTime);
         photonView.RPC("S_ClientPrepared", PhotonTargets.MasterClient, (int)iAm);
     }
 

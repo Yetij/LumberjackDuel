@@ -6,6 +6,7 @@ public class Definitions {
     internal static float visual_tree_fall_time = 0.5f;
     internal static float visual_chop_player_time = 0.5f;
     internal static float visual_move_time = 0.3f;
+    internal static float DelayAtBeginningTime = 2f;
 }
 
 public enum PLAY : int { ER1 = 0, ER2 = 1 };
