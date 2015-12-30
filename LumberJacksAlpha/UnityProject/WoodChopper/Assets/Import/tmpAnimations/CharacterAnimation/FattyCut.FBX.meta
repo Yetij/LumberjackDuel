@@ -1,0 +1,361 @@
+fileFormatVersion: 2
+guid: f4ce95aaa94c33a4ba357ced8744de90
+timeCreated: 1451517934
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Box003
+    100002: Character_Ctrl:ChestEndEffector
+    100004: Character_Ctrl:ChestOriginEffector
+    100006: Character_Ctrl:Head
+    100008: Character_Ctrl:HeadEffector
+    100010: Character_Ctrl:Hips
+    100012: Character_Ctrl:HipsEffector
+    100014: Character_Ctrl:LeftAnkleEffector
+    100016: Character_Ctrl:LeftArm
+    100018: Character_Ctrl:LeftElbowEffector
+    100020: Character_Ctrl:LeftFoot
+    100022: Character_Ctrl:LeftForeArm
+    100024: Character_Ctrl:LeftHand
+    100026: Character_Ctrl:LeftHipEffector
+    100028: Character_Ctrl:LeftKneeEffector
+    100030: Character_Ctrl:LeftLeg
+    100032: Character_Ctrl:LeftShoulder
+    100034: Character_Ctrl:LeftShoulderEffector
+    100036: Character_Ctrl:LeftUpLeg
+    100038: Character_Ctrl:LeftWristEffector
+    100040: Character_Ctrl:Neck
+    100042: Character_Ctrl:Reference
+    100044: Character_Ctrl:RightAnkleEffector
+    100046: Character_Ctrl:RightArm
+    100048: Character_Ctrl:RightElbowEffector
+    100050: Character_Ctrl:RightFoot
+    100052: Character_Ctrl:RightForeArm
+    100054: Character_Ctrl:RightHand
+    100056: Character_Ctrl:RightHipEffector
+    100058: Character_Ctrl:RightKneeEffector
+    100060: Character_Ctrl:RightLeg
+    100062: Character_Ctrl:RightShoulder
+    100064: Character_Ctrl:RightShoulderEffector
+    100066: Character_Ctrl:RightUpLeg
+    100068: Character_Ctrl:RightWristEffector
+    100070: Character_Ctrl:Spine
+    100072: Fatty:Head
+    100074: Fatty:HeadEnd
+    100076: Fatty:Hips
+    100078: Fatty:LeftArm
+    100080: Fatty:LeftArmEnd
+    100082: Fatty:LeftFoot
+    100084: Fatty:LeftForeArm
+    100086: Fatty:LeftHand
+    100088: Fatty:LeftLeg
+    100090: Fatty:LeftLegEnd
+    100092: Fatty:LeftShoulder
+    100094: Fatty:LeftUpLeg
+    100096: Fatty:Neck
+    100098: Fatty:Reference
+    100100: Fatty:RightArm
+    100102: Fatty:RightArmEnd
+    100104: Fatty:RightFoot
+    100106: Fatty:RightForeArm
+    100108: Fatty:RightHand
+    100110: Fatty:RightLeg
+    100112: Fatty:RightLegEnd
+    100114: Fatty:RightShoulder
+    100116: Fatty:RightUpLeg
+    100118: Fatty:Spine
+    100120: //RootNode
+    100122: Null
+    100124: Skeleton node
+    100126: Skeleton node 1
+    400000: Box003
+    400002: Character_Ctrl:ChestEndEffector
+    400004: Character_Ctrl:ChestOriginEffector
+    400006: Character_Ctrl:Head
+    400008: Character_Ctrl:HeadEffector
+    400010: Character_Ctrl:Hips
+    400012: Character_Ctrl:HipsEffector
+    400014: Character_Ctrl:LeftAnkleEffector
+    400016: Character_Ctrl:LeftArm
+    400018: Character_Ctrl:LeftElbowEffector
+    400020: Character_Ctrl:LeftFoot
+    400022: Character_Ctrl:LeftForeArm
+    400024: Character_Ctrl:LeftHand
+    400026: Character_Ctrl:LeftHipEffector
+    400028: Character_Ctrl:LeftKneeEffector
+    400030: Character_Ctrl:LeftLeg
+    400032: Character_Ctrl:LeftShoulder
+    400034: Character_Ctrl:LeftShoulderEffector
+    400036: Character_Ctrl:LeftUpLeg
+    400038: Character_Ctrl:LeftWristEffector
+    400040: Character_Ctrl:Neck
+    400042: Character_Ctrl:Reference
+    400044: Character_Ctrl:RightAnkleEffector
+    400046: Character_Ctrl:RightArm
+    400048: Character_Ctrl:RightElbowEffector
+    400050: Character_Ctrl:RightFoot
+    400052: Character_Ctrl:RightForeArm
+    400054: Character_Ctrl:RightHand
+    400056: Character_Ctrl:RightHipEffector
+    400058: Character_Ctrl:RightKneeEffector
+    400060: Character_Ctrl:RightLeg
+    400062: Character_Ctrl:RightShoulder
+    400064: Character_Ctrl:RightShoulderEffector
+    400066: Character_Ctrl:RightUpLeg
+    400068: Character_Ctrl:RightWristEffector
+    400070: Character_Ctrl:Spine
+    400072: Fatty:Head
+    400074: Fatty:HeadEnd
+    400076: Fatty:Hips
+    400078: Fatty:LeftArm
+    400080: Fatty:LeftArmEnd
+    400082: Fatty:LeftFoot
+    400084: Fatty:LeftForeArm
+    400086: Fatty:LeftHand
+    400088: Fatty:LeftLeg
+    400090: Fatty:LeftLegEnd
+    400092: Fatty:LeftShoulder
+    400094: Fatty:LeftUpLeg
+    400096: Fatty:Neck
+    400098: Fatty:Reference
+    400100: Fatty:RightArm
+    400102: Fatty:RightArmEnd
+    400104: Fatty:RightFoot
+    400106: Fatty:RightForeArm
+    400108: Fatty:RightHand
+    400110: Fatty:RightLeg
+    400112: Fatty:RightLegEnd
+    400114: Fatty:RightShoulder
+    400116: Fatty:RightUpLeg
+    400118: Fatty:Spine
+    400120: //RootNode
+    400122: Null
+    400124: Skeleton node
+    400126: Skeleton node 1
+    2300000: Box003
+    3300000: Box003
+    4300000: Box003
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 75
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Character_Ctrl:Reference
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:ChestEndEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:ChestOriginEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:HeadEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:LeftUpLeg
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:LeftUpLeg/Character_Ctrl:LeftLeg
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:LeftUpLeg/Character_Ctrl:LeftLeg/Character_Ctrl:LeftFoot
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:RightUpLeg
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:RightUpLeg/Character_Ctrl:RightLeg
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:RightUpLeg/Character_Ctrl:RightLeg/Character_Ctrl:RightFoot
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine/Character_Ctrl:LeftShoulder
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine/Character_Ctrl:LeftShoulder/Character_Ctrl:LeftArm
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine/Character_Ctrl:LeftShoulder/Character_Ctrl:LeftArm/Character_Ctrl:LeftForeArm
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine/Character_Ctrl:LeftShoulder/Character_Ctrl:LeftArm/Character_Ctrl:LeftForeArm/Character_Ctrl:LeftHand
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine/Character_Ctrl:Neck
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine/Character_Ctrl:Neck/Character_Ctrl:Head
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine/Character_Ctrl:RightShoulder
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine/Character_Ctrl:RightShoulder/Character_Ctrl:RightArm
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine/Character_Ctrl:RightShoulder/Character_Ctrl:RightArm/Character_Ctrl:RightForeArm
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:Hips/Character_Ctrl:Spine/Character_Ctrl:RightShoulder/Character_Ctrl:RightArm/Character_Ctrl:RightForeArm/Character_Ctrl:RightHand
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:HipsEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:LeftAnkleEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:LeftElbowEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:LeftHipEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:LeftKneeEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:LeftShoulderEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:LeftWristEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:RightAnkleEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:RightElbowEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:RightHipEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:RightKneeEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:RightShoulderEffector
+        weight: 1
+      - path: Character_Ctrl:Reference/Character_Ctrl:RightWristEffector
+        weight: 1
+      - path: Fatty:Reference
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:LeftUpLeg
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:LeftUpLeg/Fatty:LeftLeg
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:LeftUpLeg/Fatty:LeftLeg/Fatty:LeftFoot
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:LeftUpLeg/Fatty:LeftLeg/Fatty:LeftFoot/Fatty:LeftLegEnd
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:RightUpLeg
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:RightUpLeg/Fatty:RightLeg
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:RightUpLeg/Fatty:RightLeg/Fatty:RightFoot
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:RightUpLeg/Fatty:RightLeg/Fatty:RightFoot/Fatty:RightLegEnd
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:LeftShoulder
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:LeftShoulder/Fatty:LeftArm
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:LeftShoulder/Fatty:LeftArm/Fatty:LeftForeArm
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:LeftShoulder/Fatty:LeftArm/Fatty:LeftForeArm/Fatty:LeftHand
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:LeftShoulder/Fatty:LeftArm/Fatty:LeftForeArm/Fatty:LeftHand/Fatty:LeftArmEnd
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:Neck
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:Neck/Fatty:Head
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:Neck/Fatty:Head/Fatty:HeadEnd
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:RightShoulder
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:RightShoulder/Fatty:RightArm
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:RightShoulder/Fatty:RightArm/Fatty:RightForeArm
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:RightShoulder/Fatty:RightArm/Fatty:RightForeArm/Fatty:RightHand
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:RightShoulder/Fatty:RightArm/Fatty:RightForeArm/Fatty:RightHand/Fatty:RightArmEnd
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:RightShoulder/Fatty:RightArm/Fatty:RightForeArm/Fatty:RightHand/Null
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:RightShoulder/Fatty:RightArm/Fatty:RightForeArm/Fatty:RightHand/Null/Skeleton
+          node
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:RightShoulder/Fatty:RightArm/Fatty:RightForeArm/Fatty:RightHand/Null/Skeleton
+          node/Box003
+        weight: 1
+      - path: Fatty:Reference/Fatty:Hips/Fatty:Spine/Fatty:RightShoulder/Fatty:RightArm/Fatty:RightForeArm/Fatty:RightHand/Null/Skeleton
+          node/Skeleton node 1
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
