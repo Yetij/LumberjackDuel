@@ -1,0 +1,208 @@
+fileFormatVersion: 2
+guid: 585cacd82de95744893b0284a4df6df1
+timeCreated: 1451860953
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Box002
+    100002: Box003
+    100004: Character_Ctrl:ChestEndEffector
+    100006: Character_Ctrl:ChestOriginEffector
+    100008: Character_Ctrl:Head
+    100010: Character_Ctrl:HeadEffector
+    100012: Character_Ctrl:Hips
+    100014: Character_Ctrl:HipsEffector
+    100016: Character_Ctrl:LeftAnkleEffector
+    100018: Character_Ctrl:LeftArm
+    100020: Character_Ctrl:LeftElbowEffector
+    100022: Character_Ctrl:LeftFoot
+    100024: Character_Ctrl:LeftForeArm
+    100026: Character_Ctrl:LeftHand
+    100028: Character_Ctrl:LeftHipEffector
+    100030: Character_Ctrl:LeftKneeEffector
+    100032: Character_Ctrl:LeftLeg
+    100034: Character_Ctrl:LeftShoulder
+    100036: Character_Ctrl:LeftShoulderEffector
+    100038: Character_Ctrl:LeftUpLeg
+    100040: Character_Ctrl:LeftWristEffector
+    100042: Character_Ctrl:Neck
+    100044: Character_Ctrl:Reference
+    100046: Character_Ctrl:RightAnkleEffector
+    100048: Character_Ctrl:RightArm
+    100050: Character_Ctrl:RightElbowEffector
+    100052: Character_Ctrl:RightFoot
+    100054: Character_Ctrl:RightForeArm
+    100056: Character_Ctrl:RightHand
+    100058: Character_Ctrl:RightHipEffector
+    100060: Character_Ctrl:RightKneeEffector
+    100062: Character_Ctrl:RightLeg
+    100064: Character_Ctrl:RightShoulder
+    100066: Character_Ctrl:RightShoulderEffector
+    100068: Character_Ctrl:RightUpLeg
+    100070: Character_Ctrl:RightWristEffector
+    100072: Character_Ctrl:Spine
+    100074: Fatty:Head
+    100076: Fatty:HeadEnd
+    100078: Fatty:Hips
+    100080: Fatty:LeftArm
+    100082: Fatty:LeftArmEnd
+    100084: Fatty:LeftFoot
+    100086: Fatty:LeftForeArm
+    100088: Fatty:LeftHand
+    100090: Fatty:LeftLeg
+    100092: Fatty:LeftLegEnd
+    100094: Fatty:LeftShoulder
+    100096: Fatty:LeftUpLeg
+    100098: Fatty:Neck
+    100100: Fatty:Reference
+    100102: Fatty:RightArm
+    100104: Fatty:RightArmEnd
+    100106: Fatty:RightFoot
+    100108: Fatty:RightForeArm
+    100110: Fatty:RightHand
+    100112: Fatty:RightLeg
+    100114: Fatty:RightLegEnd
+    100116: Fatty:RightShoulder
+    100118: Fatty:RightUpLeg
+    100120: Fatty:Spine
+    100122: //RootNode
+    100124: Null
+    100126: Skeleton node
+    100128: Skeleton node 1
+    400000: Box002
+    400002: Box003
+    400004: Character_Ctrl:ChestEndEffector
+    400006: Character_Ctrl:ChestOriginEffector
+    400008: Character_Ctrl:Head
+    400010: Character_Ctrl:HeadEffector
+    400012: Character_Ctrl:Hips
+    400014: Character_Ctrl:HipsEffector
+    400016: Character_Ctrl:LeftAnkleEffector
+    400018: Character_Ctrl:LeftArm
+    400020: Character_Ctrl:LeftElbowEffector
+    400022: Character_Ctrl:LeftFoot
+    400024: Character_Ctrl:LeftForeArm
+    400026: Character_Ctrl:LeftHand
+    400028: Character_Ctrl:LeftHipEffector
+    400030: Character_Ctrl:LeftKneeEffector
+    400032: Character_Ctrl:LeftLeg
+    400034: Character_Ctrl:LeftShoulder
+    400036: Character_Ctrl:LeftShoulderEffector
+    400038: Character_Ctrl:LeftUpLeg
+    400040: Character_Ctrl:LeftWristEffector
+    400042: Character_Ctrl:Neck
+    400044: Character_Ctrl:Reference
+    400046: Character_Ctrl:RightAnkleEffector
+    400048: Character_Ctrl:RightArm
+    400050: Character_Ctrl:RightElbowEffector
+    400052: Character_Ctrl:RightFoot
+    400054: Character_Ctrl:RightForeArm
+    400056: Character_Ctrl:RightHand
+    400058: Character_Ctrl:RightHipEffector
+    400060: Character_Ctrl:RightKneeEffector
+    400062: Character_Ctrl:RightLeg
+    400064: Character_Ctrl:RightShoulder
+    400066: Character_Ctrl:RightShoulderEffector
+    400068: Character_Ctrl:RightUpLeg
+    400070: Character_Ctrl:RightWristEffector
+    400072: Character_Ctrl:Spine
+    400074: Fatty:Head
+    400076: Fatty:HeadEnd
+    400078: Fatty:Hips
+    400080: Fatty:LeftArm
+    400082: Fatty:LeftArmEnd
+    400084: Fatty:LeftFoot
+    400086: Fatty:LeftForeArm
+    400088: Fatty:LeftHand
+    400090: Fatty:LeftLeg
+    400092: Fatty:LeftLegEnd
+    400094: Fatty:LeftShoulder
+    400096: Fatty:LeftUpLeg
+    400098: Fatty:Neck
+    400100: Fatty:Reference
+    400102: Fatty:RightArm
+    400104: Fatty:RightArmEnd
+    400106: Fatty:RightFoot
+    400108: Fatty:RightForeArm
+    400110: Fatty:RightHand
+    400112: Fatty:RightLeg
+    400114: Fatty:RightLegEnd
+    400116: Fatty:RightShoulder
+    400118: Fatty:RightUpLeg
+    400120: Fatty:Spine
+    400122: //RootNode
+    400124: Null
+    400126: Skeleton node
+    400128: Skeleton node 1
+    2300000: Box003
+    3300000: Box003
+    4300000: Box002
+    4300002: Box003
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: Box002
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

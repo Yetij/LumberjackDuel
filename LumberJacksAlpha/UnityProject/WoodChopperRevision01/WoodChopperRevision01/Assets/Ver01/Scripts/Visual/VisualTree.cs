@@ -4,7 +4,7 @@ using System;
 
 public class VisualTree : MonoBehaviour {
     public TreeType type;
-    public Vector3 offset;
+    public Vector3 offsetWhenPlant;
     public int x { get; private set;  }
     public int y { get; private set;  }
 
@@ -50,7 +50,7 @@ public class VisualTree : MonoBehaviour {
     }
     public void Init(Vector3 pos, int _x, int _y)
     {
-        transform.position = pos + offset;
+        transform.position = pos + offsetWhenPlant;
         x = _x;
         y = _y;
     }
